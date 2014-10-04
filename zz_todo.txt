@@ -1,0 +1,20 @@
+﻿
+NOW:
+------
+- Save transaction failed
+
+
+Questions:
+- est ce que les dates demarre toujours de la date de la transaction?  (assume OUI)
+- est ce qu'on devrait permerttre de changer une categorie?  un type de vin peux avoir differente recette?
+- est ce que les rendez vous sont 1h ?
+
+Time
+------
+7 jours
+28 sept - 8h
+
+
+TODO:
+=============
+- send an email with the transaction (and add pub)
