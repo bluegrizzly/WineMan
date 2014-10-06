@@ -8,6 +8,6 @@
         About
     </h2>
     <p>
-        Put content here.
+        Created by Alain Dessureaux<br />alain.dessureaux@gmail.com
     </p>
 </asp:Content>

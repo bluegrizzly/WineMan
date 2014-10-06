@@ -8,11 +8,11 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-        <asp:Button ID="Button_AddTransaction" runat="server" Text="Add" Width="110px" PostBackUrl="~/Transactions/AddTransaction.aspx" />
-        <br />
-        <asp:Button ID="Button_EditTransaction" runat="server" Text="Edit Selection" Width="110px" OnClick="Button_EditTransaction_Click" />
-    </div>
+
+
+        <asp:Button ID="Button_Edit" runat="server" OnClick="Button_Edit_Click" Text="Edit" />
+
+
     </form>
 </body>
 </html>

@@ -50,12 +50,12 @@
                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Home" />
                         <asp:MenuItem NavigateUrl="~/Customers/Customers.aspx" Text="Customers" />
                         <asp:MenuItem Text="Transactions" >
-                            <asp:MenuItem NavigateUrl="~/Transactions/Transactions.aspx" Text="See all" />
                             <asp:MenuItem NavigateUrl="~/Transactions/AddTransaction.aspx" Text="New" />
+                            <asp:MenuItem NavigateUrl="~/Transactions/Transactions.aspx" Text="See all" />
                          </asp:MenuItem>
                         <asp:MenuItem Text="Work" >
-                            <asp:MenuItem NavigateUrl="~/Customers/Customers.aspx" Text="To complete" />
-                            <asp:MenuItem NavigateUrl="~/Customers/Customers.aspx" Text="Internal To complete" />
+                            <asp:MenuItem NavigateUrl="~/Work/WorkToComplete.aspx" Text="To complete" />
+                            <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Internal To complete" />
                             <asp:MenuItem NavigateUrl="~/Transactions/RendezVous.aspx" Text="Stations" />
                          </asp:MenuItem>
                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Admin" />

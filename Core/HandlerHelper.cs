@@ -17,7 +17,7 @@ namespace WineMan
             string strResponse = string.Empty;
             if (strOperation == null)
             {
-                DBAccess.GetRecords(context, dbName);
+                DBAccess.GetJSONRecords(context, dbName);
             }
             else if (strOperation == "del")
             {

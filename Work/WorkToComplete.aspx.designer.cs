@@ -7,27 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WineMan.Transactions {
+namespace WineMan.Work {
     
     
-    public partial class LeftMenu {
+    public partial class WorkToComplete {
         
         /// <summary>
-        /// form1 control.
+        /// Calendar_Date control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Calendar Calendar_Date;
         
         /// <summary>
-        /// Button_Edit control.
+        /// txtDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button_Edit;
+        protected global::System.Web.UI.WebControls.TextBox txtDate;
     }
 }

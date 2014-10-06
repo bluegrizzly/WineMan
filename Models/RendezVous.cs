@@ -7,9 +7,6 @@ namespace WineMan
 {
     public class RendezVous
     {
-        public RendezVous()
-        {
-        }
         public DateTime PickBestAvailableBottlingDate(DateTime startingDate)
         {
             DateTime result= startingDate;

@@ -412,6 +412,11 @@ namespace WineMan.Transactions
                 Utils.MessageBox(this, "Error: Failed to create a new transaction.");
                 return;
             }
+            if (!TransactionsHelper.CreateStepsRecord(tx))
+            {
+                Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
+                return;
+            }
 
             // Update UI.
             Label_TransactionID.Text = tx.id.ToString();
@@ -439,7 +444,7 @@ namespace WineMan.Transactions
                     Step step = Step.GetRecord(wineCat.step.ToString());
 
                     DateTime stepDate = selDate.AddDays(wineCat.days);
-                    if (step.finalStep && Label_BottlingDate.Text == c_SelectString)
+                    if (step.final_step>0 && Label_BottlingDate.Text == c_SelectString)
                     {
                         Calendar_RDV.SelectedDate= stepDate;
                         Calendar_RDV.VisibleDate = new DateTime(stepDate.Year,stepDate.Month,1);

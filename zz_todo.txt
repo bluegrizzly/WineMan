@@ -8,12 +8,18 @@ Questions:
 - est ce que les dates demarre toujours de la date de la transaction?  (assume OUI)
 - est ce qu'on devrait permerttre de changer une categorie?  un type de vin peux avoir differente recette?
 - est ce que les rendez vous sont 1h ?
+- une etape (TransactionStep) se fait dans une journee ou il y a une heure precise
+- pour la liste des work to complete , quel information ont a besoin? le client? 
+- qu'est ce qui termine une transaction? automatic ou manuel?  maintenant c'est manuel et il faut faire de quoi
 
 Time
 ------
 7 jours
 28 sept - 8h
-
+1 oct -2h
+2 oct -3h
+4 oct -5h
+5 oct -3h
 
 TODO:
 =============

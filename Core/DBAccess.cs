@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data;
-using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 
 namespace WineMan.Core
 {
     public class DBAccess
     {
-        static public void GetRecords(HttpContext context, string dbName)
+        static public void GetJSONRecords(HttpContext context, string dbName)
         {
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
@@ -26,12 +25,11 @@ namespace WineMan.Core
 
                 using (MySqlCommand command = new MySqlCommand("SELECT * FROM " + dbName, con))
                 {
-                    int nbRows = 0;
+                    int nbRows = int.MaxValue;
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         DataTable schemaTable = reader.GetSchemaTable();
-                        nbRows = int.MaxValue;
                         int currentRow = 0;
 
                         retString += @"""total"": """ + nbRows.ToString() + @""",";

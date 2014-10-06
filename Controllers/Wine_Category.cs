@@ -8,7 +8,7 @@ namespace WineMan
 {
     public class Wine_Category
     {
-        public int id;
+        public int id=-1;
         public string name;
         public float cost;
         public int step;
@@ -22,7 +22,7 @@ namespace WineMan
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM wine_categories WHERE id LIKE '" + id + "'", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM wine_categories WHERE id = '" + id + "'", con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();
@@ -97,7 +97,7 @@ namespace WineMan
             categories = new List<Wine_Category>();
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM wine_categories WHERE name LIKE '" + name + "'", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM wine_categories WHERE name = '" + name + "'", con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();
@@ -114,7 +114,15 @@ namespace WineMan
             }
 
             return nbRecords;
-
         }
-     }
+
+        public static int GetAllRecordsForID(string id, out List<Wine_Category> categories)
+        {
+            categories = null;
+            Wine_Category cat = GetRecordByID(id);
+            if (cat.id == -1)
+                return 0;
+            return GetAllRecordsForName(cat.name, out categories);
+        }
+    }
 }

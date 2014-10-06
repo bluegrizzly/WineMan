@@ -14,9 +14,9 @@ namespace WineMan.Transactions
 
         }
 
-        protected void Button_EditTransaction_Click(object sender, EventArgs e)
+        protected void Button_Edit_Click(object sender, EventArgs e)
         {
-
+            Response.Redirect("~/Transactions/AddTransaction.aspx");
         }
     }
 }

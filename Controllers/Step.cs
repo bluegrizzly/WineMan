@@ -10,7 +10,21 @@ namespace WineMan
     {
         public int id;
         public string name;
-        public bool finalStep;
+        public int final_step;
+
+        public void FillRecord(MySqlDataReader dr)
+        {
+            if (dr.HasRows)
+            {
+                bool parsed = Int32.TryParse(dr["id"].ToString(), out id);
+                System.Diagnostics.Debug.Assert(parsed);
+
+                name = dr["name"].ToString();
+
+                parsed = Int32.TryParse(dr["final_step"].ToString(), out final_step);
+                System.Diagnostics.Debug.Assert(parsed);
+            }
+        }
 
         public static Step GetRecord(string id)
         {
@@ -19,7 +33,7 @@ namespace WineMan
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("select DISTINCT * FROM steps WHERE id LIKE '" + id + "'", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM steps WHERE id = '" + id + "'", con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();
@@ -27,27 +41,46 @@ namespace WineMan
                     dr.Read();
                     if (dr.HasRows)
                     {
-                        int numValue;
-                        bool parsed = Int32.TryParse(dr["id"].ToString(), out numValue);
-                        System.Diagnostics.Debug.Assert(parsed);
-                        ret.id = numValue;
-
-                        ret.name = dr["name"].ToString();
-
-                        parsed = Int32.TryParse(dr["final_step"].ToString(), out numValue);
-                        System.Diagnostics.Debug.Assert(parsed);
-                        ret.finalStep = numValue > 0 ? true : false;
-
+                        TransactionStep tx = new TransactionStep();
+                        ret.FillRecord(dr);
                     }
                     else
                     {
                         System.Diagnostics.Debug.Assert(false);
                     }
+                    dr.Close();
                 }
                 con.Close();
             }
 
             return ret;
+        }
+
+        public static List<Step> GetAllRecords()
+        {
+            List<Step> steps = new List<Step>();
+            
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM steps", con))
+                {
+                    con.Open();
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        Step step = new Step();
+                        step.FillRecord(dr);
+                        steps.Add(step);
+                    }
+                    dr.Close();
+                }
+                con.Close();
+            }
+
+            return steps;
         }
     }
 }
