@@ -5,7 +5,6 @@
 <head runat="server">
     <title></title>
     <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
-    <link href="~/jquery-ui.css" rel="stylesheet" />
     <link href="~/JQGridReq/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
     <link href="~/JQGridReq/ui.jqgrid.css" rel="stylesheet" type="text/css" />
     <link href="~/Styles/jquery-ui.css" rel="stylesheet"/>

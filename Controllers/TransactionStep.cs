@@ -22,7 +22,8 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string values = AddIntParameter(txStep.transaction_id, true) +
+                    string values = AddIntParameter(0, true) + 
+                                    AddIntParameter(txStep.transaction_id) +
                                     AddIntParameter(txStep.step_id) +
                                     AddDateParameter(txStep.date) +
                                     AddIntParameter(txStep.done);

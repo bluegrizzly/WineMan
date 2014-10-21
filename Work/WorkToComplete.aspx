@@ -8,6 +8,16 @@
             width: 269px;
         }
     </style>
+
+  <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+
+  <script>
+      $(function () {
+          $("#datepicker").datepicker({ dateFormat: "mm-dd-yy" });
+      });
+
+  </script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -22,6 +32,7 @@
                                         <WeekendDayStyle BackColor="#EEEEEE" />
                         </asp:Calendar>
                         <asp:TextBox ID="txtDate" runat="server"></asp:TextBox>
+                        <p>Date: <input type="text" id="datepicker" value="<%= this.DateValue %>" ></p>
                         <fieldset>
                             <input id="setToDone" type="button" value="Set to Done"/><br />
                             <input id="selectAll" type="button" value="Select All"/><br />
@@ -43,6 +54,7 @@
 
         grid.jqGrid({
             url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' + document.getElementById('<%= txtDate.ClientID %>').value,
+            //url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' + <%= DateValue %>,
             datatype: "json",
             colNames: ['id', 'TxId', 'Step', 'Done'],
             colModel: [
@@ -76,6 +88,11 @@
         });        $("#clear").click(function () {
             grid.jqGrid('resetSelection');
         });
+        
+        $("#datepicker").change(function() {
+            $("#jQGridDemo").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid');
+            grid.trigger('reloadGrid');
+        })
 
         $("#setToDone").click(function () {
             var ids = grid.jqGrid('getGridParam', 'selarrrow');

@@ -11,72 +11,77 @@ namespace WineMan.Core
     {
         static public void GetJSONRecords(HttpContext context, string dbName)
         {
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-            using (MySqlConnection con = new MySqlConnection(connectionString))
+            try
             {
-                //
-                // Open the SqlConnection.
-                //
-                con.Open();
-                //
-                // The following code uses an SqlCommand based on the SqlConnection.
-                //
-                string retString = @"{";
-
-                using (MySqlCommand command = new MySqlCommand("SELECT * FROM " + dbName, con))
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    int nbRows = int.MaxValue;
+                    //
+                    // Open the SqlConnection.
+                    //
+                    con.Open();
+                    //
+                    // The following code uses an SqlCommand based on the SqlConnection.
+                    //
+                    string retString = @"{";
 
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM " + dbName, con))
                     {
-                        DataTable schemaTable = reader.GetSchemaTable();
-                        int currentRow = 0;
-
-                        retString += @"""total"": """ + nbRows.ToString() + @""",";
-                        retString += @"""page"": ""1"",";
-                        retString += @"""records"": """ + nbRows.ToString() + @""",";
-                        retString += @"""rows"" : [ ";
-
-                        bool firstRow = true;
-                        while (reader.Read())
+                        int nbRows = int.MaxValue;
+                        using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            if (!firstRow)
-                                retString += ",";
-                            firstRow = false;
-                            retString += @"{""id"":" + currentRow.ToString() + @", ""cell"" :[";
-                            int colomnNumber = 0;
+                            DataTable schemaTable = reader.GetSchemaTable();
+                            int currentRow = 0;
 
-                            bool firstRow2 = true;
-                            foreach (DataColumn column in schemaTable.Columns)
+                            retString += @"""total"": """ + nbRows.ToString() + @""",";
+                            retString += @"""page"": ""1"",";
+                            retString += @"""records"": """ + nbRows.ToString() + @""",";
+                            retString += @"""rows"" : [ ";
+
+                            bool firstRow = true;
+                            while (reader.Read())
                             {
-                                if (colomnNumber >= reader.FieldCount)
-                                    break;
-
-                                if (!firstRow2)
+                                if (!firstRow)
                                     retString += ",";
-                                firstRow2 = false;
+                                firstRow = false;
+                                retString += @"{""id"":" + currentRow.ToString() + @", ""cell"" :[";
+                                int colomnNumber = 0;
 
-                                try
+                                bool firstRow2 = true;
+                                foreach (DataColumn column in schemaTable.Columns)
                                 {
-                                    reader.GetString(colomnNumber);
-                                    retString += @"""" + reader.GetString(colomnNumber) + @""" ";
+                                    if (colomnNumber >= reader.FieldCount)
+                                        break;
+
+                                    if (!firstRow2)
+                                        retString += ",";
+                                    firstRow2 = false;
+
+                                    try
+                                    {
+                                        reader.GetString(colomnNumber);
+                                        retString += @"""" + reader.GetString(colomnNumber) + @""" ";
+                                    }
+                                    catch
+                                    {
+                                        retString += @"""""";
+                                    }
+                                    colomnNumber++;
                                 }
-                                catch
-                                {
-                                    retString += @"""""";
-                                }
-                                colomnNumber++;
+                                retString += "]}";
+                                currentRow++;
                             }
                             retString += "]}";
-                            currentRow++;
+                            reader.Close();
                         }
-                        retString += "]}";
-                        reader.Close();
                     }
+                    context.Response.Write(retString);
+                    con.Close();
                 }
-
-                context.Response.Write(retString);
-                con.Close();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
             }
         }
 

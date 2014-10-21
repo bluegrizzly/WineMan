@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace WineMan.Customers
 {
@@ -11,7 +13,6 @@ namespace WineMan.Customers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
     }
 }
