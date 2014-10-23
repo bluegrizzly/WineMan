@@ -88,6 +88,39 @@ namespace WineMan
             }
         }
 
+        public static Transaction GetRecord(int txID)
+        {
+            Transaction transaction = new Transaction();
+
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE id = " + txID.ToString(), con))
+                    {
+                        con.Open();
+                        MySqlDataReader dr = cmd.ExecuteReader();
+
+                        dr.Read();
+                        {
+                            transaction.FillRecord(dr);
+                        }
+
+                        dr.Close();
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+
+            return transaction;
+        }
+
+
         public static List<Transaction> GetRecords(DateTime date)
         {
             List<Transaction> transactions = new List<Transaction>();

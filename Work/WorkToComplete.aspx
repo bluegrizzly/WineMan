@@ -54,7 +54,7 @@
 
         grid.jqGrid({
             url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' + document.getElementById('<%= txtDate.ClientID %>').value,
-            //url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' + <%= DateValue %>,
+            //url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' + (<%= this.DateValue %>).value,
             datatype: "json",
             colNames: ['id', 'TxId', 'Step', 'Done'],
             colModel: [
@@ -91,8 +91,8 @@
         
         $("#datepicker").change(function() {
             $("#jQGridDemo").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid');
-            grid.trigger('reloadGrid');
-        })
+            window.grid.trigger('reloadGrid');
+        });
 
         $("#setToDone").click(function () {
             var ids = grid.jqGrid('getGridParam', 'selarrrow');

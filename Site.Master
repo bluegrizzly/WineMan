@@ -54,10 +54,13 @@
                          </asp:MenuItem>
                         <asp:MenuItem Text="Work" >
                             <asp:MenuItem NavigateUrl="~/Work/WorkToComplete.aspx" Text="To complete" />
-                            <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Internal To complete" />
+                            <asp:MenuItem NavigateUrl="~/todo.aspx" Text="Internal To complete" />
                             <asp:MenuItem NavigateUrl="~/Transactions/RendezVous.aspx" Text="Stations" />
                          </asp:MenuItem>
-                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Admin" />
+                        <asp:MenuItem Text="Admin" >
+                            <asp:MenuItem NavigateUrl="~/todo.aspx" Text="Settings" />
+                            <asp:MenuItem NavigateUrl="~/todo.aspx" Text="Backup" />
+                         </asp:MenuItem>
                         <asp:MenuItem NavigateUrl="~/About.aspx" Text="About" />
                     </Items>
                 </asp:Menu>

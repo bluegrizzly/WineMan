@@ -21,6 +21,7 @@ namespace WineMan.Transactions
         const string c_SelectString = "--Select--";
         private System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
         private WineSpecs m_WineSpecs = new WineSpecs();
+        private int m_TxID = -1;
 
         public AddTransaction()
         {
@@ -42,6 +43,12 @@ namespace WineMan.Transactions
                 Label_BottlingStation.Text = c_SelectString;
                 Label_FirstName.Text = c_SelectString;
                 Label_LastName.Text = c_SelectString;
+
+                if (Request.QueryString["txid"] != null)
+                {
+                    bool parsed = Int32.TryParse(Request.QueryString["txid"], out m_TxID);
+                    System.Diagnostics.Debug.Assert(parsed);
+                }
             }
 
             Label_TransactionID.Text = "-";
@@ -55,6 +62,11 @@ namespace WineMan.Transactions
                 // but before get back the result of the rendezvous
                 RestoreData();
                 ShowDates();
+            }
+
+            if (m_TxID >= 0)
+            {
+                EditRecord();
             }
         }
 
@@ -471,6 +483,38 @@ namespace WineMan.Transactions
         {
             SaveData();
             Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + Label_LastName.Text);
+        }
+
+        void EditRecord()
+        {
+            Transaction tx = Transaction.GetRecord(m_TxID);
+            Customer custo = Customer.GetRecordByID(tx.client_id.ToString());
+
+            Label_TransactionID.Text = tx.id.ToString();
+            Label_CustomerID.Text = tx.client_id.ToString();
+
+            Label_FirstName.Text = custo.FirstName;
+            Label_LastName.Text = custo.LastName;
+
+            DropDownList_Brand.SelectedValue = tx.wine_brand_id.ToString();
+            FillWineTypes(tx.wine_brand_id);
+            DropDownList_Type.SelectedValue = tx.wine_type_id.ToString();
+            FillWineCategories(tx.wine_category_id);
+            DropDownList_Category.SelectedValue = tx.wine_category_id.ToString();
+            UpdateComboBoxes();
+
+            Label_BottlingHour.Text = tx.date_bottling.ToString("HH", m_Culture);
+            Label_BottlingStation.Text = tx.bottling_station.ToString();
+            DateTime rdv = new DateTime(tx.date_bottling.Year, tx.date_bottling.Month, tx.date_bottling.Day);
+            Label_BottlingDate.Text = rdv.ToString("d", m_Culture);
+            Calendar_RDV.SelectedDate = rdv;
+            Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
+
+            // Update UI
+            Button_Commit.Text = "Modify";
+
+            ShowDates();
+            SaveData();
         }
     }
 }

@@ -100,13 +100,16 @@ namespace WineMan.Transactions
                         GetCell(CellKind.Gray, cell);
                         m_RadioButtons[j][i - m_Settings.MinStationHour].Visible = false;
 
+                        // Hour
                         TableCell cellHour = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 1];
                         GetCell(CellKind.Gray, cellHour);
 
+                        // tx
                         TableCell celltx = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 2];
-                        celltx.Text = foundTx.id.ToString();
+                        celltx.Text = "<a href=AddTransaction.aspx?txid=" + foundTx.id.ToString() + ">" + foundTx.id.ToString() + "</a>";
                         GetCell(CellKind.Gray, celltx);
 
+                        // customer name
                         TableCell cellName = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 3];
                         GetCell(CellKind.Gray,cellName);
                         Customer cus = Customer.GetRecordByID(foundTx.client_id.ToString());

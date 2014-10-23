@@ -18,8 +18,12 @@
         <td class="auto-style3" width="120"> 
             <div id="div1"></div>
             <script>
-                $('#div1').load('/Transactions/LeftMenu.aspx');
+//                $('#div1').load('/Transactions/LeftMenu.aspx');
             </script>
+            <fieldset>
+                <input id="editRow" type="button" value="Edit tx"/>
+            </fieldset>
+
         </td>
         <td>
             <table id="jQGridDemo">
@@ -33,15 +37,15 @@
                     colNames: ['ID', 'Client ID', 'Brand', 'Type', 'Category', 'Creation Date', 'Bottling Date', 'Station', 'Done'],
                     colModel: [
                                 { name: 'id', index: 'id', width: 30, stype: 'text' },
-   		                        { name: 'client_id', index: 'client_id', width: 40, stype: 'text', sortable: true, editable: true, sorttype: 'int' },
+   		                        { name: 'client_id', index: 'client_id', width: 50, stype: 'text', sortable: true, editable: true, sorttype: 'int' },
    		                        { name: 'wine_brand_id', index: 'wine_brand_id', width: 40, stype: 'text', sortable: true, editable: true },
    		                        { name: 'wine_type_id', index: 'wine_type_id', width: 40, stype: 'text', sortable: true, editable: true },
-   		                        { name: 'wine_category_id', index: 'wine_category_id', width: 40, stype: 'text', sortable: true, editable: true},
+   		                        { name: 'wine_category_id', index: 'wine_category_id', width: 50, stype: 'text', sortable: true, editable: true},
    		                        { name: 'date_creation', index: 'date_creation', width: 160, sortable: true, editable: true },
                                 { name: 'date_bottling', index: 'date_bottling', width: 160, sortable: true, editable: true },
                                 { name: 'bottling_station', index: 'bottling_station', width: 40, sortable: true, editable: true },
                                 { name: 'done', index: 'done', width: 30, sortable: true, editable: true }
-                ],
+                            ],
                     rowNum: 10,
                     height: 250,
                     mtype: 'GET',
@@ -59,9 +63,33 @@
                         }
                 });
 
+
+                $("#editRow").click(function () {
+                    var sel_id = $('#jQGridDemo').jqGrid('getGridParam', 'selrow');
+                    var value = $('#jQGridDemo').jqGrid('getCell', sel_id, 'id');
+                        $.ajax({
+                            type: "POST",
+                            url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx?operation=editrow") %>',
+                            data: value,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                window.location = data;
+                            },
+                            error: function (res, status, exeption) {
+                                if (value == "")
+                                    alert("please select a row");
+                                else
+                                    alert(exeption);
+                            }
+                        });
+                });
+
+
+
                 $('#jQGridDemo').jqGrid('navGrid', '#jQGridDemoPager',
                            {
-                               edit: true,
+                               edit: false,
                                add: false,
                                del: true,
                                search: true,
