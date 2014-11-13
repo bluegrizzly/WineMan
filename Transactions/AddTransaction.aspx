@@ -40,6 +40,12 @@
         .auto-style22 {
             width: 140px;
         }
+    .auto-style23 {
+        width: 121px;
+    }
+    .auto-style24 {
+        width: 154px;
+    }
     </style>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
@@ -119,7 +125,7 @@
                 <div class="ui-widget" style="text-align:center" >
                       <asp:TextBox ID="txtLastName" runat="server" Width="150px" CssClass="textboxAuto"  Font-Size="12px" OnTextChanged="txtLastName_TextChanged" BackColor="#E1E8F0" AutoPostBack="True" />
                       <br />
-                      <asp:Label ID="Label1" runat="server" Font-Italic="True" Font-Size="7pt" ForeColor="#999999" Text="Type to select"></asp:Label>
+                      <asp:Label ID="Label1" runat="server" Font-Italic="True" Font-Size="7pt" ForeColor="#999999" Text="Type name or phone to select"></asp:Label>
                 </div>    
                 </fieldset>
             </asp:Panel>
@@ -220,17 +226,22 @@
     <tr>
         <td class="auto-style11">
             <asp:Panel ID="Panel4" runat="server" BorderWidth="2"  width="200" Height="110" >
-                <table>
+                <table style="width: 200px">
                     <tr>
-                        <td>
+                        <td class="auto-style24">
                             <h3> 4. Complete</h3>
+                        </td>
+                        <td align="right" class="auto-style23">
+                            <asp:CheckBox ID="CheckBox_4" runat="server" BackColor="Red" BorderColor="Black" BorderStyle="Solid" BorderWidth="1px" Enabled="False" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style23" colspan="2">
                             <p>
                                 Transaction ID:
-                                <asp:Label ID="Label_TransactionID" runat="server" Text="Label" Name="TxID" DefaultValue="0"></asp:Label>
-
+                                <asp:Label ID="Label_TransactionID" runat="server" DefaultValue="0" Name="TxID" Text="Label"></asp:Label>
                                 <br />
-                                <asp:Button ID="Button_Commit" runat="server" Text="Create" OnClick="Button_Commit_Click" CausesValidation="False" UseSubmitBehavior="False" />
-
+                                <asp:Button ID="Button_Commit" runat="server" CausesValidation="False" OnClick="Button_Commit_Click" Text="Create" UseSubmitBehavior="False" />
                             </p>
                         </td>
                     </tr>

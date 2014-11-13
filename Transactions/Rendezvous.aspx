@@ -4,13 +4,12 @@
         .auto-style2 {
             width: 111px;
         }
-        .auto-style3 {
-            height: 25px;
-            width: 111px;
-        }
         .auto-style4 {
             width: 15px;
         }
+    .auto-style5 {
+        width: 100%;
+    }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -22,16 +21,33 @@
                     &nbsp;</td>
                 <td rowspan="3" valign="top">
                     <asp:Panel ID="Panel1" runat="server" BorderStyle="Solid" BorderWidth="1px" Height="400px" ScrollBars="Auto">
-                        <br />
-                        <asp:Table ID="Table_Stations" runat="server" BorderStyle="Solid" BorderWidth="1px" CellPadding="1" CellSpacing="1" GridLines="Both" HorizontalAlign="Center" EnableViewState="False" ViewStateMode="Disabled">
-                        </asp:Table>
+                        <table class="auto-style5">
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td align="center">
+                                    <asp:Label ID="Label_Date" runat="server" BorderColor="#666666" BorderStyle="Solid" BorderWidth="2px" Font-Size="Larger" Text="Label"></asp:Label>
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <table class="auto-style5">
+                            <tr>
+                                <td>
+                                    <asp:Table ID="Table_Stations" runat="server" BorderStyle="Solid" BorderWidth="1px" CellPadding="1" CellSpacing="1" EnableViewState="False" GridLines="Both" HorizontalAlign="Center" ViewStateMode="Disabled">
+                                    </asp:Table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
                     </asp:Panel>
                 </td>
             </tr>
             <tr>
                 <td valign="top">
                     <asp:Label ID="Label_SelectedHour" runat="server" Text="Label" Visible="False"></asp:Label>
-        <asp:Calendar ID="Calendar_RDV" runat="server">
+        <asp:Calendar ID="Calendar_RDV" runat="server" OnSelectionChanged="Calendar_RDV_SelectionChanged" OnDayRender="Calendar_RDV_DayRender">
                         <SelectedDayStyle BackColor="#0099FF" />
                         <TodayDayStyle BackColor="#999999" />
                         <WeekendDayStyle BackColor="#EEEEEE" />

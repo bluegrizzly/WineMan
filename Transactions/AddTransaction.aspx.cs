@@ -38,6 +38,7 @@ namespace WineMan.Transactions
             }
             else 
             {
+                txtLastName.Focus();
                 Label_BottlingDate.Text = c_SelectString;
                 Label_BottlingHour.Text = c_SelectString;
                 Label_BottlingStation.Text = c_SelectString;
@@ -78,6 +79,8 @@ namespace WineMan.Transactions
             CheckBox_2.BackColor = CheckBox_2.Checked ? System.Drawing.Color.Green : System.Drawing.Color.Red;
             CheckBox_3.Checked = (Label_BottlingHour.Text != c_SelectString && Label_BottlingStation.Text != c_SelectString);
             CheckBox_3.BackColor = CheckBox_3.Checked ? System.Drawing.Color.Green : System.Drawing.Color.Red;
+            CheckBox_4.Checked = Label_TransactionID.Text != "-";
+            CheckBox_4.BackColor = CheckBox_4.Checked ? System.Drawing.Color.Green : System.Drawing.Color.Red;
 
             Button_Commit.Enabled = (CheckBox_1.Checked && CheckBox_2.Checked && CheckBox_3.Checked);
         }

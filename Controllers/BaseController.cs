@@ -25,5 +25,12 @@ namespace WineMan
             else
                 return "," + value.ToString();
         }
+        protected static string AddStringParameter(string value, bool first = false)
+        {
+            if (first)
+                return "'" + value + "'";
+            else
+                return "," + "'" + value + "'";
+        }
     }
 }

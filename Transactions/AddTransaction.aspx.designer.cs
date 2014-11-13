@@ -202,6 +202,15 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Panel Panel4;
         
         /// <summary>
+        /// CheckBox_4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox CheckBox_4;
+        
+        /// <summary>
         /// Label_TransactionID control.
         /// </summary>
         /// <remarks>

@@ -5,6 +5,9 @@
         .auto-style3 {
             width: 116px;
         }
+        #showDone {
+            width: 103px;
+        }
     </style>
 
 </asp:Content>
@@ -23,7 +26,9 @@
             <fieldset>
                 <input id="editRow" type="button" value="Edit tx"/>
             </fieldset>
-
+            <fieldset>
+                <asp:CheckBox ID="ShowCompletedCheckBox" runat="server" Text="Show completed tx" AutoPostBack="True" />
+&nbsp;</fieldset>
         </td>
         <td>
             <table id="jQGridDemo">
@@ -32,7 +37,7 @@
             </div>
             <script type="text/javascript">
                 jQuery("#jQGridDemo").jqGrid({
-                    url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx") %>',
+                    url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx?showcompleted=") %>' + document.getElementById('<%= ShowCompletedCheckBox.ClientID%>').checked,
                     datatype: "json",
                     colNames: ['ID', 'Client ID', 'Brand', 'Type', 'Category', 'Creation Date', 'Bottling Date', 'Station', 'Done'],
                     colModel: [
@@ -43,8 +48,13 @@
    		                        { name: 'wine_category_id', index: 'wine_category_id', width: 50, stype: 'text', sortable: true, editable: true},
    		                        { name: 'date_creation', index: 'date_creation', width: 160, sortable: true, editable: true },
                                 { name: 'date_bottling', index: 'date_bottling', width: 160, sortable: true, editable: true },
-                                { name: 'bottling_station', index: 'bottling_station', width: 40, sortable: true, editable: true },
-                                { name: 'done', index: 'done', width: 30, sortable: true, editable: true }
+                                { name: 'bottling_station', index: 'bottling_station', width: 40, sortable: true, editable: true, align: 'center' },
+                                {
+                                    name: 'done', width: 30, index: 'done',
+                                    editable: true,
+                                    edittype: 'checkbox', editoptions: { value: "1:0", defaultValue: "1" },
+                                    formatter: "checkbox", formatoptions: { disabled: true }
+                                }
                             ],
                     rowNum: 10,
                     height: 250,

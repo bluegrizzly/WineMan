@@ -15,8 +15,10 @@ namespace WineMan.Transactions
         private int m_Hour = -1;
         private string m_Name;
         List<Transaction> m_Transactions;
+        List<Holiday> m_Holidays;
+        private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
 
-        const int c_NbColumnPerStation = 5;
+        const int c_NbColumnPerStation = 6;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -69,6 +71,8 @@ namespace WineMan.Transactions
                 }
             }
 
+            Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
+
             CreateTable(Calendar_RDV.SelectedDate);
         }
 
@@ -78,6 +82,7 @@ namespace WineMan.Transactions
 
             // Get all transactions for this day
             m_Transactions = Transaction.GetRecords(Calendar_RDV.SelectedDate);
+            m_Holidays = Holiday.GetAllRecords();
 
             // Populate the rendez-vous
             for (int i = m_Settings.MinStationHour; i < m_Settings.MaxStationHour; ++i)
@@ -114,11 +119,16 @@ namespace WineMan.Transactions
                         GetCell(CellKind.Gray,cellName);
                         Customer cus = Customer.GetRecordByID(foundTx.client_id.ToString());
                         if (cus != null)
-                            cellName.Text = cus.LastName;
+                            cellName.Text = cus.FirstName + " " + cus.LastName;
+                        
+                        // customer phone
+                        TableCell cellPhone = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 4];
+                        GetCell(CellKind.Gray, cellPhone);
+                        if (cus != null)
+                            cellPhone.Text = cus.Telephone;
                     }
                 }
             }
-
         }
 
         private void RadioButton_PreRender(Object sender, EventArgs e)
@@ -211,7 +221,7 @@ namespace WineMan.Transactions
                 TableCell tCell = GetCell(CellKind.Title);
                 tCell.HorizontalAlign = HorizontalAlign.Center;
                 tCell.Text = "Station " + (i+1).ToString();
-                tCell.ColumnSpan = 4;
+                tCell.ColumnSpan = 5;
                 tRowStations.Cells.Add(tCell);
                 tRowStations.Cells.Add(GetCell(CellKind.Black));
 
@@ -224,14 +234,27 @@ namespace WineMan.Transactions
                 tCell.Text = "Hour";
                 tCell.ForeColor = System.Drawing.Color.Black;
                 tCell.BackColor = System.Drawing.Color.LightGray;
+                tCell.Font.Name = "Arial";
+                tCell.Font.Size = 12;
                 tRowTitle.Cells.Add(tCell);
                 tCell = new TableCell();
                 tCell.Text = "TX";
                 tCell.ForeColor = System.Drawing.Color.Black;
                 tCell.BackColor = System.Drawing.Color.LightGray;
+                tCell.Font.Name = "Arial";
+                tCell.Font.Size = 12;
                 tRowTitle.Cells.Add(tCell);
                 tCell = new TableCell();
                 tCell.Text = "Name";
+                tCell.Font.Name = "Arial";
+                tCell.Font.Size = 12;
+                tCell.ForeColor = System.Drawing.Color.Black;
+                tCell.BackColor = System.Drawing.Color.LightGray;
+                tRowTitle.Cells.Add(tCell);
+                tCell = new TableCell();
+                tCell.Text = "Phone";
+                tCell.Font.Name = "Arial";
+                tCell.Font.Size = 12;
                 tCell.ForeColor = System.Drawing.Color.Black;
                 tCell.BackColor = System.Drawing.Color.LightGray;
                 tRowTitle.Cells.Add(tCell);
@@ -261,6 +284,9 @@ namespace WineMan.Transactions
                     // Name
                     tCell = GetCell(CellKind.Normal);
                     tRow.Cells.Add(tCell);
+                    // phone
+                    tCell = GetCell(CellKind.Normal);
+                    tRow.Cells.Add(tCell);
                     tRow.Cells.Add(GetCell(CellKind.Black));
                 }
             }
@@ -287,6 +313,25 @@ namespace WineMan.Transactions
 
             if (refUrl != null)
                 Response.Redirect(refUrl);
+        }
+
+        protected void Calendar_RDV_SelectionChanged(object sender, EventArgs e)
+        {
+            Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
+        }
+
+        protected void Calendar_RDV_DayRender(object sender, DayRenderEventArgs e)
+        {
+            foreach(Holiday holiday in m_Holidays)
+            {
+                if (e.Day.Date.Year == holiday.date.Year &&
+                    e.Day.Date.Month == holiday.date.Month &&
+                    e.Day.Date.Day == holiday.date.Day)
+                {
+                    e.Cell.BackColor = System.Drawing.Color.LightGray;
+                    e.Day.IsSelectable = false;
+                }
+            }
         }
     }
 }

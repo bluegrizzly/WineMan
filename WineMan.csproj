@@ -76,6 +76,9 @@
     <Content Include="Account\ChangePasswordSuccess.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Register.aspx" />
+    <Content Include="Admin\holidays.aspx" />
+    <Content Include="Admin\WineBrandManager.aspx" />
+    <Content Include="Admin\WineTypesManager.aspx" />
     <Content Include="Customers\Customers.aspx" />
     <Content Include="images\index_logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -179,9 +182,34 @@
     <Compile Include="Account\Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\holidays.aspx.cs">
+      <DependentUpon>holidays.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\holidays.aspx.designer.cs">
+      <DependentUpon>holidays.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminHandler.ashx.cs">
+      <DependentUpon>AdminHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\WineBrandManager.aspx.cs">
+      <DependentUpon>WineBrandManager.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\WineBrandManager.aspx.designer.cs">
+      <DependentUpon>WineBrandManager.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\WineTypesManager.aspx.cs">
+      <DependentUpon>WineTypesManager.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\WineTypesManager.aspx.designer.cs">
+      <DependentUpon>WineTypesManager.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\Appointement.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\Customer.cs" />
+    <Compile Include="Controllers\Holiday.cs" />
     <Compile Include="Controllers\Settings.cs" />
     <Compile Include="Controllers\Step.cs" />
     <Compile Include="Controllers\Transaction.cs" />
@@ -290,6 +318,7 @@
     <Content Include="Work\WorkToCompleteHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Admin\AdminHandler.ashx" />
     <None Include="Properties\PublishProfiles\Debug.pubxml" />
     <None Include="Properties\PublishProfiles\Release.pubxml" />
   </ItemGroup>

@@ -16,24 +16,24 @@ namespace WineMan
             {
                 bool found = false;
                 con.Open();
-                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT first_name, last_name FROM customers WHERE first_name LIKE '%" + inputName + "%'", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT first_name, last_name, telephone FROM customers WHERE first_name LIKE '%" + inputName + "%'", con))
                 {
                     MySqlDataReader dr = cmd.ExecuteReader();
                     while (dr.Read())
                     {
-                        result.Add(dr["first_name"].ToString() + "." + dr["last_name"].ToString());
+                        result.Add(dr["first_name"].ToString() + "." + dr["last_name"].ToString() + "." + dr["telephone"].ToString());
                         found = true;
                     }
                     dr.Close();
                 }
                 if (!found)
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT first_name, last_name FROM customers WHERE last_name LIKE '%" + inputName + "%'", con))
+                    using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT first_name, last_name, telephone FROM customers WHERE last_name LIKE '%" + inputName + "%'", con))
                     {
                         MySqlDataReader dr = cmd.ExecuteReader();
                         while (dr.Read())
                         {
-                            result.Add(dr["first_name"].ToString() + "." + dr["last_name"].ToString());
+                            result.Add(dr["first_name"].ToString() + "." + dr["last_name"].ToString() + "." + dr["telephone"].ToString());
                             found = true;
                         }
                         dr.Close();
@@ -44,12 +44,12 @@ namespace WineMan
                 {
                     try
                     {
-                        using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT id, first_name, last_name FROM customers WHERE id LIKE '" + inputName + "'", con))
+                        using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT telephone, first_name, last_name FROM customers WHERE telephone LIKE '%" + inputName + "%'", con))
                         {
                             MySqlDataReader dr = cmd.ExecuteReader();
                             while (dr.Read())
                             {
-                                result.Add(dr["first_name"].ToString() + "." + dr["last_name"].ToString());
+                                result.Add(dr["first_name"].ToString() + "." + dr["last_name"].ToString() + "." + dr["telephone"].ToString());
                                 found = true;
                             }
                             dr.Close();

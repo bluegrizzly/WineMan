@@ -78,7 +78,7 @@ namespace WineMan
 
                 retString += @"""" + step.id.ToString() + @""",";
                 retString += @"""" + step.transaction_id.ToString() + @""",";
-                retString += @"""" + GetStepName(step.id) + @""",";
+                retString += @"""" + GetStepName(step.step_id) + @""",";
                 if (step.done == 0)
                     retString += @"""No""" ;  
                 else

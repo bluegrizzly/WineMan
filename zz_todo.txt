@@ -20,7 +20,39 @@ Time
 2 oct -3h
 4 oct -5h
 5 oct -3h
+23 oct - 3h
 
 TODO:
 =============
 - send an email with the transaction (and add pub)
+
+- Admin:
+    - Conge feriers : (les ajouter dans le calednrier des rendez vous aussi en readonly)  [DONE]
+    - Types de vins, brand, categories
+- Page add transaction
+    - ajout de recherche par tel [DONE]
+    - Voir le telephone avec le nom dans le serach [DONE]
+- Page transaction
+    - Voir batch termine ou pas
+- Page Work to complete
+    - Voir les transaction par intervale de temps 
+    - Ajouter champs . client tel etc
+    - montrer les transactions qui n'ont pas encore ete commence
+- Ajoute d'une page Transactions to complete (closing the day)
+- page rendez vous
+    - n'importe quel heure
+
+- DB Steps: mettre un champ actif
+- ajouter tous les champs a une transaction 
+    location
+    code de produit (couleur)
+- pouvoir reseter une date de depart sur une transaction en retard
+- etre capable de changer les dates
+- faire un ecran d'operations pour une transaciton
+
+- Imprimer
+    - transaction pour client
+    - work to do
+    - rendez vous
+
+- lock db

@@ -29,7 +29,17 @@ namespace WineMan.Transactions
                 }
             }
             else
-                m_Helper.ProcessRequest(context, dbName);
+            {
+                string showCompleted = context.Request.QueryString["showcompleted"];
+
+                if (showCompleted == "true")
+                    DBAccess.GetJSONRecords(context, dbName);
+                else
+                {
+                    string sqlCmd = "SELECT * FROM " + dbName + " WHERE done=0";
+                    DBAccess.GetJSONRecords(context, dbName, sqlCmd);
+                }
+            }
         }
 
         public bool IsReusable

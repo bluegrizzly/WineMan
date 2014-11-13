@@ -9,7 +9,7 @@ namespace WineMan.Core
 {
     public class DBAccess
     {
-        static public void GetJSONRecords(HttpContext context, string dbName)
+        static public void GetJSONRecords(HttpContext context, string dbName, string sqlCmd=null)
         {
             try
             {
@@ -24,8 +24,10 @@ namespace WineMan.Core
                     // The following code uses an SqlCommand based on the SqlConnection.
                     //
                     string retString = @"{";
+                    if (sqlCmd == null)
+                        sqlCmd = "SELECT * FROM " + dbName;
 
-                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM " + dbName, con))
+                    using (MySqlCommand command = new MySqlCommand(sqlCmd , con))
                     {
                         int nbRows = int.MaxValue;
                         using (MySqlDataReader reader = command.ExecuteReader())
@@ -119,7 +121,11 @@ namespace WineMan.Core
                     try
                     {
                         string valueRaw = forms.Get(colName).ToString();
-                        value = "'" + valueRaw + "'";
+
+                        if (colName == "active")
+                            value = valueRaw;
+                        else
+                            value = "'" + valueRaw + "'";
                     }
                     catch 
                     {
@@ -145,8 +151,9 @@ namespace WineMan.Core
                         int result = command.ExecuteNonQuery();
                         ret = true;
                     }
-                    catch /*(Exception e)*/
-                    { 
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.Assert(false, e.Message);
                         ret = false; 
                     }
                 }
@@ -194,7 +201,10 @@ namespace WineMan.Core
                     try
                     {
                         // COLNAME=VALUE,
-                        sqlCmd += colName + "='" + forms.Get(colName).ToString() + "'";
+                        if (colName == "active")
+                            sqlCmd += colName + "=" + forms.Get(colName).ToString();
+                        else
+                            sqlCmd += colName + "='" + forms.Get(colName).ToString() + "'";
                     }
                     catch
                     {

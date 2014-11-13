@@ -12,7 +12,7 @@ namespace WineMan
         public string name;
         public int final_step;
 
-        public void FillRecord(MySqlDataReader dr)
+        public void FillData(MySqlDataReader dr)
         {
             if (dr.HasRows)
             {
@@ -42,7 +42,7 @@ namespace WineMan
                     if (dr.HasRows)
                     {
                         TransactionStep tx = new TransactionStep();
-                        ret.FillRecord(dr);
+                        ret.FillData(dr);
                     }
                     else
                     {
@@ -72,7 +72,7 @@ namespace WineMan
                     while (dr.Read())
                     {
                         Step step = new Step();
-                        step.FillRecord(dr);
+                        step.FillData(dr);
                         steps.Add(step);
                     }
                     dr.Close();

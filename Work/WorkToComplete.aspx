@@ -13,7 +13,7 @@
 
   <script>
       $(function () {
-          $("#datepicker").datepicker({ dateFormat: "mm-dd-yy" });
+          $("#datepicker").datepicker({ dateFormat: "yy-mm-dd" });
       });
 
   </script>
@@ -59,8 +59,8 @@
             colNames: ['id', 'TxId', 'Step', 'Done'],
             colModel: [
                         { name: 'id', index: 'id', width: 10, stype: 'text', sortable: true, sorttype: 'int', hidden: true},
-                        { name: 'txid', index: 'txid', width: 50, stype: 'text', sortable: true, sorttype: 'int' },
-   		                { name: 'step', index: 'step', width: 150, sortable: true },
+                        { name: 'txid', index: 'txid', width: 75, stype: 'text', sortable: true, sorttype: 'int' },
+   		                { name: 'step', index: 'step', width: 180, sortable: true },
    		                { name: 'done', index: 'done', width: 150, sortable: true, align: 'center' }
             ],
             rowNum: 10,
