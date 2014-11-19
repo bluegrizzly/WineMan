@@ -85,7 +85,8 @@
             for (var i = 0, il = ids.length; i < il; i++) {
                 grid.jqGrid('setSelection', ids[i], true);
             }
-        });        $("#clear").click(function () {
+        });
+        $("#clear").click(function () {
             grid.jqGrid('resetSelection');
         });
         

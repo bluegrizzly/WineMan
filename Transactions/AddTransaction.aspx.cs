@@ -206,7 +206,7 @@ namespace WineMan.Transactions
         {
             if (DropDownList_Brand.SelectedIndex > 0)
             {
-                m_Brand = Wine_Brand.GetRecord(DropDownList_Brand.SelectedValue);
+                m_Brand = Wine_Brand.GetRecordByID(DropDownList_Brand.SelectedValue);
                 FillWineTypes(m_Brand.id);
             }
             UpdateComboBoxes();
@@ -291,6 +291,7 @@ namespace WineMan.Transactions
             {
                 Label_Price.Text = "$" + 0;
             }
+            ShowDates();
         }
 
         protected void FillWineBrands()
@@ -440,6 +441,7 @@ namespace WineMan.Transactions
 
         private void ShowDates()
         {
+            Table_Dates.Rows.Clear();
             if (DropDownList_Category.SelectedIndex > 0)
             {
                 Wine_Category mainCat = Wine_Category.GetRecordByID(DropDownList_Category.SelectedValue);
@@ -485,7 +487,7 @@ namespace WineMan.Transactions
         protected void Button_SelectDate_Click(object sender, EventArgs e)
         {
             SaveData();
-            Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + Label_LastName.Text);
+            Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + Label_FirstName.Text + " " + Label_LastName.Text);
         }
 
         void EditRecord()

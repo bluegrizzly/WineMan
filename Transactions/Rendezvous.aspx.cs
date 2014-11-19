@@ -50,8 +50,7 @@ namespace WineMan.Transactions
 
             if (Session["rendezvous_station"] != null)
             {
-                bool parsed = Int32.TryParse((string)Session["rendezvous_station"], out m_Station);
-                m_Station--; //zero based
+                bool parsed = Int32.TryParse((string)Session["rendezvous_station"], out m_Station); //zero based
                 System.Diagnostics.Debug.Assert(parsed);
             }
 
@@ -64,10 +63,16 @@ namespace WineMan.Transactions
                 {
                     RadioButton radioButton = new RadioButton();
                     radioButton.GroupName = "spot";
-                    radioButton.CheckedChanged += new EventHandler(this.RadioButton_CheckedChanged);
+                    //radioButton.CheckedChanged += new EventHandler(this.RadioButton_CheckedChanged);
                     radioButton.PreRender += new EventHandler(this.RadioButton_PreRender);
                     radioButton.AutoPostBack = true;
                     m_RadioButtons[j].Add(radioButton);
+
+                    if (m_Hour == i && m_Station == j)
+                    {
+                        // Need to select the line that was passed from the add transaction
+                        radioButton.Checked = true;
+                    }
                 }
             }
 
@@ -131,6 +136,22 @@ namespace WineMan.Transactions
             }
         }
 
+        private void SelectLine(TableRow row, int columnIndex)
+        {
+            RadioButton button = row.Cells[columnIndex].Controls[0] as RadioButton;
+
+            if (button != null)
+            {
+                button.Checked = true;
+                for (int i = 0; i < c_NbColumnPerStation - 1; ++i)
+                {
+                    row.Cells[columnIndex + i].BackColor = System.Drawing.Color.Aquamarine;
+                    if (i == 3)
+                        row.Cells[columnIndex + i].Text = m_Name;
+                }
+            }
+        }
+
         private void RadioButton_PreRender(Object sender, EventArgs e)
         {
             // Select the line
@@ -144,14 +165,7 @@ namespace WineMan.Transactions
                     {
                         if (cell.Controls.Count > 0 && radioButton == cell.Controls[0])
                         {
-                            int index = row.Cells.GetCellIndex(cell);
-                            for (int i = 0; i< 4; ++i)
-                            {
-                                row.Cells[index+i].BackColor = System.Drawing.Color.Aquamarine;
-                                if (i == 3)
-                                    row.Cells[index + i].Text = m_Name;
-                            }
-                                
+                            SelectLine(row, row.Cells.GetCellIndex(cell));
                             return;
                         }
                     }
@@ -159,7 +173,7 @@ namespace WineMan.Transactions
             }
         }
 
-        private void RadioButton_CheckedChanged(Object sender, EventArgs e)
+        private void SaveRendezVousValues()
         {
             // Set the information for communication with previous page
             int selectedHour = -1;
@@ -179,7 +193,7 @@ namespace WineMan.Transactions
 
             Session["rendezvous"] = Calendar_RDV.SelectedDate;
             Session["rendezvous_hour"] = selectedHour.ToString();
-            Session["rendezvous_station"] = (m_Station + 1).ToString();
+            Session["rendezvous_station"] = (m_Station).ToString();
         }
 
         enum CellKind { Normal, Black, Gray, Title, Selected };
@@ -211,6 +225,7 @@ namespace WineMan.Transactions
 
         private void CreateTable(DateTime selectedDate)
         {
+            Table_Stations.Font.Size = 8;
             TableRow tRowStations = new TableRow();
             Table_Stations.Rows.Add(tRowStations);
             TableRow tRowTitle = new TableRow();
@@ -220,7 +235,7 @@ namespace WineMan.Transactions
             {
                 TableCell tCell = GetCell(CellKind.Title);
                 tCell.HorizontalAlign = HorizontalAlign.Center;
-                tCell.Text = "Station " + (i+1).ToString();
+                tCell.Text = "Station " + (i).ToString();
                 tCell.ColumnSpan = 5;
                 tRowStations.Cells.Add(tCell);
                 tRowStations.Cells.Add(GetCell(CellKind.Black));
@@ -297,6 +312,8 @@ namespace WineMan.Transactions
             if (ViewState["RefUrl"] == null)
                 return;
 
+            SaveRendezVousValues(); // pass it to the next page
+
             string refUrl = (string)ViewState["RefUrl"];
             
             // Return a flag to know that we started from the AddTransaction page.
@@ -305,11 +322,21 @@ namespace WineMan.Transactions
                 refUrl += "?FromAdd=true";
             }
 
-            // Return the rendez vous selected
-            //DateTime selectedDateTime = new DateTime(Calendar_RDV.SelectedDate.Year,
-            //                                            Calendar_RDV.SelectedDate.Month,
-            //                                            Calendar_RDV.SelectedDate.Day,
-            //                                            0, 0, 0);
+            if (refUrl != null)
+                Response.Redirect(refUrl);
+        }
+        protected void Button_Cancel_Click(object sender, EventArgs e)
+        {
+            if (ViewState["RefUrl"] == null)
+                return;
+
+            string refUrl = (string)ViewState["RefUrl"];
+
+            // Return a flag to know that we started from the AddTransaction page.
+            if (refUrl.Contains("AddTransaction"))
+            {
+                refUrl += "?FromAdd=true";
+            }
 
             if (refUrl != null)
                 Response.Redirect(refUrl);
@@ -333,5 +360,6 @@ namespace WineMan.Transactions
                 }
             }
         }
+
     }
 }

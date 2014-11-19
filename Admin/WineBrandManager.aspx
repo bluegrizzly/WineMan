@@ -40,7 +40,7 @@
             datatype: "json",
             colNames: ['Id', 'Name', 'Active'],
             colModel: [
-                        { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int', editable: false, hidden:true},
+                        { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int', editable: false, hidden:false},
                         { name: 'name', index: 'name', width: 200, stype: 'text', sortable: true, editable: true },
                         {
                             name: 'active', width: 50, index: 'active',

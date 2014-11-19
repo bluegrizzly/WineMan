@@ -33,7 +33,7 @@ TODO:
     - ajout de recherche par tel [DONE]
     - Voir le telephone avec le nom dans le serach [DONE]
 - Page transaction
-    - Voir batch termine ou pas
+    - Voir batch termine ou pas [DONE]
 - Page Work to complete
     - Voir les transaction par intervale de temps 
     - Ajouter champs . client tel etc
@@ -49,6 +49,7 @@ TODO:
 - pouvoir reseter une date de depart sur une transaction en retard
 - etre capable de changer les dates
 - faire un ecran d'operations pour une transaciton
+- ajouter langues a customer
 
 - Imprimer
     - transaction pour client

@@ -32,7 +32,6 @@ namespace WineMan.Core
                         int nbRows = int.MaxValue;
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            DataTable schemaTable = reader.GetSchemaTable();
                             int currentRow = 0;
 
                             retString += @"""total"": """ + nbRows.ToString() + @""",";
@@ -47,14 +46,11 @@ namespace WineMan.Core
                                     retString += ",";
                                 firstRow = false;
                                 retString += @"{""id"":" + currentRow.ToString() + @", ""cell"" :[";
-                                int colomnNumber = 0;
 
                                 bool firstRow2 = true;
-                                foreach (DataColumn column in schemaTable.Columns)
+                                for (int colomnNumber = 0; colomnNumber < reader.FieldCount; colomnNumber++)
                                 {
-                                    if (colomnNumber >= reader.FieldCount)
-                                        break;
-
+                                    string colName = reader.GetName(colomnNumber);
                                     if (!firstRow2)
                                         retString += ",";
                                     firstRow2 = false;
@@ -62,14 +58,15 @@ namespace WineMan.Core
                                     try
                                     {
                                         reader.GetString(colomnNumber);
-                                        retString += @"""" + reader.GetString(colomnNumber) + @""" ";
+                                        string valueStr = reader.GetString(colomnNumber);
+                                        retString += @"""" + valueStr + @""" ";
                                     }
                                     catch
                                     {
                                         retString += @"""""";
                                     }
-                                    colomnNumber++;
                                 }
+
                                 retString += "]}";
                                 currentRow++;
                             }

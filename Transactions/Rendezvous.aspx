@@ -38,7 +38,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>&nbsp;</td>
+                                <td>
+                                    <asp:DropDownList ID="DropDownList_ManualHour_S1" runat="server">
+                                        <asp:ListItem>7h15</asp:ListItem>
+                                        <asp:ListItem>7h30</asp:ListItem>
+                                        <asp:ListItem>7h45</asp:ListItem>
+                                    </asp:DropDownList>
+                                    <asp:Button ID="Button_AddHour_S1" runat="server" Text="Add" />
+                                </td>
                             </tr>
                         </table>
                     </asp:Panel>
@@ -55,7 +62,10 @@
                 </td>
             </tr>
             <tr>
-                <td align="center"><asp:Button ID="Button_Select" runat="server" OnClick="Button_Select_Click" Text="Select" Height="34px" Width="68px" />
+                <td align="center"><asp:Button ID="Button_Select" runat="server" OnClick="Button_Select_Click" Text="Select" Height="30px" Width="68px" style="margin-top: 14px" />
+        
+                &nbsp;
+                    <asp:Button ID="Button_Cancel" runat="server" Height="30px" OnClick="Button_Cancel_Click" Text="Cancel" />
         
                 </td>
             </tr>

@@ -13,6 +13,7 @@ namespace WineMan
         public int Version;
         public int MinStationHour;
         public int MaxStationHour;
+        public int hour_intervale;
 
         public Settings()
         {
@@ -36,6 +37,9 @@ namespace WineMan
                         parsed = Int32.TryParse(dr["min_station_hour"].ToString(), out MinStationHour);
                         System.Diagnostics.Debug.Assert(parsed);
                         parsed = Int32.TryParse(dr["max_station_hour"].ToString(), out MaxStationHour);
+                        System.Diagnostics.Debug.Assert(parsed);
+
+                        parsed = Int32.TryParse(dr["hour_intervale"].ToString(), out hour_intervale);
                         System.Diagnostics.Debug.Assert(parsed);
                     }
                     else

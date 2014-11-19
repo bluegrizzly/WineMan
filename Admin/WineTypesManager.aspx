@@ -37,48 +37,52 @@
     <script type="text/javascript">
         jQuery("#jQGridDemo").jqGrid({
             url: '<%=ResolveUrl("~/Admin/AdminHandler.ashx?db=wine_types") %>',
-            datatype: "json",
+            //ajaxSelectOptions: { type: "GET" },
+            datatype: 'json',
             colNames: ['Id', 'Name', 'Brand', 'Category', 'Active'],
             colModel: [
-                        { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int', editable: false, hidden: false },
+                        { name: 'id', index: 'id', width: 20, stype: 'int', sortable: true, sorttype: 'int', hidden: false },
                         { name: 'name', index: 'name', width: 200, stype: 'text', sortable: true, editable: true },
                         {
                             name: 'brand_id', index: 'brand_id', width: 200,
                             sortable: true,
+                            stype:'select',
                             align: 'center',
                             editable: true,
-                            cellEdit: true,
                             edittype: 'select',
-                            formatter: 'select',
-                            editoptions: { value: '1:select' }
+                            //formatter: 'select',
+                            editoptions: { dataUrl: "/Default/WineBrandSelect" },
+                            searchoptions: { dataUrl: "/Default/WineBrandSelect" }
                         },
-                        {
+                        {   
                             name: 'category_id', index: 'category_id', width: 200,
                             sortable: true,
+                            stype: 'select',
                             align: 'center',
                             editable: true,
-                            cellEdit: true,
                             edittype: 'select',
-                            formatter: 'select',
-                            editoptions: { value: '1:A;2:B' }
+                            //formatter: 'select',
+                            editoptions: {dataUrl: "/Default/WineCategorySelect" },
+                            searchoptions: {dataUrl: "/Default/WineCategorySelect" }
                         },
                         {
                             name: 'active', width: 50, index: 'active',
                             editable: true,
                             edittype: 'checkbox', editoptions: { value: "1:0", defaultValue: "1" },
                             formatter: "checkbox", formatoptions: { disabled: true }
-                        }],
+                        }
+            ],
             rowNum: 10,
             height: 250,
             multiselect: false,
             mtype: 'GET',
-            gridview : true,
             loadonce: true,
             rowList: [10, 20, 50, 100],
             pager: '#jQGridDemoPager',
-            sortname: 'name',
+            gridview: true,
+            sortname: 'date',
+            sortorder: 'asc',
             viewrecords: true,
-            sortorder: 'desc',
             caption: "Wine Types",
             editurl: '<%=ResolveUrl("~/Admin/AdminHandler.ashx?db=wine_types") %>'
         });

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace WineMan
 {
-    public class BaseController
+    public class BaseController 
     {
         protected static string AddDateParameter(DateTime value, bool first = false)
         {

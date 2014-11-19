@@ -40,6 +40,24 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Table Table_Stations;
         
         /// <summary>
+        /// DropDownList_ManualHour_S1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_ManualHour_S1;
+        
+        /// <summary>
+        /// Button_AddHour_S1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_AddHour_S1;
+        
+        /// <summary>
         /// Label_SelectedHour control.
         /// </summary>
         /// <remarks>
@@ -65,5 +83,14 @@ namespace WineMan.Transactions {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button_Select;
+        
+        /// <summary>
+        /// Button_Cancel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_Cancel;
     }
 }
