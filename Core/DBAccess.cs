@@ -50,7 +50,7 @@ namespace WineMan.Core
                                 bool firstRow2 = true;
                                 for (int colomnNumber = 0; colomnNumber < reader.FieldCount; colomnNumber++)
                                 {
-                                    string colName = reader.GetName(colomnNumber);
+                                    //string colName = reader.GetName(colomnNumber);
                                     if (!firstRow2)
                                         retString += ",";
                                     firstRow2 = false;
@@ -246,6 +246,7 @@ namespace WineMan.Core
                    }
                    catch { ret = false; }
                }
+               con.Close();
             }
 
             return ret;

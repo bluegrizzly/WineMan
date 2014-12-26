@@ -7,22 +7,29 @@
        Customers
     </h2>
 
+        <asp:Panel ID="Panel1" runat="server" ScrollBars="Horizontal" Width="100%">
     <table id="jQGridDemo">
     </table>
     <div id="jQGridDemoPager">
     </div>
+        </asp:Panel>
     <script type="text/javascript">
         jQuery("#jQGridDemo").jqGrid({
             url: '<%=ResolveUrl("~/Customers/CustomersHandler.ashx") %>',
             datatype: "json",
-            colNames: ['Id', 'First Name', 'Last Name', 'Address', 'Tel', 'Email'],
+            colNames: ['Id', 'First Name', 'Last Name', 'Address', 'City', 'Province', 'Postal Code', 'Email', 'Tel', 'Tel Bur', 'Fax'],
             colModel: [
                         { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int'},
-   		                { name: 'first_name', index: 'first_name', width: 150, stype: 'text', sortable: true, editable: true },
-   		                { name: 'last_name', index: 'last_name', width: 150, sortable: true, editable: true },
-                        { name: 'address', index: 'address', width: 300, editable: true },
+   		                { name: 'first_name', index: 'first_name', width: 120, stype: 'text', sortable: true, editable: true },
+   		                { name: 'last_name', index: 'last_name', width: 120, sortable: true, editable: true },
+                        { name: 'address', index: 'address', width: 100, editable: true },
+                        { name: 'city', index: 'city', width: 100, editable: true },
+                        { name: 'province', index: 'province', width: 50, editable: true },
+                        { name: 'postal_code', index: 'postal_code', width: 50, editable: true },
+                        { name: 'email', index: 'email', width: 100, editable: true },
                         { name: 'telephone', index: 'telephone', width: 100, editable: true },
-                        { name: 'email', index: 'email', width: 100, editable: true }
+                        { name: 'telephone_bur', index: 'telephone_bur', width: 100, editable: true },
+                        { name: 'telephone_fax', index: 'telephone_fax', width: 100, editable: true },
         ],
             rowNum: 10,
             height: 250,
@@ -57,6 +64,7 @@
                        closeOnEscape: true,//Closes the popup on pressing escape key
                        reloadAfterSubmit: true,
                        drag: true,
+                       width:400,
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
 
@@ -78,6 +86,7 @@
                    },
                    {//ADD portion
                        closeAfterAdd: true,//Closes the add window after add
+                       width: 400,
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
                                $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add

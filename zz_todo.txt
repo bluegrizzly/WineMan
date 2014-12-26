@@ -36,7 +36,8 @@ TODO:
     - Voir batch termine ou pas [DONE]
 - Page Work to complete
     - Voir les transaction par intervale de temps 
-    - Ajouter champs . client tel etc
+        - implement TransactionStep.GetRecords  avec le dateEnd
+    - Ajouter champs . client tel etc [DONE]
     - montrer les transactions qui n'ont pas encore ete commence
 - Ajoute d'une page Transactions to complete (closing the day)
 - page rendez vous
@@ -57,3 +58,31 @@ TODO:
     - rendez vous
 
 - lock db
+
+- add a language to customer and use it for the tx print
+- Filter rendezvous: no weekend, not before the date
+
+Programming tasks
+-----------------
+- Work to complete Set to Done is working but do not refresh
+- Add transacvtion bug with "" of category
+- add a red button when the tx is dirty
+
+Questions
+============
+- Est ce que le la levure commmence la date de la transaction ou le lendemain?
+- la localisation d'une transaction est setté ou?'
+- client avec adresse au etats unis? ou autre pays?
+- la feuille de transaction faut elle etre bilingue?
+- quel est la liste des symbole et les couleurs?
+- feuille de transaction bas gauche : c'est vide?'
+
+TEST:
+--------------------------
+Test1
+- edit a transaction
+- pick a rendez vous
+    - cancel
+    - select
+- Modify
+  

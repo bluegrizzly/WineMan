@@ -14,6 +14,7 @@ namespace WineMan.Transactions
     {
         const string dbName = "transactions";
         HandlerHelper m_Helper = new HandlerHelper();
+        TransactionsHelper m_TransactionHelper = new TransactionsHelper();
         public void ProcessRequest(HttpContext context)
         {
             string operation = context.Request.QueryString["operation"];
@@ -30,15 +31,18 @@ namespace WineMan.Transactions
             }
             else
             {
-                string showCompleted = context.Request.QueryString["showcompleted"];
+                bool showCompleted = context.Request.QueryString["showcompleted"] == "true";
 
-                if (showCompleted == "true")
-                    DBAccess.GetJSONRecords(context, dbName);
-                else
-                {
-                    string sqlCmd = "SELECT * FROM " + dbName + " WHERE done=0";
-                    DBAccess.GetJSONRecords(context, dbName, sqlCmd);
-                }
+                List<Transaction> allTx = Transaction.GetAllRecords(showCompleted);
+                m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
+
+                //if (showCompleted )
+                //    DBAccess.GetJSONRecords(context, dbName);
+                //else
+                //{
+                //    string sqlCmd = "SELECT * FROM " + dbName + " WHERE done=0";
+                //    DBAccess.GetJSONRecords(context, dbName, sqlCmd);
+                //}
             }
         }
 

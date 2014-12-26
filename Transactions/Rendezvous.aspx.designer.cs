@@ -31,6 +31,15 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Label Label_Date;
         
         /// <summary>
+        /// Panel2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel2;
+        
+        /// <summary>
         /// Table_Stations control.
         /// </summary>
         /// <remarks>
@@ -40,13 +49,22 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Table Table_Stations;
         
         /// <summary>
-        /// DropDownList_ManualHour_S1 control.
+        /// DropDownList_ManualHour control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList_ManualHour_S1;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_ManualHour;
+        
+        /// <summary>
+        /// DropDownList_ManualMin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_ManualMin;
         
         /// <summary>
         /// Button_AddHour_S1 control.
@@ -83,6 +101,15 @@ namespace WineMan.Transactions {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button_Select;
+        
+        /// <summary>
+        /// Button_Print control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_Print;
         
         /// <summary>
         /// Button_Cancel control.

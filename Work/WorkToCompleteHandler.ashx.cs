@@ -23,16 +23,13 @@ namespace WineMan.Work
 
             string operation = context.Request.QueryString["operation"];
 
-            if (operation != null)
+            if (operation != null && operation == "settodone")
             {
-                if (operation == "settodone")
-                {
-                    string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
-                    List<string> data = JsonConvert.DeserializeObject<List<string>>(jsonString);
-                    m_TransactionHelper.SetTransactionStepToDone(data);
-                }
+                string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
+                List<string> data = JsonConvert.DeserializeObject<List<string>>(jsonString);
+                m_TransactionHelper.SetTransactionStepToDone(data);
             }
-
+            
             {
                 NameValueCollection forms = context.Request.Form;
                 string strOperation = forms.Get("oper");
@@ -43,8 +40,17 @@ namespace WineMan.Work
                     DateTime date = DateTime.Now;
                     DateTime.TryParse(dateStr, out date);
 
+                    string dateStrEnd = context.Request.QueryString["dateend"];
+                    DateTime dateEnd;
+                    if (!DateTime.TryParse(dateStrEnd, out dateEnd))
+                        dateEnd = date;
+                    dateEnd = dateEnd.AddDays(1);
+
+                    bool showlate = context.Request.QueryString["showlate"] == "true"?true : false;
+                    EShow showdone = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
+
                     // Get all transaction not completed.
-                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date);
+                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, showlate, showdone);
                     m_TransactionHelper.GetTransactionStepJSONRecords(context, steps);
                 }
             }

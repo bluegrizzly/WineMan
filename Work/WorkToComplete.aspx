@@ -7,15 +7,39 @@
         .auto-style2 {
             width: 269px;
         }
+        #setToDone {
+            width: 135px;
+        }
+        #selectAll {
+            width: 135px;
+        }
+        #clear {
+            width: 135px;
+        }
+        .auto-style3 {
+            width: 269px;
+            height: 129px;
+        }
+        #print {
+            width: 135px;
+        }
     </style>
 
   <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
   <script>
       $(function () {
-          $("#datepicker").datepicker({ dateFormat: "yy-mm-dd" });
+          $("#<%= txtDate.ClientID %>").datepicker({
+              autoclose: true,
+              dateFormat: "yy-mm-dd"
+          });
       });
-
+      $(function () {
+          $("#<%= txtDateEnd.ClientID %>").datepicker({
+              autoclose: true,
+              dateFormat: "yy-mm-dd"
+          });
+      });
   </script>
 
 </asp:Content>
@@ -23,28 +47,41 @@
 
         <h2>Work To Complete</h2>
         <p>
-            <table class="auto-style1">
+            <table class="auto-style1" cellspacing="3">
                 <tr>
-                    <td class="auto-style2">
-                        <asp:Calendar ID="Calendar_Date" runat="server" OnSelectionChanged="Calendar_Date_SelectionChanged" >
-                                        <SelectedDayStyle BackColor="#0099FF" />
-                                        <TodayDayStyle BackColor="#999999" />
-                                        <WeekendDayStyle BackColor="#EEEEEE" />
-                        </asp:Calendar>
-                        <asp:TextBox ID="txtDate" runat="server"></asp:TextBox>
-                        <p>Date: <input type="text" id="datepicker" value="<%= this.DateValue %>" ></p>
+                    <td class="auto-style3" valign="middle">
                         <fieldset>
-                            <input id="setToDone" type="button" value="Set to Done"/><br />
-                            <input id="selectAll" type="button" value="Select All"/><br />
-                            <input id="clear" type="button" value="Clear Selection"/>
+                            Date Start:
+                            <asp:TextBox ID="txtDate" runat="server" AutoPostBack="True"></asp:TextBox>
+                            <br />
+                            <br />Date End :
+                            <asp:TextBox ID="txtDateEnd" runat="server" AutoPostBack="True"></asp:TextBox>
                         </fieldset>
-                    </td>
-                    <td>
-                        <table id="jQGridDemo">
-                        </table>
+                        </td>
+                    <td rowspan="2" valign="top" align="center">
+                        <asp:Panel id="pnlContents" runat = "server">
+                            <asp:Label ID="Label_SelectedDate" runat="server" Font-Names="Arial Rounded MT Bold" Font-Size="Large" Text="99 oct 2014"></asp:Label>
+                            <table id="jQGridDemo"></table>
+                        </asp:Panel>
                         <div id="jQGridDemoPager">
                         </div>
                     </td>
+                </tr>
+                <tr>
+                    <td class="auto-style2" align="center" valign="top">
+                        <fieldset>
+                            <asp:CheckBox ID="CheckBox_ShowLate" runat="server" Text="Show late work" AutoPostBack="True" Checked="True" />
+                            <br />
+                            <asp:CheckBox ID="CheckBox_ShowDone" runat="server" Text="Show work done" AutoPostBack="True" />
+                            <br />
+                        </fieldset>
+                        <fieldset>
+                            <input id="setToDone" type="button" value="Set to Done"/><br />
+                            <input id="selectAll" type="button" value="Select All"/><br />
+                            <input id="clear" type="button" value="Clear Selection"/><br /><br />
+                            <asp:Button ID="Button_Print" runat="server" OnClick="Button_Print_Click" Text="Print" Width="134px" />
+&nbsp;<br />
+                        </fieldset></td>
                 </tr>
             </table>
         </p>
@@ -53,15 +90,29 @@
         var grid = $("#jQGridDemo");
 
         grid.jqGrid({
-            url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' + document.getElementById('<%= txtDate.ClientID %>').value,
-            //url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' + (<%= this.DateValue %>).value,
+            url: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx?date=") %>' +
+                document.getElementById('<%= txtDate.ClientID %>').value +
+                "&dateend=" + document.getElementById('<%= txtDateEnd.ClientID %>').value +
+                "&showlate=" + document.getElementById('<%= CheckBox_ShowLate.ClientID %>').checked +
+                "&showdone=" + document.getElementById('<%= CheckBox_ShowDone.ClientID %>').checked,
             datatype: "json",
-            colNames: ['id', 'TxId', 'Step', 'Done'],
+            colNames: ['id', 'TxId', 'Date', 'Step', 'Brand', 'Type', 'Customer', 'Tel', 'Done'],
             colModel: [
-                        { name: 'id', index: 'id', width: 10, stype: 'text', sortable: true, sorttype: 'int', hidden: true},
-                        { name: 'txid', index: 'txid', width: 75, stype: 'text', sortable: true, sorttype: 'int' },
-   		                { name: 'step', index: 'step', width: 180, sortable: true },
-   		                { name: 'done', index: 'done', width: 150, sortable: true, align: 'center' }
+                        { name: 'id', index: 'id', width: 10, stype: 'text', sortable: true, sorttype: 'int', hidden: true },
+                        { name: 'txid', index: 'txid', width: 40, stype: 'text', sortable: true, sorttype: 'int' },
+                        { name: 'date', index: 'date', width: 80, stype: 'text', sortable: true },
+   		                { name: 'step', index: 'step', width: 70, sortable: true },
+   		                { name: 'brand', index: 'brand', width: 80, sortable: true },
+   		                { name: 'type', index: 'type', width: 80, sortable: true },
+   		                { name: 'customer', index: 'customer', width: 140, sortable: true },
+   		                { name: 'tel', index: 'tel', width: 70, sortable: true },
+                        {
+                            name: 'done', width: 50, index: 'done',
+                            align: 'center',
+                            editable: true,
+                            edittype: 'checkbox', editoptions: { value: "1:0", defaultValue: "1" },
+                            formatter: "checkbox", formatoptions: { disabled: true }
+                        }
             ],
             rowNum: 10,
             multiselect: true,
@@ -75,9 +126,27 @@
 //            rownumbers: true,
             gridview: true,
             sortorder: 'desc',
-            caption: "Transactions Steps to complete",
+            caption: "Transactions to complete",
             editurl: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx") %>'
         });
+
+        $("#print").click(function () {
+            PrintPanel();
+        });
+
+        function PrintPanel() {
+            var panel = document.getElementById("<%=pnlContents.ClientID %>");
+             var printWindow = window.open('', '', 'height=400,width=1200');
+             printWindow.document.write('<html><head><title>DIV Contents</title>');
+             printWindow.document.write('</head><body >');
+             printWindow.document.write(panel.innerHTML);
+             printWindow.document.write('</body></html>');
+             printWindow.document.close();
+             setTimeout(function () {
+                 printWindow.print();
+             }, 500);
+             return false;
+         }
 
         $("#selectAll").click(function () {
             grid.jqGrid('resetSelection');
@@ -90,11 +159,6 @@
             grid.jqGrid('resetSelection');
         });
         
-        $("#datepicker").change(function() {
-            $("#jQGridDemo").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid');
-            window.grid.trigger('reloadGrid');
-        });
-
         $("#setToDone").click(function () {
             var ids = grid.jqGrid('getGridParam', 'selarrrow');
             if (ids.length > 0)
@@ -105,7 +169,7 @@
                     var name = grid.jqGrid('getCell', ids[i], 'id');
                     names.push(name);
                 }
-                //alert ("Names: " + names.join(", ") + "; ids: " + ids.join(", "));
+                alert ("Names: " + names.join(", ") + "; ids: " + ids.join(", "));
                 $("#names").html(names.join(", "));
                 var jsonData = JSON.stringify(names);
                 $.ajax({

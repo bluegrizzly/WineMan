@@ -39,18 +39,19 @@
                 jQuery("#jQGridDemo").jqGrid({
                     url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx?showcompleted=") %>' + document.getElementById('<%= ShowCompletedCheckBox.ClientID%>').checked,
                     datatype: "json",
-                    colNames: ['ID', 'Client ID', 'Brand', 'Type', 'Category', 'Creation Date', 'Bottling Date', 'Station', 'Done'],
+                    colNames: ['ID', 'Customer', 'Brand', 'Type', 'Category', 'Creation Date', 'Bottling Date', 'Station', 'Done'],
                     colModel: [
-                                { name: 'id', index: 'id', width: 30, stype: 'text' },
-   		                        { name: 'client_id', index: 'client_id', width: 50, stype: 'text', sortable: true, editable: true, sorttype: 'int' },
-   		                        { name: 'wine_brand_id', index: 'wine_brand_id', width: 40, stype: 'text', sortable: true, editable: true },
-   		                        { name: 'wine_type_id', index: 'wine_type_id', width: 40, stype: 'text', sortable: true, editable: true },
-   		                        { name: 'wine_category_id', index: 'wine_category_id', width: 50, stype: 'text', sortable: true, editable: true},
-   		                        { name: 'date_creation', index: 'date_creation', width: 160, sortable: true, editable: true },
-                                { name: 'date_bottling', index: 'date_bottling', width: 160, sortable: true, editable: true },
-                                { name: 'bottling_station', index: 'bottling_station', width: 40, sortable: true, editable: true, align: 'center' },
+                                { name: 'id', index: 'id', width: 50, stype: 'text', sortable: true, sorttype: 'int'},
+   		                        { name: 'client_id', index: 'client_id', width: 100, sortable: true },
+   		                        { name: 'wine_brand_id', index: 'wine_brand_id', width: 70, stype: 'text', sortable: true },
+                                { name: 'wine_type_id', index: 'wine_type_id', width: 70, stype: 'text', sortable: true},
+                                { name: 'wine_category_id', index: 'wine_category_id', width: 70, stype: 'text', sortable: true},
+   		                        { name: 'date_creation', index: 'date_creation', width: 130, stype: 'text', sortable: true },
+                                { name: 'date_bottling', index: 'date_bottling', width: 130, stype: 'text', sortable: true },
+                                { name: 'bottling_station', index: 'bottling_station', width: 40, sortable: true, align: 'center' },
                                 {
                                     name: 'done', width: 30, index: 'done',
+                                    align: 'center',
                                     editable: true,
                                     edittype: 'checkbox', editoptions: { value: "1:0", defaultValue: "1" },
                                     formatter: "checkbox", formatoptions: { disabled: true }
@@ -65,7 +66,7 @@
                     sortname: 'id',
                     viewrecords: true,
                     sortorder: 'desc',
-                    caption: "Transactions Details",
+                    caption: "Transactions",
                     editurl: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx") %>',
 
                     onSelectRow: function (ids) {

@@ -7,72 +7,72 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WineMan.Work {
+namespace WineMan.Transactions {
     
     
-    public partial class WorkToComplete {
+    public partial class AddTransaction_Print {
         
         /// <summary>
-        /// txtDate control.
+        /// form1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate;
+        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// txtDateEnd control.
+        /// ScriptManager1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDateEnd;
+        protected global::System.Web.UI.ScriptManager ScriptManager1;
         
         /// <summary>
-        /// pnlContents control.
+        /// Button1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlContents;
+        protected global::System.Web.UI.WebControls.Button Button1;
         
         /// <summary>
-        /// Label_SelectedDate control.
+        /// Button2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_SelectedDate;
+        protected global::System.Web.UI.WebControls.Button Button2;
         
         /// <summary>
-        /// CheckBox_ShowLate control.
+        /// Label_Tx control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox CheckBox_ShowLate;
+        protected global::System.Web.UI.WebControls.Label Label_Tx;
         
         /// <summary>
-        /// CheckBox_ShowDone control.
+        /// ReportViewer1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox CheckBox_ShowDone;
+        protected global::Microsoft.Reporting.WebForms.ReportViewer ReportViewer1;
         
         /// <summary>
-        /// Button_Print control.
+        /// ObjectDataSource1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button_Print;
+        protected global::System.Web.UI.WebControls.ObjectDataSource ObjectDataSource1;
     }
 }

@@ -54,6 +54,7 @@
                          </asp:MenuItem>
                         <asp:MenuItem Text="Work Start" >
                             <asp:MenuItem NavigateUrl="~/Transactions/RendezVous.aspx" Text="Bottling Stations" />
+                            <asp:MenuItem NavigateUrl="~/Work/WorkToComplete.aspx" Text="Work To Do" />
                          </asp:MenuItem>
                         <asp:MenuItem Text="Work End" >
                             <asp:MenuItem NavigateUrl="~/Work/WorkToComplete.aspx" Text="Transactions To complete" />

@@ -25,7 +25,7 @@ namespace WineMan
 
                 string idToDelete = forms.Get("EmpId").ToString();
                 if (DBAccess.DeleteRecord(context, dbName, idToDelete))
-                    strOut = "Customer record successfully deleted";
+                    strOut = "Record successfully deleted";
                 else
                     strOut = "Error in removing record";
                 context.Response.Write(strOut);
@@ -34,7 +34,7 @@ namespace WineMan
             {
                 string strOut = string.Empty;
                 if (DBAccess.AddRecord(context, dbName, forms))
-                    strOut = "Customer record successfully added";
+                    strOut = "Record successfully added";
                 else
                     strOut = "Error in adding record";
                 context.Response.Write(strOut);
@@ -44,7 +44,7 @@ namespace WineMan
                 string idToEdit = forms.Get("EmpId").ToString();
                 string strOut = string.Empty;
                 if (DBAccess.EditRecord(context, dbName, forms, idToEdit))
-                    strOut = "Customer record successfully updated";
+                    strOut = "Record successfully updated";
                 else
                     strOut = "Error in updating record";
                 context.Response.Write(strOut);

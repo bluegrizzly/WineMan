@@ -207,7 +207,7 @@
                     <tr>
                         <td align="center" valign="middle"><strong>Hour</strong>:
                             <asp:Label ID="Label_BottlingHour" runat="server" Text="Label" ForeColor="Black"></asp:Label>
-                            h</td>
+                            </td>
                     </tr>
                     <tr>
                         <td align="center" valign="middle"><strong>Station</strong>:
@@ -216,7 +216,7 @@
                     </tr>
                     <tr>
                         <td valign="middle" align="center">
-                            <asp:Button ID="Button_SelectDate" runat="server" Height="23px" OnClick="Button_SelectDate_Click" Text="Pick an appointement" />
+                            <asp:Button ID="Button_SelectDate" runat="server" Height="23px" OnClick="Button_SelectDate_Click" Text="Pick a Rendez-vous" Width="148px" />
                         </td>
                     </tr>
                 </table>
@@ -242,6 +242,7 @@
                                 <asp:Label ID="Label_TransactionID" runat="server" DefaultValue="0" Name="TxID" Text="Label"></asp:Label>
                                 <br />
                                 <asp:Button ID="Button_Commit" runat="server" CausesValidation="False" OnClick="Button_Commit_Click" Text="Create" UseSubmitBehavior="False" />
+                                <asp:Button ID="Button_Print" runat="server" OnClick="Button_Print_Click" Text="Print" />
                             </p>
                         </td>
                     </tr>

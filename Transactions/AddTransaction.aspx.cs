@@ -33,7 +33,7 @@ namespace WineMan.Transactions
         {
             if (IsPostBack)
             {
-                ShowDates();
+                UpdateUI();
                 return;
             }
             else 
@@ -47,7 +47,8 @@ namespace WineMan.Transactions
 
                 if (Request.QueryString["txid"] != null)
                 {
-                    bool parsed = Int32.TryParse(Request.QueryString["txid"], out m_TxID);
+                    string txidstr = Request.QueryString["txid"];
+                    bool parsed = Int32.TryParse(txidstr, out m_TxID);
                     System.Diagnostics.Debug.Assert(parsed);
                 }
             }
@@ -62,10 +63,9 @@ namespace WineMan.Transactions
                 // we saved all data so now we need to restore it
                 // but before get back the result of the rendezvous
                 RestoreData();
-                ShowDates();
+                UpdateUI();
             }
-
-            if (m_TxID >= 0)
+            else if (m_TxID >= 0)
             {
                 EditRecord();
             }
@@ -83,6 +83,7 @@ namespace WineMan.Transactions
             CheckBox_4.BackColor = CheckBox_4.Checked ? System.Drawing.Color.Green : System.Drawing.Color.Red;
 
             Button_Commit.Enabled = (CheckBox_1.Checked && CheckBox_2.Checked && CheckBox_3.Checked);
+            Button_Print.Enabled = (Label_TransactionID.Text != "-");
         }
         private void SaveData()
         {
@@ -101,11 +102,11 @@ namespace WineMan.Transactions
             if (Session["customer_id"] != null)
             {
                 Customer customer = Customer.GetRecordByID((string)Session["customer_id"]);
-                if (customer.ID >= 0)
+                if (customer.id >= 0)
                 {
-                    Label_CustomerID.Text = customer.ID.ToString();
-                    Label_FirstName.Text = customer.FirstName;
-                    Label_LastName.Text = customer.LastName;
+                    Label_CustomerID.Text = customer.id.ToString();
+                    Label_FirstName.Text = customer.first_name;
+                    Label_LastName.Text = customer.last_name;
                 }
             }
             if (Session["wine_brand"] != null)
@@ -168,11 +169,11 @@ namespace WineMan.Transactions
             }
 
             Customer customer = Customer.GetRecordByName(firstName, lastName);
-            if (customer.ID >= 0)
+            if (customer.id >= 0)
             {
-                Label_CustomerID.Text = customer.ID.ToString();
-                Label_FirstName.Text = customer.FirstName;
-                Label_LastName.Text = customer.LastName;
+                Label_CustomerID.Text = customer.id.ToString();
+                Label_FirstName.Text = customer.first_name;
+                Label_LastName.Text = customer.last_name;
             }
             else
             {
@@ -350,17 +351,71 @@ namespace WineMan.Transactions
 
         protected void Button_Commit_Click(object sender, EventArgs e)
         {
-            if (Label_TransactionID.Text != "-")
+            // CREATE RECORD
+            if (Label_TransactionID.Text == "-")
             {
-                Utils.MessageBox(this, "Not yet implemented.");
-                return;
+                Transaction tx = new Transaction();
+                FillTransactionWithScreenData(tx);
+
+                // Create the record
+                if (!Transaction.CreateRecord(tx))
+                {
+                    Utils.MessageBox(this, "Error: Failed to create a new transaction.");
+                    return;
+                }
+                if (!TransactionsHelper.CreateStepsRecord(tx))
+                {
+                    Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
+                    return;
+                }
+
+                // Update UI.
+                m_TxID = tx.id;
+                UpdateUI();
             }
+            // MODIFY RECORD
+            else 
+            {
+                //Utils.MessageBox(this, "Not yet implemented.");
+                //return;
+                Transaction tx = Transaction.GetRecord(m_TxID);
+                bool needToRecreateSteps = CheckTxDifferenceWithScreen(tx);
+                FillTransactionWithScreenData(tx);
 
-            Transaction tx = new Transaction();
+                // Create the record
+                if (!tx.ModifyRecord())
+                {
+                    Utils.MessageBox(this, "Error: Failed to modify a transaction.");
+                    return;
+                }
 
-            // Create a new transaction.
-            ////////////////////////////
+                if (needToRecreateSteps)
+                {
+                    // Delete all steps and recreate them.
+                    if (!TransactionStep.DeleteTxRecords(tx.id))
+                    {
+                        Utils.MessageBox(this, "Error: Failed to delete transaction steps.");
+                        return;
+                    }
+
+                    if (!TransactionsHelper.CreateStepsRecord(tx))
+                    {
+                        Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
+                        return;
+                    }
+                }
+
+                // Update UI.
+                m_TxID = tx.id;
+                UpdateUI();
+            }
+        }
+
+        protected void FillTransactionWithScreenData(Transaction tx)
+        {
             int numValue;
+
+            // Update the transaction with the values on the screen
             
             // client
             bool parsed = Int32.TryParse(Label_CustomerID.Text, out numValue);
@@ -405,11 +460,10 @@ namespace WineMan.Transactions
             // Bottling
             if (Label_BottlingDate.Text != "")
             {
-                parsed = Int32.TryParse(Label_BottlingHour.Text, out numValue);
-                System.Diagnostics.Debug.Assert(parsed);
                 tx.date_bottling = Calendar_RDV.SelectedDate;
-                tx.date_bottling = tx.date_bottling.AddHours(numValue);
-                
+                tx.date_bottling = tx.date_bottling.AddHours(DateHelper.GetRendezVousHour(Label_BottlingHour.Text));
+                tx.date_bottling = tx.date_bottling.AddHours(DateHelper.GetRendezVousMin(Label_BottlingHour.Text));
+
                 parsed = Int32.TryParse(Label_BottlingStation.Text, out numValue);
                 System.Diagnostics.Debug.Assert(parsed);
                 tx.bottling_station = numValue;
@@ -421,22 +475,41 @@ namespace WineMan.Transactions
             }
 
             tx.date_creation = DateTime.Now;
+        }
 
-            // Create the record
-            if (!Transaction.CreateRecord(tx))
+        protected bool CheckTxDifferenceWithScreen(Transaction tx)
+        {
+            if (DropDownList_Category.SelectedValue != tx.wine_category_id.ToString())
             {
-                Utils.MessageBox(this, "Error: Failed to create a new transaction.");
-                return;
+                // todo : check if the dates are different
+                return true;
             }
-            if (!TransactionsHelper.CreateStepsRecord(tx))
-            {
-                Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
-                return;
-            }
+            return false;
+        }
 
-            // Update UI.
-            Label_TransactionID.Text = tx.id.ToString();
-            Button_Commit.Text = "Modify";
+        private void UpdateUI()
+        {
+            ShowDates();
+
+            if (m_TxID >= 0)
+            {
+                Label_TransactionID.Text = m_TxID.ToString();
+                Button_Commit.Text = "Modify";
+                Button_Print.Enabled = true;
+            }
+            else if (Label_TransactionID.Text != "-")
+            {
+                bool parsed = Int32.TryParse(Label_TransactionID.Text, out m_TxID);
+                System.Diagnostics.Debug.Assert(parsed);
+                
+                Button_Commit.Text = "Modify";
+                Button_Print.Enabled = true;
+            }
+            else
+            {
+                Button_Commit.Text = "Create";
+                Button_Print.Enabled = false;
+            }
         }
 
         private void ShowDates()
@@ -498,8 +571,8 @@ namespace WineMan.Transactions
             Label_TransactionID.Text = tx.id.ToString();
             Label_CustomerID.Text = tx.client_id.ToString();
 
-            Label_FirstName.Text = custo.FirstName;
-            Label_LastName.Text = custo.LastName;
+            Label_FirstName.Text = custo.first_name;
+            Label_LastName.Text = custo.last_name;
 
             DropDownList_Brand.SelectedValue = tx.wine_brand_id.ToString();
             FillWineTypes(tx.wine_brand_id);
@@ -508,18 +581,21 @@ namespace WineMan.Transactions
             DropDownList_Category.SelectedValue = tx.wine_category_id.ToString();
             UpdateComboBoxes();
 
-            Label_BottlingHour.Text = tx.date_bottling.ToString("HH", m_Culture);
+            Label_BottlingHour.Text = DateHelper.GetHFormatedDate(tx.date_bottling);
             Label_BottlingStation.Text = tx.bottling_station.ToString();
             DateTime rdv = new DateTime(tx.date_bottling.Year, tx.date_bottling.Month, tx.date_bottling.Day);
             Label_BottlingDate.Text = rdv.ToString("d", m_Culture);
             Calendar_RDV.SelectedDate = rdv;
             Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
 
-            // Update UI
-            Button_Commit.Text = "Modify";
-
-            ShowDates();
+            UpdateUI();
             SaveData();
+        }
+
+        protected void Button_Print_Click(object sender, EventArgs e)
+        {
+            if (Label_TransactionID.Text != "-")
+                Response.Redirect("~/Transactions/AddTransaction_Print.aspx?Tx=" + Label_TransactionID.Text);
         }
     }
 }

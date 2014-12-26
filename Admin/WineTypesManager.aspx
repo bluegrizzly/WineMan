@@ -67,6 +67,7 @@
                         },
                         {
                             name: 'active', width: 50, index: 'active',
+                            align: 'center',
                             editable: true,
                             edittype: 'checkbox', editoptions: { value: "1:0", defaultValue: "1" },
                             formatter: "checkbox", formatoptions: { disabled: true }

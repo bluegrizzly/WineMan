@@ -51,6 +51,7 @@
       <HintPath>packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -64,8 +65,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -94,6 +95,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -151,6 +153,39 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="DataSets\DataSetTx.xsc">
+      <DependentUpon>DataSetTx.xsd</DependentUpon>
+    </Content>
+    <Content Include="DataSets\DataSetCategory.xsc">
+      <DependentUpon>DataSetCategory.xsd</DependentUpon>
+    </Content>
+    <None Include="DataSets\DataSetCategory.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetCategory.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="DataSets\DataSetCategory.xss">
+      <DependentUpon>DataSetCategory.xsd</DependentUpon>
+    </Content>
+    <Content Include="DataSets\DataSetCustomer.xsc">
+      <DependentUpon>DataSetCustomer.xsd</DependentUpon>
+    </Content>
+    <None Include="DataSets\DataSetCustomer.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetCustomer.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="DataSets\DataSetCustomer.xss">
+      <DependentUpon>DataSetCustomer.xsd</DependentUpon>
+    </Content>
+    <None Include="DataSets\DataSetTx.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetTx.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="DataSets\DataSetTx.xss">
+      <DependentUpon>DataSetTx.xsd</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -187,8 +222,11 @@
     <Content Include="Global.asax" />
     <Content Include="todo.aspx" />
     <Content Include="Transactions\AddTransaction.aspx" />
+    <Content Include="Transactions\AddTransaction_Print.aspx" />
     <Content Include="Transactions\LeftMenu.aspx" />
     <Content Include="Transactions\Rendezvous.aspx" />
+    <Content Include="Transactions\RendezVous_Print.aspx" />
+    <Content Include="Transactions\TransactionPrint.aspx" />
     <Content Include="Transactions\Transactions.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -197,6 +235,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="Work\WorkToComplete_Print.aspx" />
     <Content Include="Work\WorkToComplete.aspx" />
     <Content Include="zz_todo.txt" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
@@ -280,8 +319,12 @@
     <Compile Include="Controllers\TransactionStep.cs" />
     <Compile Include="Controllers\Wine_Category.cs" />
     <Compile Include="Controllers\Wine_Type.cs" />
+    <Compile Include="Core\DateHelper.cs" />
     <Compile Include="Core\HandlerHelper.cs" />
     <Compile Include="Core\DBAccess.cs" />
+    <Compile Include="Core\ReportPrintDocument.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Customers\Customers.aspx.cs">
       <DependentUpon>Customers.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -291,6 +334,21 @@
     </Compile>
     <Compile Include="Customers\CustomersHandler.ashx.cs">
       <DependentUpon>CustomersHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="DataSets\DataSetCategory.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetCategory.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataSets\DataSetCustomer.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetCustomer.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataSets\DataSetTx.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetTx.xsd</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -328,6 +386,13 @@
     <Compile Include="Transactions\AddTransaction.aspx.designer.cs">
       <DependentUpon>AddTransaction.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Transactions\AddTransaction_Print.aspx.cs">
+      <DependentUpon>AddTransaction_Print.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Transactions\AddTransaction_Print.aspx.designer.cs">
+      <DependentUpon>AddTransaction_Print.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Transactions\LeftMenu.aspx.cs">
       <DependentUpon>LeftMenu.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -342,8 +407,22 @@
     <Compile Include="Transactions\Rendezvous.aspx.designer.cs">
       <DependentUpon>Rendezvous.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Transactions\RendezVous_Print.aspx.cs">
+      <DependentUpon>RendezVous_Print.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Transactions\RendezVous_Print.aspx.designer.cs">
+      <DependentUpon>RendezVous_Print.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Transactions\TransactionHandler.ashx.cs">
       <DependentUpon>TransactionHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Transactions\TransactionPrint.aspx.cs">
+      <DependentUpon>TransactionPrint.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Transactions\TransactionPrint.aspx.designer.cs">
+      <DependentUpon>TransactionPrint.aspx</DependentUpon>
     </Compile>
     <Compile Include="Transactions\Transactions.aspx.cs">
       <DependentUpon>Transactions.aspx</DependentUpon>
@@ -353,7 +432,15 @@
       <DependentUpon>Transactions.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\Wine_Brand.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Core\Utils.cs" />
+    <Compile Include="Views\RendezVousGrid.cs" />
+    <Compile Include="Work\WorkToComplete_Print.aspx.cs">
+      <DependentUpon>WorkToComplete_Print.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Work\WorkToComplete_Print.aspx.designer.cs">
+      <DependentUpon>WorkToComplete_Print.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Work\WorkToComplete.aspx.cs">
       <DependentUpon>WorkToComplete.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -388,6 +475,9 @@
     <Content Include="packages.config" />
     <None Include="Properties\PublishProfiles\Debug.pubxml" />
     <None Include="Properties\PublishProfiles\Release.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\Report_Transaction.rdlc" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

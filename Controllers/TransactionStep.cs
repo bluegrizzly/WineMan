@@ -64,7 +64,7 @@ namespace WineMan
             }
         }
 
-        public static List<TransactionStep> GetRecords(DateTime date)
+        public static List<TransactionStep> GetRecords(DateTime date, DateTime dateEnd, EShow showdone)
         {
             List<TransactionStep> txSteps = new List<TransactionStep>();
 
@@ -74,7 +74,15 @@ namespace WineMan
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
                     string dateStr = date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + " %";
-                    using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM "+c_dbName+" WHERE date LIKE '" + dateStr + "'", con))
+                    string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
+                    string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+
+                    if (showdone == EShow.Show_Done)
+                        sqlQuery += " AND Done=1";
+                    else if (showdone == EShow.Show_NotDone)
+                        sqlQuery += " AND Done=0";
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
                         con.Open();
                         MySqlDataReader dr = cmd.ExecuteReader();
@@ -99,6 +107,30 @@ namespace WineMan
             return txSteps;
         }
 
+        public static bool DeleteTxRecords(int txID)
+        {
+            bool ret = false;
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string sqlQuery = "DELETE FROM " + c_dbName + " WHERE transaction_id=" + txID.ToString();
 
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        int result = cmd.ExecuteNonQuery();
+                        ret = true;
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+
+            return ret;
+        }
    }
 }

@@ -7,30 +7,37 @@ namespace WineMan
 {
     public class BaseController 
     {
-        protected static string AddDateParameter(DateTime value, bool first = false)
+        protected static string AddDateParameter(DateTime value, bool first = false, string paramName = "")
         {
-            string retStr;
-            if (first)
-                retStr = "'"; 
-            else
-                retStr = ",'";
-            
-            retStr += value.ToString("s") + "'";
-            return retStr;
+            string res = "";
+            if (!first)
+                res += ",";
+            if (paramName.Length > 0)
+                res += (paramName + "=");
+
+            res += "'" + value.ToString("s") + "'";
+            return res;
         }
-        protected static string AddIntParameter(int value, bool first = false)
+        protected static string AddIntParameter(int value, bool first = false, string paramName="")
         {
-            if (first)
-                return value.ToString();
-            else
-                return "," + value.ToString();
+            string res="";
+            if (!first)
+                res = ",";
+            if (paramName.Length > 0)
+                res += (paramName + "=");
+            res+=value.ToString();
+            return res;
         }
-        protected static string AddStringParameter(string value, bool first = false)
+        protected static string AddStringParameter(string value, bool first = false, string paramName="")
         {
-            if (first)
-                return "'" + value + "'";
-            else
-                return "," + "'" + value + "'";
+            string res = "";
+            if (!first)
+                res = ",";
+            if (paramName.Length > 0)
+                res += (paramName + "=");
+
+            res += "'" + value + "'";
+            return res;
         }
     }
 }

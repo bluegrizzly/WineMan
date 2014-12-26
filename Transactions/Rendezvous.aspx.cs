@@ -7,15 +7,47 @@ using System.Web.UI.WebControls;
 
 namespace WineMan.Transactions
 {
+    public class RendezVousTableRow
+    {
+        public TableRow Row;
+        public Dictionary<int, RendezVousData> RdvData = new Dictionary<int, RendezVousData>();  // The key is the bottling station ID
+
+        static public int GetRowKey(int hour, int minutes)
+        {
+            return hour *100+minutes;
+        }
+        static public int GetHourFromKey(int key)
+        {
+            return key / 100;
+        }
+        static public int GetMinFromKey(int key)
+        {
+            return key % 100;
+        }
+    }
+
+    public class RendezVousData
+    {
+        public int Station;
+        public int Hour;
+        public int Min;
+        public RadioButton RadioButton;
+        public int GetRowKey()
+        {
+            return RendezVousTableRow.GetRowKey(Hour,Min);
+        }
+    }
+
     public partial class Rendezvous : System.Web.UI.Page
     {
         Settings m_Settings = new Settings();
-        List< List<RadioButton> > m_RadioButtons = new List< List<RadioButton> >();
         private int m_Station=-1; //zero based
         private int m_Hour = -1;
         private string m_Name;
+        private bool m_FromTx = false;
         List<Transaction> m_Transactions;
         List<Holiday> m_Holidays;
+        public Dictionary<int, RendezVousTableRow> m_TableRows = new Dictionary<int, RendezVousTableRow>();  // The key is the HOUR*100+MIN
         private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
 
         const int c_NbColumnPerStation = 6;
@@ -23,9 +55,11 @@ namespace WineMan.Transactions
         {
             if (!IsPostBack)
             {
-                // if the page is not comming from the add transaction, we need to clear the session data 
+                // if the page is not coming from the add transaction, we need to clear the session data 
                 // this means that we are not required to pass data to the add transaction page.
-                if (Request.QueryString["FromAddTx"] != "true")
+                if (Request.QueryString["FromAddTx"] == "true")
+                    m_FromTx = true;
+                else
                     Session.Clear();
 
                 if (Request.UrlReferrer != null)
@@ -43,9 +77,15 @@ namespace WineMan.Transactions
 
             if (Session["rendezvous_hour"] != null)
             {
-                string aa = (string)Session["rendezvous_hour"];
-                bool parsed = Int32.TryParse((string)Session["rendezvous_hour"], out m_Hour);
-                System.Diagnostics.Debug.Assert(parsed);
+                string time = (string)Session["rendezvous_hour"];
+
+                if (time.Contains("h"))
+                    m_Hour = RendezVousTableRow.GetRowKey(DateHelper.GetRendezVousHour(time), DateHelper.GetRendezVousMin(time));
+                else
+                {
+                    bool parsed = Int32.TryParse(time, out m_Hour);
+                    System.Diagnostics.Debug.Assert(parsed);
+                }
             }
 
             if (Session["rendezvous_station"] != null)
@@ -54,51 +94,87 @@ namespace WineMan.Transactions
                 System.Diagnostics.Debug.Assert(parsed);
             }
 
-            // Populate all radio buttons
-            for (int j = 0; j < m_Settings.NbStations; ++j)
+            // New row to add (from Add button)
+            if (Request.QueryString["NewHourRow"] != null)
             {
-                List<RadioButton> row = new List<RadioButton>();
-                m_RadioButtons.Add(row);
-                for (int i = m_Settings.MinStationHour; i < m_Settings.MaxStationHour; ++i)
-                {
-                    RadioButton radioButton = new RadioButton();
-                    radioButton.GroupName = "spot";
-                    //radioButton.CheckedChanged += new EventHandler(this.RadioButton_CheckedChanged);
-                    radioButton.PreRender += new EventHandler(this.RadioButton_PreRender);
-                    radioButton.AutoPostBack = true;
-                    m_RadioButtons[j].Add(radioButton);
+                int hourKey =0;
+                bool parsed = Int32.TryParse((string)Request.QueryString["NewHourRow"], out hourKey);
+                System.Diagnostics.Debug.Assert(parsed);
+                int hour = RendezVousTableRow.GetHourFromKey(hourKey); ;
+                int min = RendezVousTableRow.GetMinFromKey(hourKey); ;
+                m_Hour = hourKey;
+                m_Station = 0;
+                AddTableRow(hour, min);
+            }
+            SetupAddButtonUrl();
 
-                    if (m_Hour == i && m_Station == j)
-                    {
-                        // Need to select the line that was passed from the add transaction
-                        radioButton.Checked = true;
-                    }
+            // Populate all data
+            for (int j = m_Settings.MinStationHour; j < m_Settings.MaxStationHour; ++j)
+            {
+                int nbInTheHour = 60 / m_Settings.hour_intervale;
+                for (int k=0; k<nbInTheHour; ++k)
+                {
+                    int hour = j;
+                    int min = k * 60/(k+1);
+                    AddTableRow(hour, min);
                 }
             }
-
+            
             Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
 
             CreateTable(Calendar_RDV.SelectedDate);
         }
 
+        protected void AddTableRow(int hour, int min)
+        {
+            RendezVousTableRow row = new RendezVousTableRow();
+            row.Row = new TableRow();
+
+            m_TableRows.Add(RendezVousTableRow.GetRowKey(hour, min), row);
+
+            for (int station = 0; station < m_Settings.NbStations; ++station)
+            {
+                RendezVousData data = new RendezVousData();
+                data.Hour = hour;
+                data.Min = min;
+                data.Station = station;
+                data.RadioButton = new RadioButton();
+                data.RadioButton.GroupName = "spot";
+                data.RadioButton.PreRender += new EventHandler(this.RadioButton_PreRender);
+                data.RadioButton.AutoPostBack = true;
+                if (m_Hour == RendezVousTableRow.GetRowKey(hour, min) && m_Station == station)
+                {
+                    // Need to select the line that was passed from the add transaction
+                    data.RadioButton.Checked = true;
+                }
+
+                row.RdvData.Add(station, data);
+            }
+        }
+
         protected void Page_LoadComplete(object sender, EventArgs e)
         {
             Button_Select.Visible = (Request.QueryString["FromAddTx"] == "true");
+            Button_Print.Visible = (Request.QueryString["FromAddTx"] != "true");
+            Button_Cancel.Visible = (Request.QueryString["FromAddTx"] == "true");
 
             // Get all transactions for this day
             m_Transactions = Transaction.GetRecords(Calendar_RDV.SelectedDate);
             m_Holidays = Holiday.GetAllRecords();
 
-            // Populate the rendez-vous
-            for (int i = m_Settings.MinStationHour; i < m_Settings.MaxStationHour; ++i)
+            foreach (KeyValuePair<int, RendezVousTableRow> row in m_TableRows)
             {
-                for (int j = 0; j < m_Settings.NbStations; ++j)
+                foreach (KeyValuePair<int, RendezVousData> rdvData in row.Value.RdvData)
                 {
-                    TableCell cell = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[j * c_NbColumnPerStation];
+                    TableCell cell = row.Value.Row.Cells[rdvData.Key * c_NbColumnPerStation];
                     Transaction foundTx = null;
+                    int hour = RendezVousTableRow.GetHourFromKey(row.Key);
+                    int min = RendezVousTableRow.GetMinFromKey(row.Key);
+
                     foreach (Transaction tx in m_Transactions)
                     {
-                        if (tx.date_bottling.Hour == i && tx.bottling_station == j)
+                        // TODO check for the minutes
+                        if (tx.date_bottling.Hour == hour && tx.bottling_station == rdvData.Key)
                         {
                             foundTx = tx;
                             break;
@@ -108,29 +184,29 @@ namespace WineMan.Transactions
                     if (foundTx!=null)
                     {
                         GetCell(CellKind.Gray, cell);
-                        m_RadioButtons[j][i - m_Settings.MinStationHour].Visible = false;
+                        rdvData.Value.RadioButton.Visible = false;
 
                         // Hour
-                        TableCell cellHour = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 1];
+                        TableCell cellHour = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 1];
                         GetCell(CellKind.Gray, cellHour);
 
                         // tx
-                        TableCell celltx = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 2];
+                        TableCell celltx = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 2];
                         celltx.Text = "<a href=AddTransaction.aspx?txid=" + foundTx.id.ToString() + ">" + foundTx.id.ToString() + "</a>";
                         GetCell(CellKind.Gray, celltx);
 
                         // customer name
-                        TableCell cellName = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 3];
+                        TableCell cellName = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 3];
                         GetCell(CellKind.Gray,cellName);
                         Customer cus = Customer.GetRecordByID(foundTx.client_id.ToString());
                         if (cus != null)
-                            cellName.Text = cus.FirstName + " " + cus.LastName;
+                            cellName.Text = cus.first_name + " " + cus.last_name;
                         
                         // customer phone
-                        TableCell cellPhone = Table_Stations.Rows[2 + i - m_Settings.MinStationHour].Cells[(j * c_NbColumnPerStation) + 4];
+                        TableCell cellPhone = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 4];
                         GetCell(CellKind.Gray, cellPhone);
                         if (cus != null)
-                            cellPhone.Text = cus.Telephone;
+                            cellPhone.Text = cus.telephone;
                     }
                 }
             }
@@ -145,7 +221,7 @@ namespace WineMan.Transactions
                 button.Checked = true;
                 for (int i = 0; i < c_NbColumnPerStation - 1; ++i)
                 {
-                    row.Cells[columnIndex + i].BackColor = System.Drawing.Color.Aquamarine;
+                    row.Cells[columnIndex + i].BackColor = System.Drawing.Color.SkyBlue;
                     if (i == 3)
                         row.Cells[columnIndex + i].Text = m_Name;
                 }
@@ -177,23 +253,29 @@ namespace WineMan.Transactions
         {
             // Set the information for communication with previous page
             int selectedHour = -1;
+            int selectedStation = -1;
 
-            for (int j = 0; j < m_Settings.NbStations; ++j)
+            foreach (KeyValuePair<int, RendezVousTableRow> row in m_TableRows)
             {
-                for (int i = m_Settings.MinStationHour; i < m_Settings.MaxStationHour; ++i)
+                foreach (KeyValuePair<int, RendezVousData> rdvData in row.Value.RdvData)
                 {
-                    if (m_RadioButtons[j][i - m_Settings.MinStationHour].Checked)
+                    if (rdvData.Value.RadioButton.Checked)
                     {
-                        selectedHour = i;
-                        m_Station = j;
+                        selectedHour = row.Key;
+                        selectedStation = rdvData.Key;
                         break;
                     }
                 }
             }
 
-            Session["rendezvous"] = Calendar_RDV.SelectedDate;
-            Session["rendezvous_hour"] = selectedHour.ToString();
-            Session["rendezvous_station"] = (m_Station).ToString();
+            if (selectedHour >= 0)
+            {
+                Session["rendezvous"] = Calendar_RDV.SelectedDate;
+                int hour = RendezVousTableRow.GetHourFromKey(selectedHour);
+                int min = RendezVousTableRow.GetMinFromKey(selectedHour);
+                Session["rendezvous_hour"] = GetHourMinName(hour) + "h" + GetHourMinName(min); 
+                Session["rendezvous_station"] = selectedStation .ToString();
+            }
         }
 
         enum CellKind { Normal, Black, Gray, Title, Selected };
@@ -221,7 +303,6 @@ namespace WineMan.Transactions
             }
             return tCell;
         }
-
 
         private void CreateTable(DateTime selectedDate)
         {
@@ -275,23 +356,25 @@ namespace WineMan.Transactions
                 tRowTitle.Cells.Add(tCell);
                 tRowTitle.Cells.Add(GetCell(CellKind.Black));
             }
-
-            for (int i = m_Settings.MinStationHour; i < m_Settings.MaxStationHour; ++i)
+            
+            foreach (KeyValuePair<int, RendezVousTableRow> row in m_TableRows.OrderBy(i => i.Key))
             {
-                TableRow tRow = new TableRow();
+                TableRow tRow = row.Value.Row;
                 Table_Stations.Rows.Add(tRow);
-                
-                for (int j = 0; j < m_Settings.NbStations; ++j)
+
+                foreach (KeyValuePair<int, RendezVousData> rdvData in row.Value.RdvData)
                 {
                     TableCell tCell = GetCell(CellKind.Normal);
 
                     // select
-                    tCell.Controls.Add(m_RadioButtons[j][i - m_Settings.MinStationHour]);
+                    tCell.Controls.Add(rdvData.Value.RadioButton);
                     tRow.Cells.Add(tCell);
 
+                    int hour = RendezVousTableRow.GetHourFromKey(row.Key);
+                    int min = RendezVousTableRow.GetMinFromKey(row.Key);
                     // hour
                     tCell = GetCell(CellKind.Normal);
-                    tCell.Text = i.ToString() + "h00";
+                    tCell.Text = GetHourMinName(hour) + "h" + GetHourMinName(min);
                     tRow.Cells.Add(tCell);
                     // tx
                     tCell = GetCell(CellKind.Normal);
@@ -307,6 +390,15 @@ namespace WineMan.Transactions
             }
         }
 
+        protected string GetHourMinName(int hourormin)
+        {
+            string ret ="";
+            if (hourormin.ToString().Length == 1)
+                ret += "0";
+            ret += hourormin.ToString();
+            return ret;
+        }
+
         protected void Button_Select_Click(object sender, EventArgs e)
         {
             if (ViewState["RefUrl"] == null)
@@ -319,7 +411,10 @@ namespace WineMan.Transactions
             // Return a flag to know that we started from the AddTransaction page.
             if (refUrl.Contains("AddTransaction"))
             {
-                refUrl += "?FromAdd=true";
+                if (!refUrl.Contains("?"))
+                    refUrl += "?FromAdd=true";
+                else
+                    refUrl += "&FromAdd=true";
             }
 
             if (refUrl != null)
@@ -361,5 +456,32 @@ namespace WineMan.Transactions
             }
         }
 
+        protected void SetupAddButtonUrl()
+        {
+            int hour = 0;
+            int min = 0;
+            bool parsed = Int32.TryParse(DropDownList_ManualHour.SelectedValue, out hour);
+            System.Diagnostics.Debug.Assert(parsed);
+            parsed = Int32.TryParse(DropDownList_ManualMin.SelectedValue, out min);
+            System.Diagnostics.Debug.Assert(parsed);
+
+            int hourKey = RendezVousTableRow.GetRowKey(hour, min);
+            if (!m_TableRows.ContainsKey(hourKey))
+            {
+                string url = "~/Transactions/Rendezvous.aspx?FromAddTx=";
+                if (m_FromTx)
+                    url += "true";
+                else
+                    url += "false";
+                url += "&customer=" + m_Name + "&NewHourRow=" + hourKey.ToString();
+                Button_AddHour_S1.PostBackUrl = url;
+            }
+        }
+
+        protected void Button_Print_Click(object sender, EventArgs e)
+        {
+            string date = Calendar_RDV.SelectedDate.ToString("yyyy-MM-dd", m_Culture);
+            Response.Redirect("~/Transactions/RendezVous_Print.aspx?date=" + date);
+        }
     }
 }

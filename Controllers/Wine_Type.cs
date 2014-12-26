@@ -34,6 +34,7 @@ namespace WineMan
                         System.Diagnostics.Debug.Assert(parsed);
                         ret.id = numValue;
                         ret.name = dr["name"].ToString();
+                        ret.name.Replace("\"", "");
                         ret.active = dr["active"].ToString() == "1" ? true : false;
                         parsed = Int32.TryParse(dr["brand_id"].ToString(), out numValue);
                         System.Diagnostics.Debug.Assert(parsed);

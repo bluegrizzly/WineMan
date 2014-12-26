@@ -27,6 +27,7 @@ namespace WineMan
                 id = numValue;
 
                 name = dr["name"].ToString();
+                name = name.Trim('\"');
 
                 parsed = Single.TryParse(dr["cost"].ToString(), out floatValue);
                 System.Diagnostics.Debug.Assert(parsed);

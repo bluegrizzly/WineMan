@@ -12,10 +12,18 @@ namespace WineMan
         List<Step> m_Steps = new List<Step>();
         const string c_dbTransactionStepName = "transaction_step";
 
-        public List<TransactionStep> GetAllStepsOfThisDay(DateTime date)
+        public List<TransactionStep> GetAllStepsOfThisDay(DateTime dateStart, DateTime dateEnd, bool showlate, EShow showdone)
         {
             List<TransactionStep> steps = new List<TransactionStep> ();
-            steps = TransactionStep.GetRecords(date);
+            steps = TransactionStep.GetRecords(dateStart, dateEnd, showdone);
+
+            if (showlate)
+            {
+                List<TransactionStep> stepsLate;
+                DateTime oldDate = new DateTime (1,1,1);
+                stepsLate = TransactionStep.GetRecords(oldDate, dateStart, EShow.Show_NotDone);
+                steps.AddRange(stepsLate);
+            }
             return steps;
         }
 
@@ -32,6 +40,61 @@ namespace WineMan
             System.Diagnostics.Debug.Assert(false);
             return "";
         }
+
+        public string GetBrandName(int brandId)
+        {
+            Wine_Brand brand = Wine_Brand.GetRecordByID(brandId.ToString());
+            return brand.name;
+        }
+
+        public string GetTypeName(int brandId)
+        {
+            Wine_Type type = Wine_Type.GetRecord(brandId.ToString());
+            return type.name;
+        }
+
+        public string GetCategoryName(int categoryId)
+        {
+            Wine_Category category = Wine_Category.GetRecordByID(categoryId.ToString());
+            return category.name;
+        }
+
+        // Get all transactions in JSON format for the grid
+        public void GetTransactionJSONRecords(HttpContext context, List<Transaction> allTx)
+        {
+            string retString = @"{";
+
+            int iterNb = 0;
+            int nbRows = allTx.Count;
+            retString += @"""total"": """ + nbRows.ToString() + @""",";
+            retString += @"""page"": ""1"",";
+            retString += @"""records"": """ + nbRows.ToString() + @""",";
+            retString += @"""rows"" : [ ";
+            foreach (Transaction tx in allTx)
+            {
+                if (iterNb != 0)
+                    retString += ",";
+
+                retString += @"{""id"":" + iterNb + @", ""cell"" :[";
+                iterNb++;
+                Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
+
+                retString += @"""" + tx.id.ToString() + @""", ";
+                retString += @"""" + customer.first_name + " " + customer.last_name + @""", ";
+                retString += @"""" + GetBrandName(tx.wine_brand_id) + @""", ";
+                retString += @"""" + GetTypeName(tx.wine_type_id) + @""", ";
+                retString += @"""" + GetCategoryName(tx.wine_category_id) + @""", ";
+                retString += @"""" + tx.date_creation.ToString() + @""", ";
+                retString += @"""" + tx.date_bottling.ToString() + @""", ";
+                retString += @"""" + tx.bottling_station.ToString() + @""", ";
+                retString += @"""" + tx.done.ToString() + @"""";
+                retString += "]}";
+            }
+            retString += "]}";
+            context.Response.Write(retString);
+        }
+
+
         // Creates all TransactionSteps for this transaction
         static public bool CreateStepsRecord(Transaction tx)
         {
@@ -75,14 +138,18 @@ namespace WineMan
 
                 retString += @"{""id"":" + iterNb + @", ""cell"" :[";
                 iterNb++;
+                Transaction tx = Transaction.GetRecord(step.transaction_id);
+                Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
 
                 retString += @"""" + step.id.ToString() + @""",";
                 retString += @"""" + step.transaction_id.ToString() + @""",";
+                retString += @"""" + step.date.ToString() + @""",";
                 retString += @"""" + GetStepName(step.step_id) + @""",";
-                if (step.done == 0)
-                    retString += @"""No""" ;  
-                else
-                    retString += @"""Yes""";  
+                retString += @"""" + GetBrandName(tx.wine_brand_id) + @""",";
+                retString += @"""" + GetTypeName(tx.wine_type_id) + @""",";
+                retString += @"""" + customer.first_name + " " + customer.last_name + @""",";
+                retString += @"""" + customer.telephone + @""",";
+                retString += @"""" + step.done.ToString() + @"""";  
                 retString += "]}";
             }
             retString += "]}";
@@ -127,6 +194,11 @@ namespace WineMan
                 }
             }
             return res;
+        }
+    
+        public void PrintWorkToDo(DateTime startDate, DateTime endDate)
+        {
+
         }
     }
 }

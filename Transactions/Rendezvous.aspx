@@ -10,6 +10,12 @@
     .auto-style5 {
         width: 100%;
     }
+        .auto-style6 {
+            width: 191px;
+        }
+        .auto-style7 {
+            width: 235px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -23,7 +29,8 @@
                     <asp:Panel ID="Panel1" runat="server" BorderStyle="Solid" BorderWidth="1px" Height="400px" ScrollBars="Auto">
                         <table class="auto-style5">
                             <tr>
-                                <td>&nbsp;</td>
+                                <td class="auto-style6">
+                                </td>
                                 <td align="center">
                                     <asp:Label ID="Label_Date" runat="server" BorderColor="#666666" BorderStyle="Solid" BorderWidth="2px" Font-Size="Larger" Text="Label"></asp:Label>
                                 </td>
@@ -32,20 +39,49 @@
                         </table>
                         <table class="auto-style5">
                             <tr>
-                                <td>
-                                    <asp:Table ID="Table_Stations" runat="server" BorderStyle="Solid" BorderWidth="1px" CellPadding="1" CellSpacing="1" EnableViewState="False" GridLines="Both" HorizontalAlign="Center" ViewStateMode="Disabled">
-                                    </asp:Table>
+                                <td colspan="3">
+                                    <asp:Panel ID="Panel2" runat="server" BackColor="#EFF2F5" ScrollBars="Both">
+                                        <asp:Table ID="Table_Stations" runat="server" BorderStyle="Solid" BorderWidth="1px" CellPadding="1" CellSpacing="1" EnableViewState="False" GridLines="Both" HorizontalAlign="Center" ViewStateMode="Disabled">
+                                        </asp:Table>
+                                        <br />
+                                    </asp:Panel>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <asp:DropDownList ID="DropDownList_ManualHour_S1" runat="server">
-                                        <asp:ListItem>7h15</asp:ListItem>
-                                        <asp:ListItem>7h30</asp:ListItem>
-                                        <asp:ListItem>7h45</asp:ListItem>
+                                <td align="center">
+                                    &nbsp;</td>
+                                <td align="center" class="auto-style7">
+                                    <asp:DropDownList ID="DropDownList_ManualHour" runat="server" AutoPostBack="True" Height="17px" Width="49px">
+                                        <asp:ListItem>09</asp:ListItem>
+                                        <asp:ListItem>10</asp:ListItem>
+                                        <asp:ListItem>11</asp:ListItem>
+                                        <asp:ListItem>12</asp:ListItem>
+                                        <asp:ListItem>13</asp:ListItem>
+                                        <asp:ListItem>14</asp:ListItem>
+                                        <asp:ListItem>15</asp:ListItem>
+                                        <asp:ListItem>16</asp:ListItem>
+                                        <asp:ListItem>17</asp:ListItem>
+                                        <asp:ListItem>18</asp:ListItem>
+                                        <asp:ListItem>19</asp:ListItem>
+                                        <asp:ListItem>20</asp:ListItem>
+                                        <asp:ListItem>21</asp:ListItem>
                                     </asp:DropDownList>
-                                    <asp:Button ID="Button_AddHour_S1" runat="server" Text="Add" />
+                                    h<asp:DropDownList ID="DropDownList_ManualMin" runat="server" AutoPostBack="True" Height="16px" Width="47px">
+                                        <asp:ListItem>05</asp:ListItem>
+                                        <asp:ListItem>10</asp:ListItem>
+                                        <asp:ListItem>15</asp:ListItem>
+                                        <asp:ListItem>20</asp:ListItem>
+                                        <asp:ListItem>25</asp:ListItem>
+                                        <asp:ListItem>30</asp:ListItem>
+                                        <asp:ListItem>35</asp:ListItem>
+                                        <asp:ListItem>40</asp:ListItem>
+                                        <asp:ListItem>45</asp:ListItem>
+                                        <asp:ListItem>50</asp:ListItem>
+                                        <asp:ListItem>55</asp:ListItem>
+                                    </asp:DropDownList>
+                                    &nbsp;<asp:Button ID="Button_AddHour_S1" runat="server" Text="Add" />
                                 </td>
+                                <td align="center">&nbsp;</td>
                             </tr>
                         </table>
                     </asp:Panel>
@@ -53,9 +89,9 @@
             </tr>
             <tr>
                 <td valign="top">
-                    <asp:Label ID="Label_SelectedHour" runat="server" Text="Label" Visible="False"></asp:Label>
+                    <asp:Label ID="Label_SelectedHour" runat="server" Text="Label"></asp:Label>
         <asp:Calendar ID="Calendar_RDV" runat="server" OnSelectionChanged="Calendar_RDV_SelectionChanged" OnDayRender="Calendar_RDV_DayRender">
-                        <SelectedDayStyle BackColor="#0099FF" />
+                        <SelectedDayStyle BackColor="SkyBlue" />
                         <TodayDayStyle BackColor="#999999" />
                         <WeekendDayStyle BackColor="#EEEEEE" />
         </asp:Calendar>
@@ -65,7 +101,10 @@
                 <td align="center"><asp:Button ID="Button_Select" runat="server" OnClick="Button_Select_Click" Text="Select" Height="30px" Width="68px" style="margin-top: 14px" />
         
                 &nbsp;
+                    <asp:Button ID="Button_Print" runat="server" Height="28px" OnClick="Button_Print_Click" Text="Print" Width="64px" />
                     <asp:Button ID="Button_Cancel" runat="server" Height="30px" OnClick="Button_Cancel_Click" Text="Cancel" />
+        
+                    <br />
         
                 </td>
             </tr>

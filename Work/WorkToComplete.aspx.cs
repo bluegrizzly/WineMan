@@ -15,14 +15,19 @@ namespace WineMan.Work
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Calendar_Date.SelectedDate = DateTime.Now;
-            this.DateValue = DateTime.Now.ToString("d");
+            string aa = txtDate.Text;
+
+            if (txtDate.Text == "")
+                txtDate.Text = DateTime.Now.ToString("yyyy-MM-d");
+            DateTime dd;
+            DateTime.TryParse(txtDate.Text, out dd);
+
+            Label_SelectedDate.Text = dd.ToString("dd MMM yyy");
         }
 
-        protected void Calendar_Date_SelectionChanged(object sender, EventArgs e)
+        protected void Button_Print_Click(object sender, EventArgs e)
         {
-            txtDate.Text = Calendar_Date.SelectedDate.ToString("d");
-            this.DateValue = DateTime.Now.ToString("d");
+            Response.Redirect("~/Work/WorkToComplete_Print.aspx?date=" + txtDate.Text + "&dateEnd=" + txtDateEnd.Text);
         }
     }
 }
