@@ -8,6 +8,6 @@
         About
     </h2>
     <p>
-        Created by Alain Dessureaux<br />alain.dessureaux@gmail.com
+        Created by Alain Dessureaux<br />alain.dessureaux@gmail.com<br /> All rights reserved 2014
     </p>
 </asp:Content>

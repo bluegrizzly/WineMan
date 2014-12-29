@@ -159,6 +159,17 @@
     <Content Include="DataSets\DataSetCategory.xsc">
       <DependentUpon>DataSetCategory.xsd</DependentUpon>
     </Content>
+    <Content Include="DataSets\DataSetStepNames.xsc">
+      <DependentUpon>DataSetStepNames.xsd</DependentUpon>
+    </Content>
+    <None Include="DataSets\DataSetStepNames.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetStepNames.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="DataSets\DataSetStepNames.xss">
+      <DependentUpon>DataSetStepNames.xsd</DependentUpon>
+    </Content>
     <None Include="DataSets\DataSetCategory.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSetCategory.Designer.cs</LastGenOutput>
@@ -185,6 +196,17 @@
     </None>
     <Content Include="DataSets\DataSetTx.xss">
       <DependentUpon>DataSetTx.xsd</DependentUpon>
+    </Content>
+    <Content Include="DataSets\DataSet_Steps.xsc">
+      <DependentUpon>DataSet_Steps.xsd</DependentUpon>
+    </Content>
+    <None Include="DataSets\DataSet_Steps.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSet_Steps.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="DataSets\DataSet_Steps.xss">
+      <DependentUpon>DataSet_Steps.xsd</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -335,6 +357,11 @@
     <Compile Include="Customers\CustomersHandler.ashx.cs">
       <DependentUpon>CustomersHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="DataSets\DataSetStepNames.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetStepNames.xsd</DependentUpon>
+    </Compile>
     <Compile Include="DataSets\DataSetCategory.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -349,6 +376,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DataSetTx.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataSets\DataSet_Steps.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSet_Steps.xsd</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

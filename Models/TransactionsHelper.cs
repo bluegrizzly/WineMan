@@ -49,7 +49,7 @@ namespace WineMan
 
         public string GetTypeName(int brandId)
         {
-            Wine_Type type = Wine_Type.GetRecord(brandId.ToString());
+            Wine_Type type = Wine_Type.GetRecordByID(brandId.ToString());
             return type.name;
         }
 

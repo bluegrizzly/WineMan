@@ -14,14 +14,14 @@ namespace WineMan
         public int brand_id;
         public int category_id;
 
-        public static Wine_Type GetRecord(string name)
+        public static Wine_Type GetRecordByID(string idstr)
         {
             Wine_Type ret = new Wine_Type();
 
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM wine_types WHERE id LIKE '" + name + "'", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM wine_types WHERE id LIKE '" + idstr + "'", con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();

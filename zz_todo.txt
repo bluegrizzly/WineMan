@@ -71,11 +71,15 @@ Programming tasks
 Questions
 ============
 - Est ce que le la levure commmence la date de la transaction ou le lendemain?
-- la localisation d'une transaction est setté ou?'
+- la localisation d'une transaction est setté ou?
 - client avec adresse au etats unis? ou autre pays?
 - la feuille de transaction faut elle etre bilingue?
 - quel est la liste des symbole et les couleurs?
-- feuille de transaction bas gauche : c'est vide?'
+- feuille de transaction
+    - feuille de transaction bas gauche : c'est vide?
+    - c'est quoi la category du produit sur la feuille de transaction?
+    - removal date?
+    - heure de sortie? ce n'est pas l'heure du rendez vous?
 
 TEST:
 --------------------------

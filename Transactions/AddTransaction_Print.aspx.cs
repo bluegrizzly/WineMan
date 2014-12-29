@@ -64,18 +64,36 @@ namespace WineMan.Transactions
             ReportViewer1.LocalReport.DataSources.Add(rptSrcTx);
             ReportDataSource rptSrcCategory = new ReportDataSource("DataSetCategory", GetWineCategoryData());
             ReportViewer1.LocalReport.DataSources.Add(rptSrcCategory);
+            ReportDataSource rptSrcSteps = new ReportDataSource("DataSetSteps", GetStepsData());
+            ReportViewer1.LocalReport.DataSources.Add(rptSrcSteps);
+            ReportDataSource rptSrcStepNames = new ReportDataSource("DataSetStepNames", GetStepNamesData());
+            ReportViewer1.LocalReport.DataSources.Add(rptSrcStepNames);
 
+            ReportViewer1.LocalReport.ReportPath = "Reports/Report_Transaction.rdlc";
+
+            // Parameters
             string labelColor = "Pink";
             Wine_Category category = Wine_Category.GetRecordByID(m_tx.wine_category_id.ToString());
+            Wine_Brand brand = Wine_Brand.GetRecordByID(m_tx.wine_brand_id.ToString());
+            Wine_Type type = Wine_Type.GetRecordByID(m_tx.wine_type_id.ToString());
+
             if (category.symbol.Contains("R"))
                 labelColor = "Red";
             else if (category.symbol.Contains("W"))
                 labelColor = "Gold";
 
-            ReportParameter param = new ReportParameter("ReportParameter_Color", labelColor);
+            ReportParameter paramColor = new ReportParameter("ReportParameter_Color", labelColor);
+            ReportViewer1.LocalReport.SetParameters(paramColor);
 
-            ReportViewer1.LocalReport.ReportPath = "Reports/Report_Transaction.rdlc";
-            ReportViewer1.LocalReport.SetParameters(param);
+            ReportParameter param1 = new ReportParameter("ReportParameter_WineBrand", brand.name);
+            ReportViewer1.LocalReport.SetParameters(param1);
+            ReportParameter param2 = new ReportParameter("ReportParameter_WineType", type.name);
+            ReportViewer1.LocalReport.SetParameters(param2);
+            ReportParameter param3 = new ReportParameter("ReportParameter_WineCategory", category.name);
+            ReportViewer1.LocalReport.SetParameters(param3);
+            ReportParameter param4 = new ReportParameter("ReportParameter_ProductCode", type.id.ToString());
+            ReportViewer1.LocalReport.SetParameters(param4);
+            
             ReportViewer1.LocalReport.Refresh();
         }
 
@@ -111,6 +129,30 @@ namespace WineMan.Transactions
                 adp.Fill(dt);
             }
             return dt;
+        }
+        private DataTable GetStepsData()
+        {
+            DataTable dt = new DataTable();
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                MySqlDataAdapter adp = new MySqlDataAdapter("SELECT * FROM transaction_step WHERE transaction_id=" + m_tx.id.ToString(), con);
+                adp.Fill(dt);
+            }
+            return dt;
+        }
+
+        private DataTable GetStepNamesData()
+        {
+            DataTable dt = new DataTable();
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                MySqlDataAdapter adp = new MySqlDataAdapter("SELECT * FROM steps", con);
+                adp.Fill(dt);
+            }
+            return dt;
+
         }
     }
 }

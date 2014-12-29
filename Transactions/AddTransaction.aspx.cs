@@ -217,7 +217,7 @@ namespace WineMan.Transactions
         {
             if (DropDownList_Type.SelectedIndex > 0)
             {
-                m_Type = Wine_Type.GetRecord(DropDownList_Type.SelectedValue);
+                m_Type = Wine_Type.GetRecordByID(DropDownList_Type.SelectedValue);
                 FillWineCategories(m_Type.category_id);
             }
             UpdateComboBoxes();

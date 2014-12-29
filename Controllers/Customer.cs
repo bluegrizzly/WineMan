@@ -42,7 +42,8 @@ namespace WineMan
                 addresse = dr["address"].ToString();
                 city = dr["city"].ToString();
                 province = dr["province"].ToString();;
-                postal_code = dr["postal_code"].ToString(); ;
+                postal_code = dr["postal_code"].ToString();
+                postal_code.ToUpper();
                 email = dr["email"].ToString(); ;
                 telephone = dr["telephone"].ToString();
                 telephone_bur = dr["telephone_bur"].ToString();
@@ -87,6 +88,5 @@ namespace WineMan
             }
             return ret;
         }
-
     }
 }
