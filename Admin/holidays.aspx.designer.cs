@@ -11,5 +11,14 @@ namespace WineMan.Admin {
     
     
     public partial class holidays {
+        
+        /// <summary>
+        /// Calendar_Holidays control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Calendar Calendar_Holidays;
     }
 }

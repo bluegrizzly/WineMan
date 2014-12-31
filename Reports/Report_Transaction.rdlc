@@ -13,7 +13,7 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>Appointement: </Value>
+                        <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"Appointement:","Rendez-vous")</Value>
                         <Style />
                       </TextRun>
                     </TextRuns>
@@ -104,7 +104,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>STEPS</Value>
+                                  <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"STEPS","ETAPES")</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
@@ -174,7 +174,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>DENSITY</Value>
+                                  <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"DENSITY","DENSITE")</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
@@ -579,7 +579,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Product</Value>
+                    <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"Product","Produit")</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -626,7 +626,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Category:</Value>
+                                  <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"Category","Catégorie:")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -760,7 +760,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Brand:</Value>
+                                  <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"Brand:","Marque:")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -1202,7 +1202,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Home:</Value>
+                                  <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"Home:","Maison:")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -1271,7 +1271,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Office:</Value>
+                                  <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"Office:","Bureau:")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -1521,7 +1521,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Client Signature</Value>
+                    <Value>=IIf(First(Fields!language.Value, "DataSetCustomer")=0,"Client Signature","Signature du client")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -1839,10 +1839,14 @@
           <DataField>telephone_fax</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="language">
+          <DataField>language</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>DataSetCustomer</rd:DataSetName>
-        <rd:SchemaPath>C:\AlainD\Dev\GitHub\WineMan\DataSetCustomer.xsd</rd:SchemaPath>
+        <rd:SchemaPath>C:\AlainD\Dev\GitHub\WineMan\DataSets\DataSetCustomer.xsd</rd:SchemaPath>
         <rd:TableName>customers</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>

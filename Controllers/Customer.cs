@@ -19,6 +19,7 @@ namespace WineMan
         public string telephone;
         public string telephone_bur;
         public string telephone_fax;
+        public int language;
 
         public Customer()
         {
@@ -48,6 +49,9 @@ namespace WineMan
                 telephone = dr["telephone"].ToString();
                 telephone_bur = dr["telephone_bur"].ToString();
                 telephone_fax = dr["telephone_fax"].ToString();
+
+                parsed = Int32.TryParse(dr["language"].ToString(), out language);
+                System.Diagnostics.Debug.Assert(parsed);
             }
         }
 

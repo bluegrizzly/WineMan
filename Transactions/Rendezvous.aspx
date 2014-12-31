@@ -16,6 +16,9 @@
         .auto-style7 {
             width: 235px;
         }
+    .auto-style8 {
+        width: 301px;
+    }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -31,7 +34,7 @@
                             <tr>
                                 <td class="auto-style6">
                                 </td>
-                                <td align="center">
+                                <td align="center" class="auto-style8">
                                     <asp:Label ID="Label_Date" runat="server" BorderColor="#666666" BorderStyle="Solid" BorderWidth="2px" Font-Size="Larger" Text="Label"></asp:Label>
                                 </td>
                                 <td>&nbsp;</td>
@@ -40,7 +43,7 @@
                         <table class="auto-style5">
                             <tr>
                                 <td colspan="3">
-                                    <asp:Panel ID="Panel2" runat="server" BackColor="#EFF2F5" ScrollBars="Both">
+                                    <asp:Panel ID="Panel2" runat="server" BackColor="#EFF2F5" ScrollBars="Auto">
                                         <asp:Table ID="Table_Stations" runat="server" BorderStyle="Solid" BorderWidth="1px" CellPadding="1" CellSpacing="1" EnableViewState="False" GridLines="Both" HorizontalAlign="Center" ViewStateMode="Disabled">
                                         </asp:Table>
                                         <br />
@@ -89,7 +92,6 @@
             </tr>
             <tr>
                 <td valign="top">
-                    <asp:Label ID="Label_SelectedHour" runat="server" Text="Label"></asp:Label>
         <asp:Calendar ID="Calendar_RDV" runat="server" OnSelectionChanged="Calendar_RDV_SelectionChanged" OnDayRender="Calendar_RDV_DayRender">
                         <SelectedDayStyle BackColor="SkyBlue" />
                         <TodayDayStyle BackColor="#999999" />

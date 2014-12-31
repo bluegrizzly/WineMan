@@ -17,7 +17,7 @@
         jQuery("#jQGridDemo").jqGrid({
             url: '<%=ResolveUrl("~/Customers/CustomersHandler.ashx") %>',
             datatype: "json",
-            colNames: ['Id', 'First Name', 'Last Name', 'Address', 'City', 'Province', 'Postal Code', 'Email', 'Tel', 'Tel Bur', 'Fax'],
+            colNames: ['Id', 'First Name', 'Last Name', 'Address', 'City', 'Province', 'Postal Code', 'Email', 'Tel', 'Tel Bur', 'Fax', 'Language'],
             colModel: [
                         { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int'},
    		                { name: 'first_name', index: 'first_name', width: 120, stype: 'text', sortable: true, editable: true },
@@ -30,7 +30,15 @@
                         { name: 'telephone', index: 'telephone', width: 100, editable: true },
                         { name: 'telephone_bur', index: 'telephone_bur', width: 100, editable: true },
                         { name: 'telephone_fax', index: 'telephone_fax', width: 100, editable: true },
-        ],
+                        {
+                            name: 'language', width: 50, index: 'language',
+                            align: 'center',
+                            editable: true,
+                            edittype:'select',
+                            stype: 'select',
+                            formatter:'select', editoptions:{value:"0:English;1:French"} 
+                        }
+                    ],
             rowNum: 10,
             height: 250,
             mtype: 'GET',
@@ -64,7 +72,16 @@
                        closeOnEscape: true,//Closes the popup on pressing escape key
                        reloadAfterSubmit: true,
                        drag: true,
-                       width:400,
+                       width: 400,
+                       beforeShowForm: function ($form) {
+                           $form.find("td.DataTD").each(function () {
+                               var html = $(this).html().trim();  // &nbsp;<span>&nbsp;</span>
+                               if (html.substr(0, 6) === "&nbsp;" && html.trim().length > 6) {
+                                   $(this).html(html.substr(6));
+                               }
+                           });
+                           $form.closest(".ui-jqdialog").find(".ui-jqdialog-titlebar-close").attr("tabindex", "-1");
+                       },
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
 

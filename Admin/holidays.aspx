@@ -28,31 +28,19 @@
 
     <table class="auto-style1">
         <tr>
-            <td class="auto-style2" rowspan="4" valign="top">
-                <div id="jQGridDemoPager"></div>
-                <table id="jQGridDemo">
-                </table>
+            <td class="auto-style2" valign="top">
+        <asp:Calendar ID="Calendar_Holidays" runat="server" OnDayRender="Calendar_Holidays_DayRender">
+                        <SelectedDayStyle BackColor="SkyBlue" />
+                        <TodayDayStyle BackColor="#0099FF" />
+                        <WeekendDayStyle BackColor="#EEEEEE" />
+        </asp:Calendar>
             </td>
-            <td valign="top" colspan="2">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td valign="top" align="right" >
-                &nbsp;</td>
             <td valign="top">
-                &nbsp;</td>
+                <div id="jQGridDemoPager"></div>
+                <table id="jQGridDemo"></table>
+            </td>
         </tr>
-        <tr>
-            <td valign="top" align="right" >
-                &nbsp;</td>
-            <td valign="top">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td valign="top" colspan="2">
-                &nbsp;</td>
-        </tr>
-    </table>
+        </table>
 
     <script type="text/javascript">
         jQuery("#jQGridDemo").jqGrid({
@@ -164,6 +152,7 @@
                        }
                    },
                    {   //DELETE
+                       closeOnEscape: true,
                        closeOnEscape: true,
                        closeAfterDelete: true,
                        reloadAfterSubmit: true,

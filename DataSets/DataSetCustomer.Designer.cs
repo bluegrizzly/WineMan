@@ -301,6 +301,8 @@ namespace WineMan.DataSets {
             
             private global::System.Data.DataColumn columntelephone_fax;
             
+            private global::System.Data.DataColumn columnlanguage;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public customersDataTable() {
@@ -424,6 +426,14 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn languageColumn {
+                get {
+                    return this.columnlanguage;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -459,7 +469,7 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public customersRow AddcustomersRow(uint id, string first_name, string last_name, string address, string city, string province, string postal_code, string email, string telephone, string telephone_bur, string telephone_fax) {
+            public customersRow AddcustomersRow(uint id, string first_name, string last_name, string address, string city, string province, string postal_code, string email, string telephone, string telephone_bur, string telephone_fax, string language) {
                 customersRow rowcustomersRow = ((customersRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -472,7 +482,8 @@ namespace WineMan.DataSets {
                         email,
                         telephone,
                         telephone_bur,
-                        telephone_fax};
+                        telephone_fax,
+                        language};
                 rowcustomersRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcustomersRow);
                 return rowcustomersRow;
@@ -513,6 +524,7 @@ namespace WineMan.DataSets {
                 this.columntelephone = base.Columns["telephone"];
                 this.columntelephone_bur = base.Columns["telephone_bur"];
                 this.columntelephone_fax = base.Columns["telephone_fax"];
+                this.columnlanguage = base.Columns["language"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -540,6 +552,8 @@ namespace WineMan.DataSets {
                 base.Columns.Add(this.columntelephone_bur);
                 this.columntelephone_fax = new global::System.Data.DataColumn("telephone_fax", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntelephone_fax);
+                this.columnlanguage = new global::System.Data.DataColumn("language", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnlanguage);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnid}, true));
                 this.columnid.AllowDBNull = false;
@@ -865,6 +879,22 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string language {
+                get {
+                    try {
+                        return ((string)(this[this.tablecustomers.languageColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'language\' in table \'customers\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecustomers.languageColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool Isfirst_nameNull() {
                 return this.IsNull(this.tablecustomers.first_nameColumn);
             }
@@ -981,6 +1011,18 @@ namespace WineMan.DataSets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void Settelephone_faxNull() {
                 this[this.tablecustomers.telephone_faxColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IslanguageNull() {
+                return this.IsNull(this.tablecustomers.languageColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetlanguageNull() {
+                this[this.tablecustomers.languageColumn] = global::System.Convert.DBNull;
             }
         }
         

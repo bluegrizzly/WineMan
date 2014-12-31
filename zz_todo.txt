@@ -1,17 +1,4 @@
 ﻿
-NOW:
-------
-- Save transaction failed
-
-
-Questions:
-- est ce que les dates demarre toujours de la date de la transaction?  (assume OUI)
-- est ce qu'on devrait permerttre de changer une categorie?  un type de vin peux avoir differente recette?
-- est ce que les rendez vous sont 1h ?
-- une etape (TransactionStep) se fait dans une journee ou il y a une heure precise
-- pour la liste des work to complete , quel information ont a besoin? le client? 
-- qu'est ce qui termine une transaction? automatic ou manuel?  maintenant c'est manuel et il faut faire de quoi
-
 Time
 ------
 7 jours
@@ -25,42 +12,21 @@ Time
 TODO:
 =============
 - send an email with the transaction (and add pub)
-
 - Admin:
-    - Conge feriers : (les ajouter dans le calednrier des rendez vous aussi en readonly)  [DONE]
-    - Types de vins, brand, categories
-- Page add transaction
-    - ajout de recherche par tel [DONE]
-    - Voir le telephone avec le nom dans le serach [DONE]
-- Page transaction
-    - Voir batch termine ou pas [DONE]
+    - Categories/recettes
+    - Steps
 - Page Work to complete
     - Voir les transaction par intervale de temps 
         - implement TransactionStep.GetRecords  avec le dateEnd
-    - Ajouter champs . client tel etc [DONE]
-    - montrer les transactions qui n'ont pas encore ete commence
-- Ajoute d'une page Transactions to complete (closing the day)
-- page rendez vous
-    - n'importe quel heure
-
-- DB Steps: mettre un champ actif
-- ajouter tous les champs a une transaction 
+- Ajouter tous les champs a une transaction 
     location
-    code de produit (couleur)
-- pouvoir reseter une date de depart sur une transaction en retard
+*- pouvoir reseter une date de depart sur une transaction en retard
 - etre capable de changer les dates
 - faire un ecran d'operations pour une transaciton
-- ajouter langues a customer
 
-- Imprimer
-    - transaction pour client
-    - work to do
-    - rendez vous
-
+-standardize the dates
 - lock db
 
-- add a language to customer and use it for the tx print
-- Filter rendezvous: no weekend, not before the date
 
 Programming tasks
 -----------------
@@ -70,6 +36,9 @@ Programming tasks
 
 Questions
 ============
+- est ce qu'on devrait permerttre de changer une categorie?  un type de vin peux avoir differente recette?
+- qu'est ce qui termine une transaction? automatic ou manuel?  maintenant c'est manuel et il faut faire de quoi
+
 - Est ce que le la levure commmence la date de la transaction ou le lendemain?
 - la localisation d'une transaction est setté ou?
 - client avec adresse au etats unis? ou autre pays?
@@ -80,6 +49,8 @@ Questions
     - c'est quoi la category du produit sur la feuille de transaction?
     - removal date?
     - heure de sortie? ce n'est pas l'heure du rendez vous?
+- what date format you prefer?
+- location?  quel genre de champs et qui va le setter?
 
 TEST:
 --------------------------
@@ -90,3 +61,31 @@ Test1
     - select
 - Modify
   
+
+
+FEATURE:
+--------------------------
+- Feuille de Transaction bilingue avec le code du client
+
+- Add transaction
+    - Rendezvous: Cannot select a rendez vous that is before the wine completed date.
+    - Rendezvous: Will automatically select a next non-holiday date
+    - Choosing a customer: Can select a customer by phone or name of first name
+    - Choosing a customer: You can see the name of the clients and phone number 
+
+- All transaction
+    - You can toggle to see all transactions or only the non completed ones (default)
+
+- Work to complete page 
+    - Show late work toggle
+    - Show work done toggle
+
+
+-Admin
+    - Can add/modify/edit holidays. The holidays cannot be selected by rendez vous.
+    - Can add/modify/edit Wine Brand, Type
+
+- Print
+    - transaction pour client
+    - work to do
+    - rendez vous

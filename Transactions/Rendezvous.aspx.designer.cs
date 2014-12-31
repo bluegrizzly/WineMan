@@ -76,15 +76,6 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Button Button_AddHour_S1;
         
         /// <summary>
-        /// Label_SelectedHour control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label_SelectedHour;
-        
-        /// <summary>
         /// Calendar_RDV control.
         /// </summary>
         /// <remarks>

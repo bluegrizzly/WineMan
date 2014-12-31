@@ -47,6 +47,16 @@
         width: 154px;
     }
     </style>
+<style>
+       .ui-autocomplete {
+            max-height: 300px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        } 
+</style>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -75,8 +85,8 @@
             select: function (event, ui) {
                 $.ajax({
                     type: 'POST',
-                    url: '<%=ResolveClientUrl("~/Transactions/AddTransaction.aspx/GetAutoCompleteDataDone")%>',
-                    data: '{name: "' + $("#<%=txtLastName.ClientID%>")[0].value + '" }',
+                    url: '<%=ResolveUrl("~/Transactions/AddTransaction.aspx/GetAutoCompleteDataDone")%>',
+                    data: '{name: "' + document.getElementById('<%= txtLastName.ClientID%>').value + '" }',
                     contentType: "application/json; charset=utf-8",
                     dataType: 'json'
                 });
@@ -106,7 +116,7 @@
                     <tr>
                         <td class="auto-style19" align="right">ID:</td>
                         <td class="auto-style18">
-                            <asp:Label ID="Label_CustomerID" runat="server" Text="none"></asp:Label>
+                            <asp:Label ID="Label_CustomerID" runat="server"></asp:Label>
                         </td>
                     </tr>
                     <tr>

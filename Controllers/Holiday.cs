@@ -77,5 +77,24 @@ namespace WineMan
 
             return holidays;
         }
+
+        public static bool IsHoliday(DateTime date)
+        {
+            // First check if it is a sunday
+            if (date.DayOfWeek == System.DayOfWeek.Sunday)
+                return true;
+
+            List<Holiday> allHolidays = GetAllRecords();
+            foreach (Holiday holiday in allHolidays)
+            {
+                if (date.Year == holiday.date.Year && 
+                    date.Month == holiday.date.Month && 
+                    date.Day == holiday.date.Day)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

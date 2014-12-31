@@ -43,8 +43,7 @@ namespace WineMan.Transactions
         Settings m_Settings = new Settings();
         private int m_Station=-1; //zero based
         private int m_Hour = -1;
-        private string m_Name;
-        private bool m_FromTx = false;
+        private string m_CustomerName;
         List<Transaction> m_Transactions;
         List<Holiday> m_Holidays;
         public Dictionary<int, RendezVousTableRow> m_TableRows = new Dictionary<int, RendezVousTableRow>();  // The key is the HOUR*100+MIN
@@ -57,9 +56,7 @@ namespace WineMan.Transactions
             {
                 // if the page is not coming from the add transaction, we need to clear the session data 
                 // this means that we are not required to pass data to the add transaction page.
-                if (Request.QueryString["FromAddTx"] == "true")
-                    m_FromTx = true;
-                else
+                if (Request.QueryString["FromAddTx"] != "true")
                     Session.Clear();
 
                 if (Request.UrlReferrer != null)
@@ -71,9 +68,16 @@ namespace WineMan.Transactions
                 else
                     Calendar_RDV.SelectedDate = Calendar_RDV.TodaysDate;
 
+                // Make sure the date is not a holiday
+                while (Holiday.IsHoliday(Calendar_RDV.SelectedDate))
+                {
+                    Calendar_RDV.SelectedDate = Calendar_RDV.SelectedDate.AddDays(1);
+                }
+
                 Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
             }
-            m_Name = Request.QueryString["customer"];
+
+            m_CustomerName = Request.QueryString["customer"];
 
             if (Session["rendezvous_hour"] != null)
             {
@@ -223,7 +227,7 @@ namespace WineMan.Transactions
                 {
                     row.Cells[columnIndex + i].BackColor = System.Drawing.Color.SkyBlue;
                     if (i == 3)
-                        row.Cells[columnIndex + i].Text = m_Name;
+                        row.Cells[columnIndex + i].Text = m_CustomerName;
                 }
             }
         }
@@ -439,6 +443,17 @@ namespace WineMan.Transactions
 
         protected void Calendar_RDV_SelectionChanged(object sender, EventArgs e)
         {
+            if (Request.QueryString["FromAddTx"] == "true")
+            {
+                // Make sure the date is not before the minimum date:
+                DateTime minDate = (DateTime)Session["rendezvous"];
+                if (Calendar_RDV.SelectedDate < minDate)
+                {
+                    Utils.MessageBox(this, "Error: The date cannot be before: " + minDate.ToString("D",m_Culture));
+
+                    Calendar_RDV.SelectedDate = minDate;
+                }
+            }
             Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
         }
 
@@ -469,11 +484,11 @@ namespace WineMan.Transactions
             if (!m_TableRows.ContainsKey(hourKey))
             {
                 string url = "~/Transactions/Rendezvous.aspx?FromAddTx=";
-                if (m_FromTx)
+                if (Request.QueryString["FromAddTx"] == "true")
                     url += "true";
                 else
                     url += "false";
-                url += "&customer=" + m_Name + "&NewHourRow=" + hourKey.ToString();
+                url += "&customer=" + m_CustomerName + "&NewHourRow=" + hourKey.ToString();
                 Button_AddHour_S1.PostBackUrl = url;
             }
         }

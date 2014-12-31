@@ -73,7 +73,7 @@ namespace WineMan.Transactions
 
         protected void Page_LoadComplete(object sender, EventArgs e)
         {
-            CheckBox_1.Checked = (Label_LastName.Text != c_SelectString);
+            CheckBox_1.Checked = (Label_CustomerID.Text != "");
             CheckBox_1.BackColor = CheckBox_1.Checked ? System.Drawing.Color.Green : System.Drawing.Color.Red;
             CheckBox_2.Checked = (DropDownList_Category.SelectedIndex > 0);
             CheckBox_2.BackColor = CheckBox_2.Checked ? System.Drawing.Color.Green : System.Drawing.Color.Red;
@@ -153,14 +153,11 @@ namespace WineMan.Transactions
 
         private void SelectCustomer(string name)
         {
-            string firstName;
-            string lastName;
-
+            string customerNo;
             try
             {
-                string[] words = name.Split('.');
-                firstName = words[0];
-                lastName = words[1];
+                string[] words = name.Split(':');
+                customerNo = words[0];
             }
             catch
             {
@@ -168,7 +165,7 @@ namespace WineMan.Transactions
                 return;
             }
 
-            Customer customer = Customer.GetRecordByName(firstName, lastName);
+            Customer customer = Customer.GetRecordByID(customerNo);
             if (customer.id >= 0)
             {
                 Label_CustomerID.Text = customer.id.ToString();
@@ -194,6 +191,7 @@ namespace WineMan.Transactions
         {
             AddTransaction page = HttpContext.Current.CurrentHandler as AddTransaction;
 //            page.SelectCustomer(name);
+            
             return "";
         }
 
@@ -551,7 +549,7 @@ namespace WineMan.Transactions
                     TableCell tCell2 = new TableCell();
                     //tCell2.ForeColor = System.Drawing.Color;
                     tCell2.HorizontalAlign = HorizontalAlign.Center;
-                    tCell2.Text = stepDate.ToString("D", m_Culture);
+                    tCell2.Text = stepDate.ToString("MMM-dd-yyyy", m_Culture);
                     tRowDates.Cells.Add(tCell2);
                 }
             }
@@ -560,7 +558,8 @@ namespace WineMan.Transactions
         protected void Button_SelectDate_Click(object sender, EventArgs e)
         {
             SaveData();
-            Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + Label_FirstName.Text + " " + Label_LastName.Text);
+            string arguments = Label_FirstName.Text + " " + Label_LastName.Text;
+            Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + arguments);
         }
 
         void EditRecord()
