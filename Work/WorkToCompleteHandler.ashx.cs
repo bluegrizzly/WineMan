@@ -51,7 +51,12 @@ namespace WineMan.Work
 
                     // Get all transaction not completed.
                     List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, showlate, showdone);
-                    m_TransactionHelper.GetTransactionStepJSONRecords(context, steps);
+
+                    // Sort by steps
+                    steps.Sort((x, y) => x.date.CompareTo(y.date));
+                    steps.Sort((x, y) => x.step_id.CompareTo(y.step_id));
+
+                    m_TransactionHelper.GetTransactionStepJSONRecords(context, steps );
                 }
             }
         }

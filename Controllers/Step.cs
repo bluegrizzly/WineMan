@@ -10,6 +10,7 @@ namespace WineMan
     {
         public int id;
         public string name;
+        public string name_french;
         public int final_step;
 
         public void FillData(MySqlDataReader dr)
@@ -20,6 +21,7 @@ namespace WineMan
                 System.Diagnostics.Debug.Assert(parsed);
 
                 name = dr["name"].ToString();
+                name_french = dr["name_french"].ToString();
 
                 parsed = Int32.TryParse(dr["final_step"].ToString(), out final_step);
                 System.Diagnostics.Debug.Assert(parsed);

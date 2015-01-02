@@ -100,7 +100,16 @@
             colModel: [
                         { name: 'id', index: 'id', width: 10, stype: 'text', sortable: true, sorttype: 'int', hidden: true },
                         { name: 'txid', index: 'txid', width: 40, stype: 'text', sortable: true, sorttype: 'int' },
-                        { name: 'date', index: 'date', width: 80, stype: 'text', sortable: true },
+                        {
+                            name: 'date', index: 'date', width: 80, stype: 'text', sortable: true,
+                            formatter: 'date',
+                            datefmt: 'yyyy/MM/dd',
+                            formatoptions: {
+                                srcformat: 'd/m/Y H:i:s',
+                                newformat: 'Y/M/d',
+                                defaultValue: null 
+                                    },
+                        },
    		                { name: 'step', index: 'step', width: 70, sortable: true },
    		                { name: 'brand', index: 'brand', width: 80, sortable: true },
    		                { name: 'type', index: 'type', width: 80, sortable: true },
@@ -114,14 +123,14 @@
                             formatter: "checkbox", formatoptions: { disabled: true }
                         }
             ],
-            rowNum: 10,
+            rowNum: 20,
             multiselect: true,
             height: 250,
             mtype: 'GET',
             loadonce: true,
-            rowList: [10, 20, 30],
+            rowList: [20, 50, 100],
             pager: '#jQGridDemoPager',
-            sortname: 'id',
+            sortname: 'step',
             viewrecords: true,
 //            rownumbers: true,
             gridview: true,
@@ -169,7 +178,7 @@
                     var name = grid.jqGrid('getCell', ids[i], 'id');
                     names.push(name);
                 }
-                alert ("Names: " + names.join(", ") + "; ids: " + ids.join(", "));
+                //alert ("Names: " + names.join(", ") + "; ids: " + ids.join(", "));
                 $("#names").html(names.join(", "));
                 var jsonData = JSON.stringify(names);
                 $.ajax({
@@ -180,7 +189,8 @@
                     dataType: "json",
                     success: function(msg)
                     {
-//                        alert(msg);
+                        //                        alert(msg);
+                        window.location.reload();
                     },
                     error: function (res, status, exeption)
                     {

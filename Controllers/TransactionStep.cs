@@ -64,6 +64,19 @@ namespace WineMan
             }
         }
 
+        public static string BuildSQLQuery(DateTime date, DateTime dateEnd, EShow showdone)
+        {
+            string dateStr = date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + " %";
+            string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
+            string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+            if (showdone == EShow.Show_Done)
+                sqlQuery += " AND Done=1";
+            else if (showdone == EShow.Show_NotDone)
+                sqlQuery += " AND Done=0";
+
+            return sqlQuery;
+        }
+
         public static List<TransactionStep> GetRecords(DateTime date, DateTime dateEnd, EShow showdone)
         {
             List<TransactionStep> txSteps = new List<TransactionStep>();
@@ -73,14 +86,7 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string dateStr = date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + " %";
-                    string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
-                    string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
-
-                    if (showdone == EShow.Show_Done)
-                        sqlQuery += " AND Done=1";
-                    else if (showdone == EShow.Show_NotDone)
-                        sqlQuery += " AND Done=0";
+                    string sqlQuery = BuildSQLQuery(date, dateEnd, showdone);
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {

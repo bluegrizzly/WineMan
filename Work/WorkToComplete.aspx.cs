@@ -23,6 +23,13 @@ namespace WineMan.Work
             DateTime.TryParse(txtDate.Text, out dd);
 
             Label_SelectedDate.Text = dd.ToString("dd MMM yyy");
+
+            if (Request.QueryString["mode"] != "close")
+            {
+                //System.Web.UI.HtmlControls.HtmlButton button = Master.FindControl("setToDone") as System.Web.UI.HtmlControls.HtmlButton;
+                //if (button!=null)
+                //    button.Visible = false;
+            }
         }
 
         protected void Button_Print_Click(object sender, EventArgs e)

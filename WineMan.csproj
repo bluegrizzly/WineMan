@@ -258,6 +258,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Work\WorkToComplete_Print.aspx" />
+    <Content Include="Work\WorkToComplete_PrintHTML.aspx" />
     <Content Include="Work\WorkToComplete.aspx" />
     <Content Include="zz_todo.txt" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
@@ -473,6 +474,13 @@
     <Compile Include="Work\WorkToComplete_Print.aspx.designer.cs">
       <DependentUpon>WorkToComplete_Print.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Work\WorkToComplete_PrintHTML.aspx.cs">
+      <DependentUpon>WorkToComplete_PrintHTML.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Work\WorkToComplete_PrintHTML.aspx.designer.cs">
+      <DependentUpon>WorkToComplete_PrintHTML.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Work\WorkToComplete.aspx.cs">
       <DependentUpon>WorkToComplete.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -510,6 +518,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Reports\Report_Transaction.rdlc" />
+    <EmbeddedResource Include="Reports\Report_WorkToComplete.rdlc">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

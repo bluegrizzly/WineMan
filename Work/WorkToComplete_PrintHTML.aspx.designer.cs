@@ -10,7 +10,7 @@
 namespace WineMan.Work {
     
     
-    public partial class WorkToComplete_Print {
+    public partial class WorkdToComplete_Print {
         
         /// <summary>
         /// form1 control.
@@ -22,48 +22,39 @@ namespace WineMan.Work {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// ScriptManager1 control.
+        /// Panel_Main control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
+        protected global::System.Web.UI.WebControls.Panel Panel_Main;
         
         /// <summary>
-        /// Button_Show control.
+        /// Label1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button_Show;
+        protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
-        /// Button_Print control.
+        /// Table_Content control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button_Print;
+        protected global::System.Web.UI.WebControls.Table Table_Content;
         
         /// <summary>
-        /// ReportViewer1 control.
+        /// btnPrint control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Microsoft.Reporting.WebForms.ReportViewer ReportViewer1;
-        
-        /// <summary>
-        /// ObjectDataSource1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ObjectDataSource ObjectDataSource1;
+        protected global::System.Web.UI.WebControls.Button btnPrint;
     }
 }

@@ -1,38 +1,27 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WorkToComplete_Print.aspx.cs" Inherits="WineMan.Work.WorkdToComplete_Print" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WorkToComplete_Print.aspx.cs" Inherits="WineMan.Work.WorkToComplete_Print" %>
+
+<%@ Register assembly="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" namespace="Microsoft.Reporting.WebForms" tagprefix="rsweb" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <style type="text/css">
-        .auto-style1 {
-            width: 155px;
-            height: 91px;
-        }
-    </style>
-
-    <script type = "text/javascript">
-        function PrintPanel() {
-            window.print();
-            
-        }
-    </script>
-
 </head>
-<body onload="DoPrint()">
+<body>
     <form id="form1" runat="server">
     <div>
     
-        <asp:Panel ID="Panel_Main" runat="server" Font-Names="Arial">
-            <img alt="" class="auto-style1" src="../images/index_logo.png" />
-            A FAIRE LE
-            <asp:Label ID="Label1" runat="server" Text="Label" Font-Bold="True" Font-Size="Larger"></asp:Label>
-            <br />
-            <asp:Table ID="Table_Content" runat="server">
-            </asp:Table>
-        </asp:Panel>
-    <asp:Button ID="btnPrint" runat="server" Text="Print" OnClientClick = "return PrintPanel();" />
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
+        </asp:ScriptManager>
+        <asp:Button ID="Button_Show" runat="server" OnClick="Button_Show_Click" Text="Show" />
+        <asp:Button ID="Button_Print" runat="server" Text="Print" />
+        <rsweb:ReportViewer ID="ReportViewer1" runat="server" Font-Names="Verdana" Font-Size="8pt" WaitMessageFont-Names="Verdana" WaitMessageFont-Size="14pt" Width="10.5in" Height="8.4in">
+            <LocalReport ReportEmbeddedResource="WineMan.Reports.Report_WorkToComplete.rdlc">
+            </LocalReport>
+        </rsweb:ReportViewer>
+        <asp:ObjectDataSource ID="ObjectDataSource1" runat="server" SelectMethod="GetData" TypeName="winemanDataSet2TableAdapters.customersTableAdapter"></asp:ObjectDataSource>
+    
     </div>
     </form>
 </body>
