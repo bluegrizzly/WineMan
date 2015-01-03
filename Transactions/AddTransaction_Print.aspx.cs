@@ -49,9 +49,7 @@ namespace WineMan.Transactions
         protected void Button2_Click(object sender, EventArgs e)
         {
             ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
-            
             reportPrint.Print();
-
         }
 
         private void FillData()

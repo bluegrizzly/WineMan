@@ -958,7 +958,7 @@ namespace WineMan.DataSets.DataSet_StepsTableAdapters {
             this._commandCollection = new global::MySql.Data.MySqlClient.MySqlCommand[1];
             this._commandCollection[0] = new global::MySql.Data.MySqlClient.MySqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT `id`, `transaction_id`, `step_id`, `date`, `done` FROM `transaction_step`";
+            this._commandCollection[0].CommandText = "SELECT id, transaction_id, step_id, `date`, done FROM transaction_step";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         

@@ -15,7 +15,7 @@
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
         <asp:Button ID="Button_Show" runat="server" OnClick="Button_Show_Click" Text="Show" />
-        <asp:Button ID="Button_Print" runat="server" Text="Print" />
+        <asp:Button ID="Button_Print" runat="server" Text="Print" OnClick="Button_Print_Click" />
         <rsweb:ReportViewer ID="ReportViewer1" runat="server" Font-Names="Verdana" Font-Size="8pt" WaitMessageFont-Names="Verdana" WaitMessageFont-Size="14pt" Width="10.5in" Height="8.4in">
             <LocalReport ReportEmbeddedResource="WineMan.Reports.Report_WorkToComplete.rdlc">
             </LocalReport>

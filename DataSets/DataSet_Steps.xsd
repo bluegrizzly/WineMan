@@ -31,7 +31,7 @@
                 </InsertCommand>
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="false">
-                    <CommandText>SELECT `id`, `transaction_id`, `step_id`, `date`, `done` FROM `transaction_step`</CommandText>
+                    <CommandText>SELECT id, transaction_id, step_id, `date`, done FROM transaction_step</CommandText>
                     <Parameters />
                   </DbCommand>
                 </SelectCommand>
