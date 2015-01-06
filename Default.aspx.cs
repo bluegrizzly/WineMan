@@ -16,5 +16,14 @@ namespace WineMan
             Calendar1.TodayDayStyle.BackColor = System.Drawing.Color.DeepSkyBlue;
          //   Calendar1.CssClass =
         }
+
+        protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
+        {
+            if (Holiday.IsHoliday(e.Day.Date))
+            {
+                e.Cell.BackColor = System.Drawing.Color.LightGray;
+                e.Day.IsSelectable = false;
+            }
+        }
     }
 }

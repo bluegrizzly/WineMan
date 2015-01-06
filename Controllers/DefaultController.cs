@@ -42,6 +42,19 @@ namespace WineMan.Controllers
             selectString += "</select>";
             return selectString;
         }
-        
+
+        [HttpGet]
+        public string StepSelect()
+        {
+            List<Step> allsteps = Step.GetAllRecords();
+            string selectString = "<select>";
+            foreach (Step step in allsteps)
+            {
+                selectString += "<option value='" + step.id + "'>" + step.name + "</option>";
+            }
+
+            selectString += "</select>";
+            return selectString;
+        }
 	}
 }

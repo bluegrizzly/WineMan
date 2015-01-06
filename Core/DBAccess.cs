@@ -25,7 +25,7 @@ namespace WineMan.Core
                     //
                     string retString = @"{";
                     if (sqlCmd == null)
-                        sqlCmd = "SELECT * FROM " + dbName;
+                        sqlCmd = "SELECT * FROM " + dbName + " ORDER BY id";
 
                     using (MySqlCommand command = new MySqlCommand(sqlCmd , con))
                     {
@@ -59,6 +59,7 @@ namespace WineMan.Core
                                     {
                                         reader.GetString(colomnNumber);
                                         string valueStr = reader.GetString(colomnNumber);
+                                        valueStr = valueStr.Replace("\r", "");
                                         retString += @"""" + valueStr + @""" ";
                                     }
                                     catch

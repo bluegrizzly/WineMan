@@ -62,7 +62,6 @@ namespace WineMan
         {
             List<Step> steps = new List<Step>();
             
-
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {

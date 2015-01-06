@@ -594,7 +594,9 @@ namespace WineMan.Transactions
         protected void Button_Print_Click(object sender, EventArgs e)
         {
             if (Label_TransactionID.Text != "-")
+            {
                 Response.Redirect("~/Transactions/AddTransaction_Print.aspx?Tx=" + Label_TransactionID.Text);
+            }
         }
     }
 }

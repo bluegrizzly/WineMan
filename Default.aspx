@@ -20,7 +20,7 @@
         <table class="auto-style2">
             <tr>
                 <td>
-        <asp:Calendar ID="Calendar1" runat="server" Enabled="False">
+        <asp:Calendar ID="Calendar1" runat="server" Enabled="False" OnDayRender="Calendar1_DayRender">
                         <SelectedDayStyle BackColor="#0099FF" />
                         <TodayDayStyle BackColor="#999999" />
                         <WeekendDayStyle BackColor="#EEEEEE" />

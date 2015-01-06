@@ -71,7 +71,7 @@ h3
 h4
 {
     font-size: 1.1em;
-    width: 47px;
+    width: 662px;
 }
 
 h5, h6
@@ -106,17 +106,22 @@ first child of the left and right table columns */
     background: #4b6c9e;
     width: 100%;
     z-index:9999;
+    top: 0px;
+    left: 1px;
 }
 
 .header h1
 {
+    border-style: none;
+    border-color: inherit;
+    border-width: medium;
     font-weight: 700;
     margin: 0px;
     padding: 0px 0px 0px 20px;
     color: #f9f9f9;
-    border: none;
     line-height: 2em;
     font-size: 2em;
+    height: 47px;
 }
 
 .main
@@ -254,7 +259,7 @@ div.accountInfo
     display: block;
     float: left;
     text-align: left;
-    width: auto;
+    width: 832px;
 }
 
 .loginDisplay

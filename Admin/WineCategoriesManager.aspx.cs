@@ -5,13 +5,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace WineMan
+namespace WineMan.Admin
 {
-    public partial class SiteMaster : System.Web.UI.MasterPage
+    public partial class WineCategoriesManager : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Label_Today.Text = DateTime.Now.ToString("MMMM dd yyyy");
+
         }
     }
 }

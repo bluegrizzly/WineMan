@@ -116,6 +116,7 @@
     <Content Include="Account\Register.aspx" />
     <Content Include="Admin\holidays.aspx" />
     <Content Include="Admin\WineBrandManager.aspx" />
+    <Content Include="Admin\WineCategoriesManager.aspx" />
     <Content Include="Admin\WineTypesManager.aspx" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -343,6 +344,13 @@
     </Compile>
     <Compile Include="Admin\WineBrandManager.aspx.designer.cs">
       <DependentUpon>WineBrandManager.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\WineCategoriesManager.aspx.cs">
+      <DependentUpon>WineCategoriesManager.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\WineCategoriesManager.aspx.designer.cs">
+      <DependentUpon>WineCategoriesManager.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\WineTypesManager.aspx.cs">
       <DependentUpon>WineTypesManager.aspx</DependentUpon>

@@ -1,56 +1,83 @@
-﻿<%@ Page Title="Customers" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeBehind="Customers.aspx.cs" Inherits="WineMan.Customers.Customers" %>
-
-<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="WineCategoriesManager.aspx.cs" Inherits="WineMan.Admin.WineCategoriesManager" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+    <style type="text/css">
+        .auto-style1 {}
+    </style>
 </asp:Content>
-<asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-       Customers
+       Wine Categories Manager
     </h2>
 
-        <asp:Panel ID="Panel1" runat="server" ScrollBars="Horizontal" Width="100%">
-    <table id="jQGridDemo">
+    <table class="auto-style1">
+        <tr>
+            <td rowspan="3" valign="top">
+                <div id="jQGridDemoPager"></div>
+                <table id="jQGridDemo">
+                </table>
+            </td>
+            <td valign="top" class="auto-style1">
+                </td>
+        </tr>
+        <tr>
+            <td valign="top" align="left" class="auto-style1" >
+                <strong>Notes:</strong><br />
+                * Step 1 is necessary<br />
+                * Days are from the start (step1)<br />
+                * The name need to be the same&nbsp; for the same recipe</td>
+        </tr>
+        <tr>
+            <td valign="top">
+            </td>
+        </tr>
     </table>
-    <div id="jQGridDemoPager">
-    </div>
-        </asp:Panel>
+
     <script type="text/javascript">
         jQuery("#jQGridDemo").jqGrid({
-            url: '<%=ResolveUrl("~/Customers/CustomersHandler.ashx") %>',
+            url: '<%=ResolveUrl("~/Admin/AdminHandler.ashx?db=wine_categories") %>',
             datatype: "json",
-            colNames: ['Id', 'First Name', 'Last Name', 'Address', 'City', 'Province', 'Postal Code', 'Email', 'Tel', 'Tel Bur', 'Fax', 'Language'],
+            colNames: ['Id', 'Name', 'Cost', 'Step', 'Days', 'Symbol'],
             colModel: [
-                        { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int'},
-   		                { name: 'first_name', index: 'first_name', width: 100, stype: 'text', sortable: true, editable: true },
-   		                { name: 'last_name', index: 'last_name', width: 120, sortable: true, editable: true },
-                        { name: 'address', index: 'address', width: 100, editable: true },
-                        { name: 'city', index: 'city', width: 80, editable: true },
-                        { name: 'province', index: 'province', width: 30, editable: true },
-                        { name: 'postal_code', index: 'postal_code', width: 50, editable: true },
-                        { name: 'email', index: 'email', width: 100, editable: true },
-                        { name: 'telephone', index: 'telephone', width: 70, editable: true },
-                        { name: 'telephone_bur', index: 'telephone_bur', width: 70, editable: true },
-                        { name: 'telephone_fax', index: 'telephone_fax', width: 65, editable: true },
-                        {
-                            name: 'language', width: 50, index: 'language',
+                        { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int', editable: false, hidden: false },
+                        { name: 'name', index: 'name', width: 200, stype: 'text', sortable: true, editable: true },
+                        { name: 'cost', index: 'cost', width: 60, stype: 'text', sortable: true, editable: true },
+                        { name: 'step', index: 'step', width: 200,
+                            sortable: true,
+                            stype: 'select',
+                            align: 'center',
+                            editable: true,
+                            edittype: 'select',
+                            //formatter: 'select',
+                            editoptions: { aysnc: false, dataUrl: "/Default/StepSelect" }, editrules: { required: true },
+                            searchoptions: { dataUrl: "/Default/StepSelect" }
+                        },
+                        { name: 'days', index: 'days', width: 60, stype: 'text', sortable: true, editable: true },
+                        { name: 'symbol', width: 50, index: 'symbol',
                             align: 'center',
                             editable: true,
                             edittype:'select',
                             stype: 'select',
-                            formatter:'select', editoptions:{value:"0:English;1:French"} 
+                            formatter:'select', editoptions:{value:"W:W;R:R;X:X;F:F;RQ:RQ;B:B;S:S"} 
                         }
-                    ],
-            rowNum: 20,
+                        ],
+            rowNum: 50,
             height: 250,
+            multiselect: false,
             mtype: 'GET',
             loadonce: true,
-            rowList: [20, 50, 200, 500],
+            rowList: [50, 100, 500],
             pager: '#jQGridDemoPager',
             sortname: 'id',
             viewrecords: true,
-            sortorder: 'desc',
-            caption: "Customers Details",
-            editurl: '<%=ResolveUrl("~/Customers/CustomersHandler.ashx") %>'
+            sortorder: 'asc',
+            caption: "Wine Categories",
+            editurl: '<%=ResolveUrl("~/Admin/AdminHandler.ashx?db=wine_categories") %>'
         });
+
+        function getStepsValues()
+        {
+
+        }
 
         $('#jQGridDemo').jqGrid('navGrid', '#jQGridDemoPager',
                    {
@@ -61,7 +88,9 @@
                        searchtext: "Search",
                        addtext: "Add",
                        edittext: "Edit",
-                       deltext: "Delete"
+                       deltext: "Delete",
+                       closeAfterAdd: true,
+                       closeAfterEdit: true
                    },
                    {   //EDIT
                        //                       height: 300,
@@ -71,17 +100,9 @@
                        //                       dataheight: 280,
                        closeOnEscape: true,//Closes the popup on pressing escape key
                        reloadAfterSubmit: true,
+                       closeAfterAdd: true,
+                       closeAfterEdit: true,
                        drag: true,
-                       width: 400,
-                       beforeShowForm: function ($form) {
-                           $form.find("td.DataTD").each(function () {
-                               var html = $(this).html().trim();  // &nbsp;<span>&nbsp;</span>
-                               if (html.substr(0, 6) === "&nbsp;" && html.trim().length > 6) {
-                                   $(this).html(html.substr(6));
-                               }
-                           });
-                           $form.closest(".ui-jqdialog").find(".ui-jqdialog-titlebar-close").attr("tabindex", "-1");
-                       },
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
 
@@ -102,8 +123,9 @@
                        }
                    },
                    {//ADD portion
+                       closeOnEscape: true,//Closes the popup on pressing escape key
                        closeAfterAdd: true,//Closes the add window after add
-                       width: 400,
+                       closeAfterEdit: true,
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
                                $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
@@ -113,13 +135,13 @@
                                $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
                                return [false, response.responseText]
                            }
+                           $('#jQGridDemo').autoclose;
                        }
                    },
                    {   //DELETE
                        closeOnEscape: true,
                        closeAfterDelete: true,
                        reloadAfterSubmit: true,
-                       closeOnEscape: true,
                        drag: true,
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
@@ -142,11 +164,9 @@
                    },
                    {//SEARCH
                        closeOnEscape: true
-
                    }
             );
 
     </script>
-
 
 </asp:Content>

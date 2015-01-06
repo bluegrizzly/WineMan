@@ -14,6 +14,7 @@ namespace WineMan.Transactions
     public partial class AddTransaction_Print : System.Web.UI.Page
     {
         Transaction m_tx;
+        Settings m_Settings = new Settings();
         protected void Page_Load(object sender, EventArgs e)
         {
             int txID=-1;
@@ -26,6 +27,13 @@ namespace WineMan.Transactions
                     System.Diagnostics.Debug.Assert(parsed);
                     m_tx = Transaction.GetRecord(txID);
                     FillData();
+
+                    if (m_Settings.auto_print)
+                    {
+                        ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
+                        reportPrint.Print();
+                        Response.Redirect(Request.UrlReferrer.ToString());
+                    }
                 }
                 else
                 {

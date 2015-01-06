@@ -11,6 +11,9 @@ Time
 
 TODO:
 =============
+* Be able to complete a transaction
+
+
 - send an email with the transaction (and add pub)
 - Admin:
     - Categories/recettes
@@ -30,8 +33,6 @@ TODO:
 
 Programming tasks
 -----------------
-- Work to complete Set to Done is working but do not refresh
-- Add transacvtion bug with "" of category
 - add a red button when the tx is dirty
 
 Questions
@@ -51,6 +52,7 @@ Questions
     - heure de sortie? ce n'est pas l'heure du rendez vous?
 - what date format you prefer?
 - location?  quel genre de champs et qui va le setter?
+- Quel est la liste des symboles
 
 TEST:
 --------------------------

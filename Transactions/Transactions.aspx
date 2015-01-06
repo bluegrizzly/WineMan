@@ -57,11 +57,11 @@
                                     formatter: "checkbox", formatoptions: { disabled: true }
                                 }
                             ],
-                    rowNum: 10,
+                    rowNum: 20,
                     height: 250,
                     mtype: 'GET',
                     loadonce: true,
-                    rowList: [10, 20, 50, 100],
+                    rowList: [20, 50, 200, 500],
                     pager: '#jQGridDemoPager',
                     sortname: 'id',
                     viewrecords: true,

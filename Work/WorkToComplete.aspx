@@ -135,7 +135,7 @@
 //            rownumbers: true,
             gridview: true,
             sortorder: 'desc',
-            caption: "Transactions to complete",
+            caption: "Transactions steps",
             editurl: '<%=ResolveUrl("~/Work/WorkToCompleteHandler.ashx") %>'
         });
 
