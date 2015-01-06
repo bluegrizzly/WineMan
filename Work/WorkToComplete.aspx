@@ -100,15 +100,12 @@
             colModel: [
                         { name: 'id', index: 'id', width: 10, stype: 'text', sortable: true, sorttype: 'int', hidden: true },
                         { name: 'txid', index: 'txid', width: 40, stype: 'text', sortable: true, sorttype: 'int' },
-                        {
-                            name: 'date', index: 'date', width: 80, stype: 'text', sortable: true,
+                        { name: 'date', index: 'date', width: 80, stype: 'text', sortable: true,
                             formatter: 'date',
                             datefmt: 'yyyy/MM/dd',
-                            formatoptions: {
-                                srcformat: 'd/m/Y H:i:s',
-                                newformat: 'Y/M/d',
-                                defaultValue: null 
-                                    },
+                            formatoptions: { srcformat: 'd/m/Y H:i:s',
+                                             newformat: 'Y/M/d',
+                                             defaultValue: null },
                         },
    		                { name: 'step', index: 'step', width: 70, sortable: true },
    		                { name: 'brand', index: 'brand', width: 80, sortable: true },

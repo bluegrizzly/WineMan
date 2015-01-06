@@ -33,7 +33,10 @@ namespace WineMan.Transactions
             {
                 bool showCompleted = context.Request.QueryString["showcompleted"] == "true";
 
-                List<Transaction> allTx = Transaction.GetAllRecords(showCompleted);
+                int filterInt;
+                bool parsed = Int32.TryParse(context.Request.QueryString["filter"], out filterInt);
+
+                List<Transaction> allTx = Transaction.GetAllRecords(showCompleted, (Transaction.FilterTypes )filterInt);
                 m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
 
                 //if (showCompleted )

@@ -22,6 +22,15 @@ namespace WineMan
 
         private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
 
+        public enum FilterTypes
+        {
+            All,
+            Today,
+            ThisWeek,
+            ThisMonth,
+            Last4Weeks
+        }
+
         private void FillRecord(MySqlDataReader dr)
         {
             if (dr.HasRows)
@@ -154,7 +163,7 @@ namespace WineMan
             return transaction;
         }
 
-        public static List<Transaction> GetAllRecords(bool includeCompleted)
+        public static List<Transaction> GetAllRecords(bool includeCompleted, FilterTypes filter)
         {
             List<Transaction> transactions = new List<Transaction>();
             try
@@ -165,6 +174,30 @@ namespace WineMan
                     string sqlQuery = "SELECT * FROM " + c_dbName;
                     if (!includeCompleted)
                         sqlQuery += " WHERE done=0";
+
+                    if (filter != FilterTypes.All)
+                    {
+                        if (!includeCompleted)
+                            sqlQuery += " AND";
+                        else
+                            sqlQuery += " WHERE";
+
+                        switch(filter)
+                        { 
+                            case FilterTypes.Today:
+                                sqlQuery += " CAST(date_creation AS DATE) = CAST(CURDATE() AS DATE)";
+                                break;
+                            case FilterTypes.ThisWeek:
+                                sqlQuery += " WEEK (date_creation) = WEEK( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
+                                break;
+                            case FilterTypes.ThisMonth:
+                                sqlQuery += " MONTH (date_creation) = MONTH( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
+                                break;
+                            case FilterTypes.Last4Weeks:
+                                sqlQuery += " WHERE date_creation > DATE_ADD( now( ) , INTERVAL -1 MONTH ) ";
+                                break;
+                        }
+                    }
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {

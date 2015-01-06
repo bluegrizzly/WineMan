@@ -29,6 +29,16 @@
             <fieldset>
                 <asp:CheckBox ID="ShowCompletedCheckBox" runat="server" Text="Show completed tx" AutoPostBack="True" />
 &nbsp;</fieldset>
+        <fieldset>
+            Filter:<asp:DropDownList ID="DropDownList_Filter" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged" AutoPostBack="True">
+                <asp:ListItem Value="0">All</asp:ListItem>
+                <asp:ListItem Value="1">Today</asp:ListItem>
+                <asp:ListItem Value="2">This Week</asp:ListItem>
+                <asp:ListItem Value="3">This Month</asp:ListItem>
+                <asp:ListItem Value="4">Last 4 Weeks</asp:ListItem>
+            </asp:DropDownList>
+        </fieldset>
+
         </td>
         <td>
             <table id="jQGridDemo">
@@ -37,7 +47,7 @@
             </div>
             <script type="text/javascript">
                 jQuery("#jQGridDemo").jqGrid({
-                    url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx?showcompleted=") %>' + document.getElementById('<%= ShowCompletedCheckBox.ClientID%>').checked,
+                    url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx?showcompleted=") %>' + document.getElementById('<%= ShowCompletedCheckBox.ClientID%>').checked +"&filter=" + document.getElementById('<%= DropDownList_Filter.ClientID%>').value,
                     datatype: "json",
                     colNames: ['ID', 'Customer', 'Brand', 'Type', 'Category', 'Creation Date', 'Bottling Date', 'Station', 'Done'],
                     colModel: [
@@ -46,8 +56,27 @@
    		                        { name: 'wine_brand_id', index: 'wine_brand_id', width: 70, stype: 'text', sortable: true },
                                 { name: 'wine_type_id', index: 'wine_type_id', width: 70, stype: 'text', sortable: true},
                                 { name: 'wine_category_id', index: 'wine_category_id', width: 70, stype: 'text', sortable: true},
-   		                        { name: 'date_creation', index: 'date_creation', width: 130, stype: 'text', sortable: true },
-                                { name: 'date_bottling', index: 'date_bottling', width: 130, stype: 'text', sortable: true },
+                                {
+                                    name: 'date_creation', index: 'date_creation', width: 80, stype: 'text', sortable: true,
+                                    formatter: 'date',
+                                    datefmt: 'yyyy/MM/dd',
+                                    formatoptions: {
+                                        srcformat: 'd/m/Y H:i:s',
+                                        newformat: 'Y/M/d',
+                                        defaultValue: null
+                                    },
+                                },
+                                {
+                                    name: 'date_bottling', index: 'date_bottling', width: 130, stype: 'text', sortable: true,
+                                    formatter: 'date',
+                                    datefmt: 'yyyy/MM/dd',
+                                    formatoptions: {
+                                        srcformat: 'd/m/Y H:i:s',
+                                        newformat: 'Y/M/d H:i:s',
+                                        defaultValue: null
+                                    },
+                                },
+
                                 { name: 'bottling_station', index: 'bottling_station', width: 40, sortable: true, align: 'center' },
                                 {
                                     name: 'done', width: 30, index: 'done',
