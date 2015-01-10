@@ -74,6 +74,29 @@ namespace WineMan
             return ret;
         }
 
+        public static List<Customer> GetRecordBySqlQuery(string sqlQuery)
+        {
+            List<Customer> ret = new List<Customer>();
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                {
+                    con.Open();
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        Customer custo = new Customer();
+                        custo.FillData(dr);
+                        ret.Add(custo);
+                    }
+                }
+                con.Close();
+            }
+            return ret;
+        }
+
         public static Customer GetRecordByID(string id)
         {
             Customer ret = new Customer();

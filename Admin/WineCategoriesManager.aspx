@@ -36,6 +36,7 @@
         jQuery("#jQGridDemo").jqGrid({
             url: '<%=ResolveUrl("~/Admin/AdminHandler.ashx?db=wine_categories") %>',
             datatype: "json",
+            ajaxSelectOptions: { cache: false },
             colNames: ['Id', 'Name', 'Cost', 'Step', 'Days', 'Symbol'],
             colModel: [
                         { name: 'id', index: 'id', width: 20, stype: 'text', sortable: true, sorttype: 'int', editable: false, hidden: false },

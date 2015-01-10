@@ -9,7 +9,7 @@ namespace WineMan
     public class Transaction : BaseController
     {
         const string c_dbName = "transactions";
-        public int id;
+        public int id=-1;
         public int client_id;
         public int wine_brand_id;
         public int wine_type_id;
@@ -146,6 +146,7 @@ namespace WineMan
                         MySqlDataReader dr = cmd.ExecuteReader();
 
                         dr.Read();
+                        if (dr.HasRows)
                         {
                             transaction.FillRecord(dr);
                         }
@@ -163,7 +164,7 @@ namespace WineMan
             return transaction;
         }
 
-        public static List<Transaction> GetAllRecords(bool includeCompleted, FilterTypes filter)
+        public static List<Transaction> GetAllRecords(bool includeCompleted, FilterTypes filter, string filterCustomer)
         {
             List<Transaction> transactions = new List<Transaction>();
             try
@@ -172,32 +173,60 @@ namespace WineMan
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
                     string sqlQuery = "SELECT * FROM " + c_dbName;
+                    string sqlQueryWhere="";
                     if (!includeCompleted)
-                        sqlQuery += " WHERE done=0";
+                        sqlQueryWhere += " WHERE done=0";
 
                     if (filter != FilterTypes.All)
                     {
-                        if (!includeCompleted)
-                            sqlQuery += " AND";
+                        if (sqlQueryWhere.Length == 0)
+                            sqlQueryWhere += " AND";
                         else
-                            sqlQuery += " WHERE";
+                            sqlQueryWhere += " WHERE";
 
                         switch(filter)
                         { 
                             case FilterTypes.Today:
-                                sqlQuery += " CAST(date_creation AS DATE) = CAST(CURDATE() AS DATE)";
+                                sqlQueryWhere += " CAST(date_creation AS DATE) = CAST(CURDATE() AS DATE)";
                                 break;
                             case FilterTypes.ThisWeek:
-                                sqlQuery += " WEEK (date_creation) = WEEK( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
+                                sqlQueryWhere += " WEEK (date_creation) = WEEK( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
                                 break;
                             case FilterTypes.ThisMonth:
-                                sqlQuery += " MONTH (date_creation) = MONTH( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
+                                sqlQueryWhere += " MONTH (date_creation) = MONTH( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
                                 break;
                             case FilterTypes.Last4Weeks:
-                                sqlQuery += " WHERE date_creation > DATE_ADD( now( ) , INTERVAL -1 MONTH ) ";
+                                sqlQueryWhere += " WHERE date_creation > DATE_ADD( now( ) , INTERVAL -1 MONTH ) ";
                                 break;
                         }
                     }
+
+                    if (filterCustomer != null && filterCustomer.Length > 0)
+                    {
+                        List<Customer> customers = CustomersHelper.GetSimilarCustomers(filterCustomer);
+
+                        bool firstCase=true;
+                        foreach (Customer custo in customers)
+                        {
+                            if (firstCase)
+                            {
+                                if (sqlQueryWhere.Length != 0)
+                                    sqlQueryWhere += " AND (";
+                                else
+                                    sqlQueryWhere += " WHERE (";
+                                firstCase = false;
+                            }
+                            else
+                                sqlQueryWhere += (" OR");
+
+                            sqlQueryWhere += " client_id = " + custo.id.ToString();
+                        }
+                        if (customers.Count > 0)
+                            sqlQueryWhere += ")";
+                        
+                    }
+
+                    sqlQuery += sqlQueryWhere;
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {

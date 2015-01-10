@@ -19,42 +19,49 @@
     <table style="width:100%;">
     <tr>
         <td class="auto-style3" width="120"> 
-            <div id="div1"></div>
-            <script>
-//                $('#div1').load('/Transactions/LeftMenu.aspx');
-            </script>
             <fieldset>
                 <input id="editRow" type="button" value="Edit tx"/>
             </fieldset>
             <fieldset>
                 <asp:CheckBox ID="ShowCompletedCheckBox" runat="server" Text="Show completed tx" AutoPostBack="True" />
 &nbsp;</fieldset>
+        </td>
+        <td valign="top">
         <fieldset>
-            Filter:<asp:DropDownList ID="DropDownList_Filter" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged" AutoPostBack="True">
+            <asp:Label ID="Label3" runat="server" Text="Dates:"></asp:Label>
+            <asp:DropDownList ID="DropDownList_Filter" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged" AutoPostBack="True">
                 <asp:ListItem Value="0">All</asp:ListItem>
                 <asp:ListItem Value="1">Today</asp:ListItem>
                 <asp:ListItem Value="2">This Week</asp:ListItem>
                 <asp:ListItem Value="3">This Month</asp:ListItem>
                 <asp:ListItem Value="4">Last 4 Weeks</asp:ListItem>
             </asp:DropDownList>
+            &nbsp; <asp:Label ID="Label2" runat="server" Text="Transaction ID:"></asp:Label>
+&nbsp;<asp:TextBox ID="TextBox_TxIDSearch" runat="server" AutoPostBack="True" Width="37px"></asp:TextBox>
+<asp:Button ID="Button_ClearTxID" runat="server" OnClick="Button_ClearTxID_Click" Text="X" Width="21px" />
+            &nbsp;
+            <asp:Label ID="Label1" runat="server" Text="Customer: "></asp:Label>
+            <asp:TextBox ID="TextBox_CustomerSearch" runat="server" AutoPostBack="True"></asp:TextBox>
+            <asp:Button ID="Button_ClearCustomer" runat="server" OnClick="Button_ClearCustomer_Click" Text="X" Width="21px" />
         </fieldset>
-
-        </td>
-        <td>
             <table id="jQGridDemo">
             </table>
             <div id="jQGridDemoPager">
             </div>
             <script type="text/javascript">
                 jQuery("#jQGridDemo").jqGrid({
-                    url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx?showcompleted=") %>' + document.getElementById('<%= ShowCompletedCheckBox.ClientID%>').checked +"&filter=" + document.getElementById('<%= DropDownList_Filter.ClientID%>').value,
+                    url: '<%=ResolveUrl("~/Transactions/TransactionHandler.ashx?showcompleted=") %>' +
+                        document.getElementById('<%= ShowCompletedCheckBox.ClientID%>').checked + 
+                        "&filterdate=" + document.getElementById('<%= DropDownList_Filter.ClientID%>').value +
+                        "&filtercustomer=" + document.getElementById('<%= TextBox_CustomerSearch.ClientID%>').value +
+                        "&filtertxid=" + document.getElementById('<%= TextBox_TxIDSearch.ClientID%>').value,
                     datatype: "json",
                     colNames: ['ID', 'Customer', 'Brand', 'Type', 'Category', 'Creation Date', 'Bottling Date', 'Station', 'Done'],
                     colModel: [
                                 { name: 'id', index: 'id', width: 50, stype: 'text', sortable: true, sorttype: 'int'},
-   		                        { name: 'client_id', index: 'client_id', width: 100, sortable: true },
-   		                        { name: 'wine_brand_id', index: 'wine_brand_id', width: 70, stype: 'text', sortable: true },
-                                { name: 'wine_type_id', index: 'wine_type_id', width: 70, stype: 'text', sortable: true},
+   		                        { name: 'client_id', index: 'client_id', width: 140, sortable: true },
+   		                        { name: 'wine_brand_id', index: 'wine_brand_id', width: 100, stype: 'text', sortable: true },
+                                { name: 'wine_type_id', index: 'wine_type_id', width: 100, stype: 'text', sortable: true},
                                 { name: 'wine_category_id', index: 'wine_category_id', width: 70, stype: 'text', sortable: true},
                                 {
                                     name: 'date_creation', index: 'date_creation', width: 80, stype: 'text', sortable: true,
@@ -67,12 +74,12 @@
                                     },
                                 },
                                 {
-                                    name: 'date_bottling', index: 'date_bottling', width: 130, stype: 'text', sortable: true,
+                                    name: 'date_bottling', index: 'date_bottling', width: 120, stype: 'text', sortable: true,
                                     formatter: 'date',
                                     datefmt: 'yyyy/MM/dd',
                                     formatoptions: {
                                         srcformat: 'd/m/Y H:i:s',
-                                        newformat: 'Y/M/d H:i:s',
+                                        newformat: 'Y/M/d H:i',
                                         defaultValue: null
                                     },
                                 },

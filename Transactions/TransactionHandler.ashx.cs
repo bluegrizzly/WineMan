@@ -32,20 +32,27 @@ namespace WineMan.Transactions
             else
             {
                 bool showCompleted = context.Request.QueryString["showcompleted"] == "true";
-
+                string transactionIDStr = context.Request.QueryString["filtertxid"];
                 int filterInt;
-                bool parsed = Int32.TryParse(context.Request.QueryString["filter"], out filterInt);
+                bool parsed = Int32.TryParse(context.Request.QueryString["filterdate"], out filterInt);
 
-                List<Transaction> allTx = Transaction.GetAllRecords(showCompleted, (Transaction.FilterTypes )filterInt);
-                m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
-
-                //if (showCompleted )
-                //    DBAccess.GetJSONRecords(context, dbName);
-                //else
-                //{
-                //    string sqlCmd = "SELECT * FROM " + dbName + " WHERE done=0";
-                //    DBAccess.GetJSONRecords(context, dbName, sqlCmd);
-                //}
+                int txID=-1;
+                if (Int32.TryParse(transactionIDStr, out txID))
+                {
+                    List<Transaction> allTx = new List<Transaction>();
+                    Transaction tx = Transaction.GetRecord(txID);
+                    if (tx.id >= 0)
+                    {
+                        allTx.Add(tx);
+                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
+                    }
+                }
+                else
+                {
+                    List<Transaction> allTx = Transaction.GetAllRecords(showCompleted, (Transaction.FilterTypes)filterInt, 
+                                                                        context.Request.QueryString["filtercustomer"]);
+                    m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
+                }
             }
         }
 

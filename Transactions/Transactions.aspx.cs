@@ -18,5 +18,15 @@ namespace WineMan.Transactions
         {
 
         }
+
+        protected void Button_ClearCustomer_Click(object sender, EventArgs e)
+        {
+            TextBox_CustomerSearch.Text = "";
+        }
+
+        protected void Button_ClearTxID_Click(object sender, EventArgs e)
+        {
+            TextBox_TxIDSearch.Text = "";
+        }
     }
 }

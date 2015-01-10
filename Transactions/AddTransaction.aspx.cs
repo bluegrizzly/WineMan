@@ -148,7 +148,7 @@ namespace WineMan.Transactions
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static List<string> GetAutoCompleteData(string pre)
         {
-            return CustomersHelper.GetSimilarCustomers(pre);
+            return CustomersHelper.GetSimilarCustomersString(pre);
         }
 
         private void SelectCustomer(string name)

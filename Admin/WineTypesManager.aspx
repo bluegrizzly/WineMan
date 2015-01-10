@@ -39,12 +39,14 @@
             url: '<%=ResolveUrl("~/Admin/AdminHandler.ashx?db=wine_types") %>',
             //ajaxSelectOptions: { type: "GET" },
             datatype: 'json',
+            ajaxSelectOptions: { cache: false },
             colNames: ['Id', 'Name', 'Brand', 'Category', 'Active'],
             colModel: [
                         { name: 'id', index: 'id', width: 20, stype: 'int', sortable: true, sorttype: 'int', hidden: false },
                         { name: 'name', index: 'name', width: 200, stype: 'text', sortable: true, editable: true },
                         {
                             name: 'brand_id', index: 'brand_id', width: 200,
+                            search:true,
                             sortable: true,
                             stype:'select',
                             align: 'center',
@@ -56,6 +58,7 @@
                         },
                         {   
                             name: 'category_id', index: 'category_id', width: 200,
+                            search: true,
                             sortable: true,
                             stype: 'select',
                             align: 'center',
