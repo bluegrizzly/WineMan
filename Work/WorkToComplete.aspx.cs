@@ -30,6 +30,17 @@ namespace WineMan.Work
                 //if (button!=null)
                 //    button.Visible = false;
             }
+
+            if (!IsPostBack)
+            {
+                DropDownList_FilterStep.Items.Clear();
+                List<Step> steps = Step.GetAllRecords();
+                DropDownList_FilterStep.Items.Add("All");
+                foreach (Step step in steps)
+                {
+                    DropDownList_FilterStep.Items.Add(step.name);
+                }
+            }
         }
 
         protected void Button_Print_Click(object sender, EventArgs e)

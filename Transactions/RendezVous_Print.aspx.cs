@@ -22,6 +22,14 @@ namespace WineMan.Transactions
         {
             TransactionsHelper txHelper = new TransactionsHelper();
 
+            if (!IsPostBack)
+            {
+                if (Request.UrlReferrer != null)
+                    ViewState["RefUrl"] = Request.UrlReferrer.ToString();
+                else
+                    Button_Back.Enabled = false;
+            }
+
             // Get the data 
             string dateStr = Request.QueryString["date"];
             DateTime dateStart = DateTime.Now;
@@ -100,6 +108,11 @@ namespace WineMan.Transactions
                     Table_Content.Rows.Add(tRow);
                 }
             }
+        }
+
+        protected void Button_Back_Click(object sender, EventArgs e)
+        {
+            Response.Redirect(ViewState["RefUrl"].ToString());
         }
     }
 }

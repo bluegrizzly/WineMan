@@ -16,11 +16,7 @@ TODO:
 
 - send an email with the transaction (and add pub)
 - Admin:
-    - Categories/recettes
-    - Steps
-- Page Work to complete
-    - Voir les transaction par intervale de temps 
-        - implement TransactionStep.GetRecords  avec le dateEnd
+    - only for adminitrator
 - Ajouter tous les champs a une transaction 
     location
 *- pouvoir reseter une date de depart sur une transaction en retard
@@ -63,31 +59,6 @@ Test1
     - select
 - Modify
   
-
-
-FEATURE:
---------------------------
-- Feuille de Transaction bilingue avec le code du client
-
-- Add transaction
-    - Rendezvous: Cannot select a rendez vous that is before the wine completed date.
-    - Rendezvous: Will automatically select a next non-holiday date
-    - Choosing a customer: Can select a customer by phone or name of first name
-    - Choosing a customer: You can see the name of the clients and phone number 
-
-- All transaction
-    - You can toggle to see all transactions or only the non completed ones (default)
-
-- Work to complete page 
-    - Show late work toggle
-    - Show work done toggle
-
-
--Admin
-    - Can add/modify/edit holidays. The holidays cannot be selected by rendez vous.
-    - Can add/modify/edit Wine Brand, Type
-
-- Print
-    - transaction pour client
-    - work to do
-    - rendez vous
+Test2
+- Test filters in transaction
+- Test filters in 

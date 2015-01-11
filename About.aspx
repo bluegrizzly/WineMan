@@ -26,10 +26,12 @@
 - All transactions
     - You can toggle to see all transactions or only the non completed ones (default)
     - You can sort the transaction with some filters like &quot;last week&quot;
+    - Filtering based on customer and transaction ID
 
 - Work to complete page 
     - Show late work toggle
     - Show work done toggle
+    - Filtering based on Steps
 
 - Customers
     - Can add/remove/edit customers

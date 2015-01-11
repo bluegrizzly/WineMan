@@ -12,16 +12,16 @@ namespace WineMan
         List<Step> m_Steps = new List<Step>();
         const string c_dbTransactionStepName = "transaction_step";
 
-        public List<TransactionStep> GetAllStepsOfThisDay(DateTime dateStart, DateTime dateEnd, bool showlate, EShow showdone)
+        public List<TransactionStep> GetAllStepsOfThisDay(DateTime dateStart, DateTime dateEnd, bool showlate, EShow showdone, int stepID)
         {
             List<TransactionStep> steps = new List<TransactionStep> ();
-            steps = TransactionStep.GetRecords(dateStart, dateEnd, showdone);
+            steps = TransactionStep.GetRecords(dateStart, dateEnd, showdone, stepID);
 
             if (showlate)
             {
                 List<TransactionStep> stepsLate;
                 DateTime oldDate = new DateTime (1,1,1);
-                stepsLate = TransactionStep.GetRecords(oldDate, dateStart, EShow.Show_NotDone);
+                stepsLate = TransactionStep.GetRecords(oldDate, dateStart, EShow.Show_NotDone, stepID);
                 steps.AddRange(stepsLate);
             }
             return steps;

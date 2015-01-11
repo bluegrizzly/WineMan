@@ -249,17 +249,17 @@
                         <td class="auto-style23" colspan="2">
                             <p>
                                 Transaction ID:
-                                <asp:Label ID="Label_TransactionID" runat="server" DefaultValue="0" Name="TxID" Text="Label"></asp:Label>
+                                <asp:Label ID="Label_TransactionID" runat="server" DefaultValue="0" Name="TxID" Text="Label" Font-Size="Large" style="font-weight: 700"></asp:Label>
+                                <br />
                                 <br />
                                 <asp:Button ID="Button_Commit" runat="server" CausesValidation="False" OnClick="Button_Commit_Click" Text="Create" UseSubmitBehavior="False" />
                                 <asp:Button ID="Button_Print" runat="server" OnClick="Button_Print_Click" Text="Print" />
+                                <asp:Button ID="Button_SendEmail" runat="server" OnClick="Button_SendEmail_Click" Text="Send Email" Width="81px" />
                             </p>
                         </td>
                     </tr>
                 </table>
             </asp:Panel>
-
-
 
         </td>
         <td class="auto-style13" colspan="2" > 

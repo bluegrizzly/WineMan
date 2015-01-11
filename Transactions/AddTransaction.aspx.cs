@@ -84,6 +84,7 @@ namespace WineMan.Transactions
 
             Button_Commit.Enabled = (CheckBox_1.Checked && CheckBox_2.Checked && CheckBox_3.Checked);
             Button_Print.Enabled = (Label_TransactionID.Text != "-");
+            Button_SendEmail.Enabled = Button_Print.Enabled;
         }
         private void SaveData()
         {
@@ -494,6 +495,7 @@ namespace WineMan.Transactions
                 Label_TransactionID.Text = m_TxID.ToString();
                 Button_Commit.Text = "Modify";
                 Button_Print.Enabled = true;
+                Button_SendEmail.Enabled = true;
             }
             else if (Label_TransactionID.Text != "-")
             {
@@ -502,11 +504,13 @@ namespace WineMan.Transactions
                 
                 Button_Commit.Text = "Modify";
                 Button_Print.Enabled = true;
+                Button_SendEmail.Enabled = true;
             }
             else
             {
                 Button_Commit.Text = "Create";
                 Button_Print.Enabled = false;
+                Button_SendEmail.Enabled = false;
             }
         }
 
@@ -627,6 +631,14 @@ namespace WineMan.Transactions
             if (Label_TransactionID.Text != "-")
             {
                 Response.Redirect("~/Transactions/AddTransaction_Print.aspx?Tx=" + Label_TransactionID.Text);
+            }
+        }
+
+        protected void Button_SendEmail_Click(object sender, EventArgs e)
+        {
+            if (Label_TransactionID.Text != "-")
+            {
+                Utils.MessageBox(this, "Not yet implemented");  
             }
         }
     }

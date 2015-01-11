@@ -48,9 +48,13 @@ namespace WineMan.Work
 
                     bool showlate = context.Request.QueryString["showlate"] == "true"?true : false;
                     EShow showdone = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
+                    int filterStep = -1;
+                    Int32.TryParse(context.Request.QueryString["filterstep"], out filterStep);
+                    if (filterStep == 0)
+                        filterStep = - 1;
 
                     // Get all transaction not completed.
-                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, showlate, showdone);
+                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, showlate, showdone, filterStep);
 
                     // Sort by steps
                     steps.Sort((x, y) => x.date.CompareTo(y.date));

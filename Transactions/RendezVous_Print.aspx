@@ -57,6 +57,7 @@
             <br />
         </asp:Panel>
     <asp:Button ID="btnPrint" runat="server" Text="Print" OnClientClick = "return PrintPanel();" />
+        <asp:Button ID="Button_Back" runat="server" OnClick="Button_Back_Click" Text="Back" />
     </div>
     </form>
 </body>
