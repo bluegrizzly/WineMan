@@ -200,7 +200,7 @@
                 </tr>
                 <tr>
                     <td  align="center">
-                    <asp:Calendar ID="Calendar_RDV" runat="server" BorderStyle="Solid" BorderWidth="1px" ShowGridLines="True" ShowNextPrevMonth="False" Height="113px" Width="223px">
+                    <asp:Calendar ID="Calendar_RDV" runat="server" BorderStyle="Solid" BorderWidth="1px" ShowGridLines="True" ShowNextPrevMonth="False" Height="113px" Width="223px" Enabled="False">
                         <SelectedDayStyle BackColor="#0099FF" />
                         <TodayDayStyle BackColor="#999999" />
                         <WeekendDayStyle BackColor="#EEEEEE" />

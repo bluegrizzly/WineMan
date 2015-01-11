@@ -41,7 +41,7 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>=FORMAT(First(Fields!date_bottling.Value, "DataSetTx"), "MMM-dd-yyyy HH:mm")</Value>
+                        <Value>=FORMAT(First(Fields!date_bottling.Value, "DataSetTx"), "ddd dd-MMM-yyyy HH:mm")</Value>
                         <Style />
                       </TextRun>
                     </TextRuns>
@@ -51,7 +51,7 @@
                 <rd:DefaultName>Textbox117</rd:DefaultName>
                 <Left>2.36771cm</Left>
                 <Height>0.67056cm</Height>
-                <Width>3.54829cm</Width>
+                <Width>3.94517cm</Width>
                 <ZIndex>1</ZIndex>
                 <Style>
                   <Border>
@@ -68,7 +68,7 @@
             <Top>1.6494cm</Top>
             <Left>0.11147cm</Left>
             <Height>0.67056cm</Height>
-            <Width>5.916cm</Width>
+            <Width>6.31288cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -418,12 +418,14 @@
                     <Style />
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox118</rd:DefaultName>
-            <Top>2.42579cm</Top>
-            <Left>6.16859cm</Left>
+            <Top>2.94795cm</Top>
+            <Left>1.09126cm</Left>
             <Height>0.6cm</Height>
             <Width>3.48687cm</Width>
             <ZIndex>2</ZIndex>
@@ -438,10 +440,10 @@
             </Style>
           </Textbox>
           <Line Name="Line2">
-            <Top>3.67339cm</Top>
-            <Left>6.28426cm</Left>
+            <Top>3.35589cm</Top>
+            <Left>4.637cm</Left>
             <Height>0cm</Height>
-            <Width>4.56262cm</Width>
+            <Width>8.00093cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -464,10 +466,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>1.6494cm</Top>
-            <Left>6.16859cm</Left>
+            <Top>1.9669cm</Top>
+            <Left>6.56546cm</Left>
             <Height>0.45806cm</Height>
-            <Width>3.48687cm</Width>
+            <Width>3.09cm</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
@@ -480,7 +482,7 @@
             </Style>
           </Textbox>
           <Line Name="Line3">
-            <Top>2.17801cm</Top>
+            <Top>2.49551cm</Top>
             <Left>9.30235cm</Left>
             <Height>0cm</Height>
             <Width>3.33558cm</Width>
@@ -512,7 +514,7 @@
               <TextRun>
                 <Value>=First(Fields!id.Value, "DataSetTx")</Value>
                 <Style>
-                  <FontSize>20pt</FontSize>
+                  <FontSize>24pt</FontSize>
                 </Style>
               </TextRun>
             </TextRuns>
@@ -1023,7 +1025,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Client</Value>
+                    <Value>="Client #" &amp; Sum(Fields!id.Value, "DataSetCustomer")</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -1635,7 +1637,7 @@
                 <Top>2.38126cm</Top>
                 <Left>0.16446cm</Left>
                 <Height>0cm</Height>
-                <Width>5.70146cm</Width>
+                <Width>7.54543cm</Width>
                 <ZIndex>1</ZIndex>
                 <Style>
                   <Border>
@@ -1737,13 +1739,13 @@
                   <TextRun>
                     <Value># </Value>
                     <Style>
-                      <FontSize>20pt</FontSize>
+                      <FontSize>24pt</FontSize>
                     </Style>
                   </TextRun>
                   <TextRun>
                     <Value>=First(Fields!id.Value, "DataSetTx")</Value>
                     <Style>
-                      <FontSize>20pt</FontSize>
+                      <FontSize>24pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1761,6 +1763,41 @@
               <Border>
                 <Style>None</Style>
               </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox47">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!symbol.Value, "DataSetCategory")</Value>
+                    <Style>
+                      <FontSize>20pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox4</rd:DefaultName>
+            <Top>0.31604cm</Top>
+            <Left>11.21276cm</Left>
+            <Height>0.97042cm</Height>
+            <Width>1.44167cm</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <BackgroundColor>=Parameters!ReportParameter_Color.Value</BackgroundColor>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -1834,7 +1871,7 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>=Microsoft.VisualBasic.Strings.FORMAT(First(Fields!date_bottling.Value, "DataSetTx"), "MMM-dd-yyyy HH:mm")</Value>
+                        <Value>=Microsoft.VisualBasic.Strings.FORMAT(First(Fields!date_bottling.Value, "DataSetTx"), "ddd dd-MMM-yyyy HH:mm")</Value>
                         <Style />
                       </TextRun>
                     </TextRuns>
@@ -1844,7 +1881,7 @@
                 <rd:DefaultName>Textbox117</rd:DefaultName>
                 <Left>2.36771cm</Left>
                 <Height>0.67056cm</Height>
-                <Width>3.54829cm</Width>
+                <Width>3.99808cm</Width>
                 <ZIndex>1</ZIndex>
                 <Style>
                   <Border>
@@ -1861,7 +1898,7 @@
             <Top>1.6494cm</Top>
             <Left>0.11147cm</Left>
             <Height>0.67056cm</Height>
-            <Width>5.916cm</Width>
+            <Width>6.36579cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -2211,12 +2248,14 @@
                     <Style />
                   </TextRun>
                 </TextRuns>
-                <Style />
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox118</rd:DefaultName>
-            <Top>2.42579cm</Top>
-            <Left>6.16859cm</Left>
+            <Top>2.96756cm</Top>
+            <Left>1.09126cm</Left>
             <Height>0.6cm</Height>
             <Width>3.48687cm</Width>
             <ZIndex>2</ZIndex>
@@ -2231,10 +2270,10 @@
             </Style>
           </Textbox>
           <Line Name="Line4">
-            <Top>3.67339cm</Top>
-            <Left>6.28426cm</Left>
+            <Top>3.35589cm</Top>
+            <Left>4.6703cm</Left>
             <Height>0cm</Height>
-            <Width>4.56262cm</Width>
+            <Width>7.96763cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -2257,10 +2296,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>1.6494cm</Top>
-            <Left>6.16859cm</Left>
+            <Top>1.91596cm</Top>
+            <Left>6.65365cm</Left>
             <Height>0.45806cm</Height>
-            <Width>3.48687cm</Width>
+            <Width>3.03708cm</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
@@ -2273,8 +2312,8 @@
             </Style>
           </Textbox>
           <Line Name="Line5">
-            <Top>2.17801cm</Top>
-            <Left>9.30235cm</Left>
+            <Top>2.44457cm</Top>
+            <Left>9.33762cm</Left>
             <Height>0cm</Height>
             <Width>3.33558cm</Width>
             <ZIndex>5</ZIndex>
@@ -2664,7 +2703,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Client</Value>
+                    <Value>="Client #" &amp; Sum(Fields!id.Value, "DataSetCustomer")</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -3276,7 +3315,7 @@
                 <Top>2.38126cm</Top>
                 <Left>0.16446cm</Left>
                 <Height>0cm</Height>
-                <Width>5.70146cm</Width>
+                <Width>7.54543cm</Width>
                 <ZIndex>1</ZIndex>
                 <Style>
                   <Border>
@@ -3379,13 +3418,13 @@
                   <TextRun>
                     <Value># </Value>
                     <Style>
-                      <FontSize>20pt</FontSize>
+                      <FontSize>24pt</FontSize>
                     </Style>
                   </TextRun>
                   <TextRun>
                     <Value>=First(Fields!id.Value, "DataSetTx")</Value>
                     <Style>
-                      <FontSize>20pt</FontSize>
+                      <FontSize>24pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -3403,6 +3442,41 @@
               <Border>
                 <Style>None</Style>
               </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox48">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!symbol.Value, "DataSetCategory")</Value>
+                    <Style>
+                      <FontSize>20pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox4</rd:DefaultName>
+            <Top>0.31604cm</Top>
+            <Left>11.21276cm</Left>
+            <Height>0.97042cm</Height>
+            <Width>1.44167cm</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <BackgroundColor>=Parameters!ReportParameter_Color.Value</BackgroundColor>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -3466,7 +3540,7 @@
               <TextRun>
                 <Value>=First(Fields!id.Value, "DataSetTx")</Value>
                 <Style>
-                  <FontSize>20pt</FontSize>
+                  <FontSize>24pt</FontSize>
                 </Style>
               </TextRun>
             </TextRuns>

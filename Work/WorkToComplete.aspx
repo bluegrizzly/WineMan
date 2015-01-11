@@ -5,7 +5,7 @@
             width: 100%;
         }
         .auto-style2 {
-            width: 269px;
+            width: 214px;
         }
         #setToDone {
             width: 135px;
@@ -17,11 +17,15 @@
             width: 135px;
         }
         .auto-style3 {
-            width: 269px;
+            width: 214px;
             height: 129px;
         }
         #print {
             width: 135px;
+        }
+        .auto-style4 {
+            width: 214px;
+            height: 43px;
         }
     </style>
 
@@ -45,21 +49,20 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-        <h2>Work To Complete</h2>
-        <p>
+        
             <table class="auto-style1" cellspacing="3">
                 <tr>
-                    <td class="auto-style3" valign="middle">
-                        <fieldset>
-                            Date Start:
-                            <asp:TextBox ID="txtDate" runat="server" AutoPostBack="True"></asp:TextBox>
-                            <br />
-                            <br />Date End :
-                            <asp:TextBox ID="txtDateEnd" runat="server" AutoPostBack="True"></asp:TextBox>
-                        </fieldset>
-                        </td>
-                    <td rowspan="2" valign="top" align="center">
+                    <td class="auto-style4" valign="top">
+                        <h2>Transaction Steps </h2>
+                    </td>
+                    <td rowspan="3" valign="top" align="center">
+
                         <asp:Panel id="pnlContents" runat = "server">
+                        <fieldset>
+                            <asp:CheckBox ID="CheckBox_ShowLate" runat="server" Text="Show late work" AutoPostBack="True" Checked="True" />
+                            <asp:CheckBox ID="CheckBox_ShowDone" runat="server" Text="Show work done" AutoPostBack="True" />
+                            
+                        </fieldset>
                             <asp:Label ID="Label_SelectedDate" runat="server" Font-Names="Arial Rounded MT Bold" Font-Size="Large" Text="99 oct 2014"></asp:Label>
                             <table id="jQGridDemo"></table>
                         </asp:Panel>
@@ -68,23 +71,26 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="auto-style3" valign="top">
+                        <fieldset>
+                            Date Start:
+                            <asp:TextBox ID="txtDate" runat="server" AutoPostBack="True"></asp:TextBox>
+                            <br />
+                            <br />Date End :
+                            <asp:TextBox ID="txtDateEnd" runat="server" AutoPostBack="True"></asp:TextBox>
+                        </fieldset></td>
+                </tr>
+                <tr>
                     <td class="auto-style2" align="center" valign="top">
-                        <fieldset>
-                            <asp:CheckBox ID="CheckBox_ShowLate" runat="server" Text="Show late work" AutoPostBack="True" Checked="True" />
-                            <br />
-                            <asp:CheckBox ID="CheckBox_ShowDone" runat="server" Text="Show work done" AutoPostBack="True" />
-                            <br />
-                        </fieldset>
-                        <fieldset>
+                        &nbsp;<fieldset>
                             <input id="setToDone" type="button" value="Set to Done"/><br />
                             <input id="selectAll" type="button" value="Select All"/><br />
-                            <input id="clear" type="button" value="Clear Selection"/><br /><br />
-                            <asp:Button ID="Button_Print" runat="server" OnClick="Button_Print_Click" Text="Print" Width="134px" />
+                            <input id="clear" type="button" value="Clear Selection"/><br />
+                            <br />&nbsp;<asp:Button ID="Button_Print" runat="server" OnClick="Button_Print_Click" Text="Print" Width="135px" />
 &nbsp;<br />
                         </fieldset></td>
                 </tr>
             </table>
-        </p>
     
     <script type="text/javascript">
         var grid = $("#jQGridDemo");

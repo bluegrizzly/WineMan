@@ -71,7 +71,7 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string values = AddIntParameter(tx.id, true) +
+                    string values = AddIntParameter(0, true) + //id
                                     AddIntParameter(tx.client_id) +
                                     AddIntParameter(tx.wine_brand_id) +
                                     AddIntParameter(tx.wine_type_id) +
@@ -133,7 +133,7 @@ namespace WineMan
 
         public static Transaction GetRecord(int txID)
         {
-            Transaction transaction = new Transaction();
+            Transaction transaction = null;
 
             try
             {
@@ -148,6 +148,7 @@ namespace WineMan
                         dr.Read();
                         if (dr.HasRows)
                         {
+                            transaction = new Transaction();
                             transaction.FillRecord(dr);
                         }
 
@@ -179,7 +180,7 @@ namespace WineMan
 
                     if (filter != FilterTypes.All)
                     {
-                        if (sqlQueryWhere.Length == 0)
+                        if (sqlQueryWhere.Length != 0)
                             sqlQueryWhere += " AND";
                         else
                             sqlQueryWhere += " WHERE";

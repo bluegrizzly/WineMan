@@ -526,31 +526,62 @@ namespace WineMan.Transactions
                 Table_Dates.Rows.Add(tRowDates);
 
                 DateTime selDate = Calendar_RDV.TodaysDate;
-
-                foreach (Wine_Category wineCat in categories)
+                
+                List<TransactionStep> txSteps = new List<TransactionStep>();
+                // Check if we have records for this transaction 
+                if (m_TxID >= 0)
                 {
-                    Step step = Step.GetRecord(wineCat.step.ToString());
-
-                    DateTime stepDate = selDate.AddDays(wineCat.days);
-                    if (step.final_step>0 && Label_BottlingDate.Text == c_SelectString)
+                    Transaction tx = Transaction.GetRecord(m_TxID);
+                    if ( tx != null && tx.id >= 0)
                     {
-                        Calendar_RDV.SelectedDate= stepDate;
-                        Calendar_RDV.VisibleDate = new DateTime(stepDate.Year,stepDate.Month,1);
+                        txSteps = TransactionStep.GetRecordsForTx(m_TxID);
+
+                        foreach(TransactionStep step in txSteps)
+                        {
+                            //Title
+                            TableCell tCell = new TableCell();
+                            tCell.HorizontalAlign = HorizontalAlign.Center;
+                            tCell.Text = step.GetStepName();
+                            tCell.ForeColor = System.Drawing.Color.Black;
+                            tCell.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
+                            tRowTitle.Cells.Add(tCell);
+
+                            //Date
+                            TableCell tCell2 = new TableCell();
+                            tCell2.HorizontalAlign = HorizontalAlign.Center;
+                            tCell2.Text = step.date.ToString("MMM-dd-yyyy", m_Culture);
+                            tCell.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
+                            tRowDates.Cells.Add(tCell2);
+                        }
                     }
+                }
+                else // no records yet so let just guess the dates.
+                {
+                    foreach (Wine_Category wineCat in categories)
+                    {
+                        Step step = Step.GetRecord(wineCat.step.ToString());
 
-                    //Title
-                    TableCell tCell = new TableCell();
-                    tCell.HorizontalAlign = HorizontalAlign.Center;
-                    tCell.Text = step.name;
-                    tCell.ForeColor = System.Drawing.Color.Black;
-                    tRowTitle.Cells.Add(tCell);
+                        DateTime stepDate = selDate.AddDays(wineCat.days);
+                        if (step.final_step > 0 && Label_BottlingDate.Text == c_SelectString)
+                        {
+                            Calendar_RDV.SelectedDate = stepDate;
+                            Calendar_RDV.VisibleDate = new DateTime(stepDate.Year, stepDate.Month, 1);
+                        }
 
-                    //Date
-                    TableCell tCell2 = new TableCell();
-                    //tCell2.ForeColor = System.Drawing.Color;
-                    tCell2.HorizontalAlign = HorizontalAlign.Center;
-                    tCell2.Text = stepDate.ToString("MMM-dd-yyyy", m_Culture);
-                    tRowDates.Cells.Add(tCell2);
+                        //Title
+                        TableCell tCell = new TableCell();
+                        tCell.HorizontalAlign = HorizontalAlign.Center;
+                        tCell.Text = step.name;
+                        tCell.ForeColor = System.Drawing.Color.Black;
+                        tRowTitle.Cells.Add(tCell);
+
+                        //Date
+                        TableCell tCell2 = new TableCell();
+                        //tCell2.ForeColor = System.Drawing.Color;
+                        tCell2.HorizontalAlign = HorizontalAlign.Center;
+                        tCell2.Text = stepDate.ToString("MMM-dd-yyyy", m_Culture);
+                        tRowDates.Cells.Add(tCell2);
+                    }
                 }
             }
         }

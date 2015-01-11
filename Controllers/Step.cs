@@ -83,5 +83,31 @@ namespace WineMan
 
             return steps;
         }
+
+        public static string GetStepName(int id)
+        {
+            string retName="";
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM steps WHERE id="+ id.ToString(), con))
+                {
+                    con.Open();
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    dr.Read();
+                    if (dr.HasRows)
+                    {
+                        Step step = new Step();
+                        step.FillData(dr);
+                        retName = step.name;
+                    }
+                    dr.Close();
+                }
+                con.Close();
+            }
+
+            return retName;
+        }
     }
 }

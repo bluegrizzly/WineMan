@@ -15,6 +15,26 @@ namespace WineMan
         public DateTime date;
         public int done;
 
+        private void FillRecord(MySqlDataReader dr)
+        {
+            if (dr.HasRows)
+            {
+                bool parsed = Int32.TryParse(dr["id"].ToString(), out id);
+                System.Diagnostics.Debug.Assert(parsed);
+
+                parsed = Int32.TryParse(dr["transaction_id"].ToString(), out transaction_id);
+                System.Diagnostics.Debug.Assert(parsed);
+
+                parsed = Int32.TryParse(dr["step_id"].ToString(), out step_id);
+                System.Diagnostics.Debug.Assert(parsed);
+
+                DateTime.TryParse(dr["date"].ToString(), out date);
+
+                parsed = Int32.TryParse(dr["done"].ToString(), out done);
+                System.Diagnostics.Debug.Assert(parsed);
+            }
+        }
+
         public static bool CreateRecord(TransactionStep txStep)
         {
             try
@@ -41,26 +61,6 @@ namespace WineMan
             {
                 System.Diagnostics.Debug.Assert(false, e.Message);
                 return false; 
-            }
-        }
-
-        private void FillRecord(MySqlDataReader dr)
-        {
-            if (dr.HasRows)
-            {
-                bool parsed = Int32.TryParse(dr["id"].ToString(), out id);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                parsed = Int32.TryParse(dr["transaction_id"].ToString(), out transaction_id);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                parsed = Int32.TryParse(dr["step_id"].ToString(), out step_id);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                DateTime.TryParse(dr["date"].ToString(), out date);
-
-                parsed = Int32.TryParse(dr["done"].ToString(), out done);
-                System.Diagnostics.Debug.Assert(parsed);
             }
         }
 
@@ -113,6 +113,41 @@ namespace WineMan
             return txSteps;
         }
 
+        public static List<TransactionStep> GetRecordsForTx(int txID)
+        {
+            List<TransactionStep> txSteps = new List<TransactionStep>();
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE transaction_id =" + txID.ToString();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        con.Open();
+                        MySqlDataReader dr = cmd.ExecuteReader();
+
+                        while (dr.Read())
+                        {
+                            TransactionStep txStep = new TransactionStep();
+                            txStep.FillRecord(dr);
+                            txSteps.Add(txStep);
+                        }
+
+                        dr.Close();
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+
+            return txSteps;
+        }
+
         public static bool DeleteTxRecords(int txID)
         {
             bool ret = false;
@@ -138,5 +173,10 @@ namespace WineMan
 
             return ret;
         }
-   }
+
+        public string GetStepName()
+        {
+            return Step.GetStepName(step_id);
+        }
+    }
 }

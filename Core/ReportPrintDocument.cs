@@ -57,7 +57,7 @@ namespace WineMan
 
             m_pageSettings = new PageSettings(); //Declare a new PageSettings for printing
             m_pageSettings.Landscape = landscape;
-            m_pageSettings.Margins = new Margins(20, 20, 20, 20);
+            m_pageSettings.Margins = new Margins(20, 20, 30, 20);
             //Choose paper size from the paper sizes defined in ur printer.
             //Here we use Linq to quickly choose by name
             foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)

@@ -41,7 +41,7 @@ namespace WineMan.Transactions
                 {
                     List<Transaction> allTx = new List<Transaction>();
                     Transaction tx = Transaction.GetRecord(txID);
-                    if (tx.id >= 0)
+                    if (tx != null && tx.id >= 0)
                     {
                         allTx.Add(tx);
                         m_TransactionHelper.GetTransactionJSONRecords(context, allTx);

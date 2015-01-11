@@ -40,6 +40,10 @@ namespace WineMan.Transactions
                     System.Diagnostics.Debug.Assert(false);
                     return;
                 }
+                if (Request.UrlReferrer != null)
+                    ViewState["RefUrl"] = Request.UrlReferrer.ToString();
+                else
+                    Button_Back.Enabled = false;
             }
             else
             {
@@ -158,6 +162,11 @@ namespace WineMan.Transactions
                 adp.Fill(dt);
             }
             return dt;
+        }
+
+        protected void Button_Back_Click(object sender, EventArgs e)
+        {
+            Response.Redirect(ViewState["RefUrl"].ToString());
         }
     }
 }

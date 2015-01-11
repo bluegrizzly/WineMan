@@ -10,11 +10,11 @@
     <p>
         Created by Alain Dessureaux<br />alain.dessureaux@gmail.com<br /> Copyright (C) 2015 AndyFire Studio. All rights reserved.
     </p>
-    <p>
+<p>
         &nbsp;</p>
-    <p>
+<p>
         Versions:</p>
-    <p>
+<p>
         <asp:TextBox ID="TextBox_Versions" runat="server" Font-Size="Small" ForeColor="#333333" Height="147px" ReadOnly="True" TextMode="MultiLine" Width="557px">Version 1.0: (jan 2015)
 -----------------------
 - Add transaction

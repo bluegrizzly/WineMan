@@ -22,7 +22,7 @@ namespace WineMan.Work
             DateTime dd;
             DateTime.TryParse(txtDate.Text, out dd);
 
-            Label_SelectedDate.Text = dd.ToString("dd MMM yyy");
+            Label_SelectedDate.Text = dd.ToString("MMM dd yyy");
 
             if (Request.QueryString["mode"] != "close")
             {

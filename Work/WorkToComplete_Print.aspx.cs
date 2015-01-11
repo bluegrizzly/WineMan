@@ -18,8 +18,18 @@ namespace WineMan.Work
         {
             // Get the data 
             string dateStr = Request.QueryString["date"];
-            DateTime.TryParse(dateStr, out m_DateStart);
-
+            if (!DateTime.TryParse(dateStr, out m_DateStart))
+            {
+                m_DateStart = DateTime.Now;
+            }
+            if (!IsPostBack)
+            {
+                FillData();
+                if (Request.UrlReferrer != null)
+                    ViewState["RefUrl"] = Request.UrlReferrer.ToString();
+                else
+                    Button_Back.Enabled = false;
+            }
         }
 
         protected void Button_Show_Click(object sender, EventArgs e)
@@ -119,6 +129,11 @@ namespace WineMan.Work
                 adp.Fill(dt);
             }
             return dt;
+        }
+
+        protected void Button_Back_Click(object sender, EventArgs e)
+        {
+            Response.Redirect(ViewState["RefUrl"].ToString());
         }
     }
 }

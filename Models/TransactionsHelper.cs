@@ -167,8 +167,8 @@ namespace WineMan
                 if (!first)
                 {
                     sqlQuery += " OR ";
-                    first = false;
                 }
+                first = false;
 
                 sqlQuery += "id=" + id;
             }

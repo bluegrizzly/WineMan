@@ -17,7 +17,8 @@
         </asp:ScriptManager>
         <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Show" />
         <asp:Button ID="Button2" runat="server" OnClick="Button2_Click" Text="Print" />
-&nbsp;Transaction:<asp:Label ID="Label_Tx" runat="server" Text="Label"></asp:Label>
+&nbsp;<asp:Button ID="Button_Back" runat="server" OnClick="Button_Back_Click" Text="Back" />
+&nbsp;&nbsp;Transaction:<asp:Label ID="Label_Tx" runat="server" Text="Label"></asp:Label>
 &nbsp;<rsweb:ReportViewer ID="ReportViewer1" runat="server" Font-Names="Verdana" Font-Size="8pt" WaitMessageFont-Names="Verdana" WaitMessageFont-Size="14pt" Width="10.5in" Height="8.4in">
             <LocalReport ReportEmbeddedResource="WineMan.Reports.Report_Transaction.rdlc">
                 <DataSources>
