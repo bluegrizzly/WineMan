@@ -3,7 +3,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head runat="server">
-    <title></title>
+    <title>WineMan</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/images/wineman.png" />
     <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/JQGridReq/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
     <link href="~/JQGridReq/ui.jqgrid.css" rel="stylesheet" type="text/css" />

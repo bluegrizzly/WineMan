@@ -18,7 +18,7 @@ Suite au meeting le 15 janvier
 * Add location in transaction when doing filtration
 * ajouter case remarque dans tx and afficher dans le rapport
 * Date: MMM/dd/yyyy
-*
+* Mettre l'icon de microvin plus sur la transaction print
 
 Autres dans le backlog
 ----------------------

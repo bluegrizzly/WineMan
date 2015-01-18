@@ -16,11 +16,12 @@
         Versions:</p>
 <p>
         <asp:TextBox ID="TextBox_Versions" runat="server" Font-Size="Small" ForeColor="#333333" Height="147px" ReadOnly="True" TextMode="MultiLine" Width="557px">
-Version 0.6: (jan 2015)
+Version 0.6: (xx jan 2015)
 - New Menu separation (Bottling / WineWork)
 - New page to complete transactions
+- New page icon
 
-Version 0.5: (jan 2015)
+Version 0.5: (15 jan 2015)
 -----------------------
 - Add transaction
     - Rendezvous: Cannot select a rendez vous that is before the wine completed date.
