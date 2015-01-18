@@ -55,12 +55,12 @@
                             <asp:MenuItem NavigateUrl="~/Transactions/AddTransaction.aspx" Text="New" />
                             <asp:MenuItem NavigateUrl="~/Transactions/Transactions.aspx" Text="View all" />
                          </asp:MenuItem>
-                        <asp:MenuItem Text="Start the Day" >
+                        <asp:MenuItem Text="Bottling" >
                             <asp:MenuItem NavigateUrl="~/Transactions/RendezVous.aspx" Text="Bottling Stations" />
-                            <asp:MenuItem NavigateUrl="~/Work/WorkToComplete_Print.aspx?mode=start" Text="Print Work To Do Today" />
                          </asp:MenuItem>
-                        <asp:MenuItem Text="Close the Day" >
+                        <asp:MenuItem Text="Wine Work" >
                             <asp:MenuItem NavigateUrl="~/Work/WorkToComplete.aspx?mode=close" Text="Transactions Steps To complete" />
+                            <asp:MenuItem NavigateUrl="~/Work/WorkToCompleteTx.aspx?mode=close" Text="Transactions To complete" />
                          </asp:MenuItem>
                         <asp:MenuItem Text="Admin" >
                             <asp:MenuItem NavigateUrl="~/Admin/holidays.aspx" Text="Holidays" />

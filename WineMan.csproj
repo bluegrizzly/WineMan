@@ -313,10 +313,12 @@
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="Work\WorkToCompleteTx.aspx" />
     <Content Include="Work\WorkToComplete_Print.aspx" />
     <Content Include="Work\WorkToComplete_PrintHTML.aspx" />
     <Content Include="Work\WorkToComplete.aspx" />
@@ -540,6 +542,13 @@
     <Compile Include="Controllers\Wine_Brand.cs" />
     <Compile Include="Core\Utils.cs" />
     <Compile Include="Views\RendezVousGrid.cs" />
+    <Compile Include="Work\WorkToCompleteTx.aspx.cs">
+      <DependentUpon>WorkToCompleteTx.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Work\WorkToCompleteTx.aspx.designer.cs">
+      <DependentUpon>WorkToCompleteTx.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Work\WorkToComplete_Print.aspx.cs">
       <DependentUpon>WorkToComplete_Print.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

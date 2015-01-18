@@ -252,7 +252,7 @@ namespace WineMan
         }
 
 
-        public static List<Transaction> GetRecords(DateTime date)
+        public static List<Transaction> GetRecords(DateTime dateStart, DateTime dateEnd, EShow showFilter = EShow.Show_NotDone, bool showReadyOnly=false)
         {
             List<Transaction> transactions = new List<Transaction>();
 
@@ -261,7 +261,59 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string dateStr = date.ToString("yyyy-MM-dd");
+                    string sqlQuery = "SELECT * FROM " + c_dbName;
+
+                    string dateStr = dateStart.Year.ToString() + "-" + dateStart.Month.ToString() + "-" + dateStart.Day.ToString() + " %";
+                    string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
+                    sqlQuery += " WHERE (date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+                    if (showFilter == EShow.Show_Done)
+                        sqlQuery += " AND done=1";
+                    else if (showFilter == EShow.Show_NotDone)
+                        sqlQuery += " AND done=0";
+
+                    sqlQuery += " ORDER BY id";
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        con.Open();
+                        MySqlDataReader dr = cmd.ExecuteReader();
+
+                        while (dr.Read())
+                        {
+                            Transaction tx = new Transaction();
+                            tx.FillRecord(dr);
+
+                            if (showReadyOnly)
+                            {
+                                int nb,tot;
+                                if (tx.AreAllStepDone(out nb, out tot))
+                                    transactions.Add(tx);
+                            }
+                            else
+                                transactions.Add(tx);
+                        }
+
+                        dr.Close();
+                    }
+                    con.Close();
+                }
+            }
+            catch { }
+
+            return transactions;
+        }
+
+        // get the records with bottling dates
+        public static List<Transaction> GetRecords(DateTime bottlingDate)
+        {
+            List<Transaction> transactions = new List<Transaction>();
+
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string dateStr = bottlingDate.ToString("yyyy-MM-dd");
                     dateStr += " %";
                     using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM " + c_dbName + " WHERE date_bottling LIKE '" + dateStr + "'", con))
                     {
@@ -314,6 +366,21 @@ namespace WineMan
             catch { }
 
             return transactions;
+        }
+
+        public bool AreAllStepDone(out int nbDone, out int total)
+        {
+            List<TransactionStep> steps = TransactionStep.GetRecordsForTx(id);
+            nbDone = 0;
+            total = steps.Count;
+            foreach(TransactionStep step in steps)
+            {
+                if (step.done > 0)
+                    nbDone++;
+            }
+            if (nbDone == total)
+                return true;
+            return false;
         }
     }
 }

@@ -21,8 +21,47 @@ namespace WineMan.Work
         {
             context.Response.ContentType = "text/plain";
 
+            string showtx = context.Request.QueryString["showtx"];
             string operation = context.Request.QueryString["operation"];
 
+            if (showtx == "true")
+                ProcessTransactions(context, operation);
+            else
+                ProcessTransactionSteps(context, operation);
+        }
+
+        private void ProcessTransactions(HttpContext context, string operation)
+        {
+            if (operation != null && operation == "settodone")
+            {
+                string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
+                List<string> data = JsonConvert.DeserializeObject<List<string>>(jsonString);
+                m_TransactionHelper.SetTransactionToDone(data);
+            }
+
+            string showReadyOnly = context.Request.QueryString["showreadyonly"];
+            string dateStr = context.Request.QueryString["date"];
+            DateTime date = DateTime.Now;
+            if (dateStr == "")
+                date = DateTime.MinValue;
+            else
+                DateTime.TryParse(dateStr, out date);
+
+            string dateStrEnd = context.Request.QueryString["dateend"];
+            DateTime dateEnd = DateTime.Now;
+            if (dateStr == "")
+                dateEnd = DateTime.MaxValue;
+            else
+                DateTime.TryParse(dateStrEnd, out dateEnd);
+            
+            EShow showFilter = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
+
+            List<Transaction> transactions = Transaction.GetRecords(date, dateEnd, showFilter, showReadyOnly=="true");
+            m_TransactionHelper.GetTransactionToCompleteJSONRecords(context, transactions);
+        }
+
+        private void ProcessTransactionSteps(HttpContext context, string operation)
+        {
             if (operation != null && operation == "settodone")
             {
                 string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
@@ -38,13 +77,17 @@ namespace WineMan.Work
                 {
                     string dateStr = context.Request.QueryString["date"];
                     DateTime date = DateTime.Now;
-                    DateTime.TryParse(dateStr, out date);
+                    if (dateStr == "")
+                        date = DateTime.MinValue;
+                    else
+                        DateTime.TryParse(dateStr, out date);
 
                     string dateStrEnd = context.Request.QueryString["dateend"];
-                    DateTime dateEnd;
-                    if (!DateTime.TryParse(dateStrEnd, out dateEnd))
-                        dateEnd = date;
-                    dateEnd = dateEnd.AddDays(1);
+                    DateTime dateEnd = DateTime.Now;
+                    if (dateStr == "")
+                        dateEnd = DateTime.MaxValue;
+                    else
+                        DateTime.TryParse(dateStrEnd, out dateEnd);
 
                     bool showlate = context.Request.QueryString["showlate"] == "true"?true : false;
                     EShow showdone = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
@@ -52,9 +95,10 @@ namespace WineMan.Work
                     Int32.TryParse(context.Request.QueryString["filterstep"], out filterStep);
                     if (filterStep == 0)
                         filterStep = - 1;
+                    string txID = context.Request.QueryString["txid"];
 
                     // Get all transaction not completed.
-                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, showlate, showdone, filterStep);
+                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, showlate, showdone, filterStep, txID);
 
                     // Sort by steps
                     steps.Sort((x, y) => x.date.CompareTo(y.date));

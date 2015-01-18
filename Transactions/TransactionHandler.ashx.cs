@@ -15,6 +15,7 @@ namespace WineMan.Transactions
         const string dbName = "transactions";
         HandlerHelper m_Helper = new HandlerHelper();
         TransactionsHelper m_TransactionHelper = new TransactionsHelper();
+
         public void ProcessRequest(HttpContext context)
         {
             string operation = context.Request.QueryString["operation"];
@@ -26,7 +27,11 @@ namespace WineMan.Transactions
                     string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
                     string txID = JsonConvert.DeserializeObject<string>(jsonString);
                     if (txID != null)
-                        context.Response.Write(@"""AddTransaction.aspx?txid=" + txID.ToString() + @"""");
+                    {
+                        string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);
+                        url += "?txid=" + txID.ToString();
+                        context.Response.Write(@"""" + url + @"""");
+                    }
                 }
             }
             else

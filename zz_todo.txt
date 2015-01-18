@@ -1,6 +1,8 @@
 ﻿TODO:
 =============
-* Be able to complete a transaction
+Suite au meeting le 15 janvier
+------------------------------
+* Be able to complete a transaction  (DONE)
 * code de produit
     - admin peut en creer (no and color)
     - ajout a la transaction
@@ -18,6 +20,8 @@
 * Date: MMM/dd/yyyy
 *
 
+Autres dans le backlog
+----------------------
 - add a red button when the tx is dirty
 - send an email with the transaction (and add pub)
 - Admin:

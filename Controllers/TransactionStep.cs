@@ -64,25 +64,26 @@ namespace WineMan
             }
         }
 
-        public static string BuildSQLQuery(DateTime date, DateTime dateEnd, EShow showdone, int stepId=-1)
+        public static string BuildSQLQuery(DateTime date, DateTime dateEnd, EShow showdone, int stepId=-1, string txID=null)
         {
             string dateStr = date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + " %";
             string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
             string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
             if (showdone == EShow.Show_Done)
-                sqlQuery += " AND Done=1";
+                sqlQuery += " AND done=1";
             else if (showdone == EShow.Show_NotDone)
-                sqlQuery += " AND Done=0";
+                sqlQuery += " AND done=0";
 
             if (stepId>=0)
-            {
                 sqlQuery += " AND step_id="+stepId ;
-            }
+
+            if (txID != null && txID != "")
+                sqlQuery += " AND transaction_id=" + txID;
 
             return sqlQuery;
         }
 
-        public static List<TransactionStep> GetRecords(DateTime date, DateTime dateEnd, EShow showdone, int stepId=-1)
+        public static List<TransactionStep> GetRecords(DateTime date, DateTime dateEnd, EShow showdone, int stepId=-1, string txID=null)
         {
             List<TransactionStep> txSteps = new List<TransactionStep>();
 
@@ -91,7 +92,7 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string sqlQuery = BuildSQLQuery(date, dateEnd, showdone, stepId);
+                    string sqlQuery = BuildSQLQuery(date, dateEnd, showdone, stepId, txID);
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {

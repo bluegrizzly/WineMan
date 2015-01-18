@@ -11,17 +11,18 @@ namespace WineMan
     {
         List<Step> m_Steps = new List<Step>();
         const string c_dbTransactionStepName = "transaction_step";
+        const string c_dbTransactionName = "transactions";
 
-        public List<TransactionStep> GetAllStepsOfThisDay(DateTime dateStart, DateTime dateEnd, bool showlate, EShow showdone, int stepID)
+        public List<TransactionStep> GetAllStepsOfThisDay(DateTime dateStart, DateTime dateEnd, bool showlate, EShow showdone, int stepID, string txID)
         {
             List<TransactionStep> steps = new List<TransactionStep> ();
-            steps = TransactionStep.GetRecords(dateStart, dateEnd, showdone, stepID);
+            steps = TransactionStep.GetRecords(dateStart, dateEnd, showdone, stepID, txID);
 
             if (showlate)
             {
                 List<TransactionStep> stepsLate;
                 DateTime oldDate = new DateTime (1,1,1);
-                stepsLate = TransactionStep.GetRecords(oldDate, dateStart, EShow.Show_NotDone, stepID);
+                stepsLate = TransactionStep.GetRecords(oldDate, dateStart, EShow.Show_NotDone, stepID, txID);
                 steps.AddRange(stepsLate);
             }
             return steps;
@@ -156,6 +157,44 @@ namespace WineMan
             context.Response.Write(retString);
         }
 
+        public void GetTransactionToCompleteJSONRecords(HttpContext context, List<Transaction> transactions)
+        {
+            string retString = @"{";
+
+            int iterNb = 0;
+            int nbRows = transactions.Count;
+            retString += @"""total"": """ + nbRows.ToString() + @""",";
+            retString += @"""page"": ""1"",";
+            retString += @"""records"": """ + nbRows.ToString() + @""",";
+            retString += @"""rows"" : [ ";
+            foreach (Transaction tx in transactions)
+            {
+                if (iterNb != 0)
+                    retString += ",";
+
+                retString += @"{""id"":" + iterNb + @", ""cell"" :[";
+                iterNb++;
+                Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
+
+                int nbStepDone = 0;
+                int nbStepTotal = 0;
+                tx.AreAllStepDone(out nbStepDone, out nbStepTotal);
+                string stepsDone = nbStepDone.ToString() + "/" + nbStepTotal.ToString();
+
+                retString += @"""" + tx.id.ToString() + @""",";
+                retString += @"""" + customer.first_name + " " + customer.last_name + @""",";
+                retString += @"""" + GetBrandName(tx.wine_brand_id) + @""",";
+                retString += @"""" + GetTypeName(tx.wine_type_id) + @""",";
+                retString += @"""" + GetCategoryName(tx.wine_category_id) + @""",";
+                retString += @"""" + tx.date_creation.ToString() + @""",";
+                retString += @"""" + stepsDone + @""",";
+                retString += @"""" + tx.done.ToString() + @"""";
+                retString += "]}";
+            }
+            retString += "]}";
+            context.Response.Write(retString);
+        }
+
         public bool SetTransactionStepToDone(List<string> ids)
         {
             string sqlQuery = "UPDATE " + c_dbTransactionStepName + " SET done=1 WHERE ";
@@ -195,10 +234,68 @@ namespace WineMan
             }
             return res;
         }
-    
-        public void PrintWorkToDo(DateTime startDate, DateTime endDate)
+
+        public bool SetTransactionToDone(List<string> ids)
         {
 
+            string sqlQuery = "UPDATE " + c_dbTransactionName + " SET done=1 WHERE ";
+            bool res = false;
+            bool first = true;
+
+            List<int> txNotDone = new List<int>();
+            
+            foreach (string id in ids)
+            {
+                // First validate if allstesps are done 
+                int nbStepDone = 0;
+                int nbStepTotal = 0;
+                int txid=0;
+                Int32.TryParse(id, out txid);
+                Transaction tx = Transaction.GetRecord(txid);
+                if (!tx.AreAllStepDone(out nbStepDone, out nbStepTotal))
+                {
+                    txNotDone.Add(txid);
+                    continue;
+                }
+                 
+                if (!first)
+                {
+                    sqlQuery += " OR ";
+                }
+                first = false;
+
+                sqlQuery += "id=" + id;
+            }
+
+            if (txNotDone.Count > 0)
+            {
+                //Utils.MessageBox(HttpContext.Current.Handler as System.Web.UI.Page, "Cannot complete these transactions because they still have steps not completed. :");
+            }
+            if (first)
+                return false; // nothing processed
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                // Open the SqlConnection.
+                con.Open();
+
+                using (MySqlCommand command = new MySqlCommand(sqlQuery, con))
+                {
+                    try
+                    {
+                        int result = command.ExecuteNonQuery();
+                        res = true;
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.Assert(false, e.Message);
+                        res = false;
+                    }
+                }
+            }
+
+            return res;
         }
     }
 }
