@@ -130,6 +130,33 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Label Label_Price;
         
         /// <summary>
+        /// TextBox_Location control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Location;
+        
+        /// <summary>
+        /// DropDownList_ProductCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_ProductCode;
+        
+        /// <summary>
+        /// TextBox_Comment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Comment;
+        
+        /// <summary>
         /// Panel15 control.
         /// </summary>
         /// <remarks>

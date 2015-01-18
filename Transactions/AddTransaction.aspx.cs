@@ -55,6 +55,7 @@ namespace WineMan.Transactions
 
             Label_TransactionID.Text = "-";
             FillWineBrands();
+            FillProductCodes();
             UpdateComboBoxes();
 
             if (!string.IsNullOrEmpty(Request.QueryString["FromAdd"]))
@@ -97,6 +98,9 @@ namespace WineMan.Transactions
                 Session["rendezvous_hour"] = Label_BottlingHour.Text;
             if (Label_BottlingStation.Text != c_SelectString)
                 Session["rendezvous_station"] = Label_BottlingStation.Text;
+            Session["location"] = TextBox_Location.Text;
+            Session["comments"] = TextBox_Comment.Text;
+            Session["product_code"] = TextBox_Comment.Text;
         }
         private void RestoreData()
         {
@@ -134,13 +138,16 @@ namespace WineMan.Transactions
                 Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
             }
             if (Session["rendezvous_hour"] != null)
-            {
                 Label_BottlingHour.Text = (string)Session["rendezvous_hour"];
-            }
             if (Session["rendezvous_station"] != null)
-            {
                 Label_BottlingStation.Text = (string)Session["rendezvous_station"];
-            }
+
+            if (Session["location"] != null)
+                TextBox_Location.Text = (string)Session["location"];
+            if (Session["comments"] != null)
+                TextBox_Comment.Text = (string)Session["comments"];
+            if (Session["product_code"] != null)
+                TextBox_Comment.Text = (string)Session["product_code"];
 
             Session.Clear();
         }
@@ -348,6 +355,20 @@ namespace WineMan.Transactions
             }
         }
 
+        protected void FillProductCodes()
+        {
+            System.Data.DataSet objDs;
+            m_WineSpecs.GetAllProductCodes(out objDs);
+            if (objDs.Tables[0].Rows.Count > 0)
+            {
+                DropDownList_ProductCode.DataSource = objDs.Tables[0];
+                DropDownList_ProductCode.DataTextField = "name";
+                DropDownList_ProductCode.DataValueField = "id";
+                DropDownList_ProductCode.DataBind();
+                DropDownList_ProductCode.Items.Insert(0, c_SelectString);
+            }
+        }
+
         protected void Button_Commit_Click(object sender, EventArgs e)
         {
             // CREATE RECORD
@@ -381,7 +402,7 @@ namespace WineMan.Transactions
                 bool needToRecreateSteps = CheckTxDifferenceWithScreen(tx);
                 FillTransactionWithScreenData(tx);
 
-                // Create the record
+                // Modify the record
                 if (!tx.ModifyRecord())
                 {
                     Utils.MessageBox(this, "Error: Failed to modify a transaction.");
@@ -472,6 +493,17 @@ namespace WineMan.Transactions
                 Utils.MessageBox(this, "Error: Please select a Bottling date and time.");
                 return;
             }
+
+            // comments
+            tx.comments = TextBox_Comment.Text;
+
+            // location 
+            tx.location = TextBox_Location.Text;
+
+            // product code
+            parsed = Int32.TryParse(DropDownList_ProductCode.SelectedValue, out numValue);
+            if (parsed && numValue > 0)
+                tx.product_code = numValue;
 
             tx.date_creation = DateTime.Now;
         }
@@ -621,6 +653,10 @@ namespace WineMan.Transactions
             Label_BottlingDate.Text = rdv.ToString("d", m_Culture);
             Calendar_RDV.SelectedDate = rdv;
             Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
+
+            TextBox_Comment.Text = tx.comments;
+            TextBox_Location.Text = tx.location;
+            DropDownList_ProductCode.SelectedValue = tx.product_code.ToString();
 
             UpdateUI();
             SaveData();

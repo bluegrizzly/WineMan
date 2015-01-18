@@ -9,7 +9,7 @@ namespace WineMan
 {
     public class HandlerHelper 
     {
-        public void ProcessRequest(HttpContext context, string dbName)
+        public void ProcessRequest(HttpContext context, string dbName, bool explicitSetID=false)
         {
             NameValueCollection forms = context.Request.Form;
             string strOperation = forms.Get("oper");
@@ -40,7 +40,7 @@ namespace WineMan
             else if (strOperation == "add")
             {
                 string strOut = string.Empty;
-                if (DBAccess.AddRecord(context, dbName, forms))
+                if (DBAccess.AddRecord(context, dbName, forms, explicitSetID))
                     strOut = "Record successfully added";
                 else
                     strOut = "Error in adding record";

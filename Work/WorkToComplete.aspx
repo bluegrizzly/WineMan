@@ -70,7 +70,6 @@
                             <asp:CheckBox ID="CheckBox_ShowDone" runat="server" Text="Show work done" AutoPostBack="True" />
                             
                             &nbsp;</fieldset>
-                            <asp:Label ID="Label_SelectedDate" runat="server" Font-Names="Arial Rounded MT Bold" Font-Size="Large" Text="99 oct 2014"></asp:Label>
                             <table id="jQGridDemo"></table>
                         </asp:Panel>
                         <div id="jQGridDemoPager">

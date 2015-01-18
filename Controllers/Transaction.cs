@@ -18,7 +18,9 @@ namespace WineMan
         public DateTime date_bottling;
         public int bottling_station;
         public bool done;
-        public List<TransactionStep> progress;
+        public string comments;
+        public string location;
+        public int product_code;
 
         private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
 
@@ -61,6 +63,10 @@ namespace WineMan
                 done = num > 0 ? true : false;
                 System.Diagnostics.Debug.Assert(parsed);
 
+                comments = dr["comments"].ToString();
+                location = dr["location"].ToString();
+                Int32.TryParse(dr["product_code"].ToString(), out product_code);
+                
             }
         }
 
@@ -79,7 +85,10 @@ namespace WineMan
                                     AddDateParameter(tx.date_creation) +
                                     AddDateParameter(tx.date_bottling) +
                                     AddIntParameter(tx.bottling_station) +
-                                    AddIntParameter(0);  // Done
+                                    AddIntParameter(0) + 
+                                    AddStringParameter(tx.comments) +
+                                    AddStringParameter(tx.location) +
+                                    AddIntParameter(tx.product_code);
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand("INSERT INTO " + c_dbName + " VALUES (" + values + ")", con))
                     {
@@ -112,7 +121,10 @@ namespace WineMan
                                     AddDateParameter(date_creation, false, "date_creation") +
                                     AddDateParameter(date_bottling, false, "date_bottling") +
                                     AddIntParameter(bottling_station, false, "bottling_station") +
-                                    AddIntParameter(done?1:0, false, "done");  
+                                    AddIntParameter(done?1:0, false, "done") +
+                                    AddStringParameter(comments,false, "comments") +
+                                    AddStringParameter(location, false, "location") +
+                                    AddIntParameter(product_code, false, "product_code");
                     con.Open();
                     string sqlQuery = "UPDATE " + c_dbName + " SET " + values + " WHERE id=" + id.ToString();
                     
@@ -227,7 +239,7 @@ namespace WineMan
                         
                     }
 
-                    sqlQuery += sqlQueryWhere;
+                    sqlQuery += sqlQueryWhere + " ORDER BY id DESC";
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
@@ -271,7 +283,7 @@ namespace WineMan
                     else if (showFilter == EShow.Show_NotDone)
                         sqlQuery += " AND done=0";
 
-                    sqlQuery += " ORDER BY id";
+                    sqlQuery += " ORDER BY id DESC";
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {

@@ -27,6 +27,9 @@
             width: 146px;
             height: 43px;
         }
+        #editRow {
+            width: 135px;
+        }
     </style>
 
   <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
@@ -61,7 +64,6 @@
                             <asp:CheckBox ID="CheckBox_ShowReady" runat="server" Text="Show Ready Only (all steps done)" AutoPostBack="True" />
                             
                         </fieldset>
-                            <asp:Label ID="Label_SelectedDate" runat="server" Font-Names="Arial Rounded MT Bold" Font-Size="Large" Text="99 oct 2014"></asp:Label>
                             <table id="jQGridDemo"></table>
                         </asp:Panel>
                         <div id="jQGridDemoPager">

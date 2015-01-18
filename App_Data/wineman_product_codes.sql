@@ -18,32 +18,28 @@ USE `wineman`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `settings`
+-- Table structure for table `product_codes`
 --
 
-DROP TABLE IF EXISTS `settings`;
+DROP TABLE IF EXISTS `product_codes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings` (
-  `version` int(11) NOT NULL,
-  `nb_stations` int(11) DEFAULT NULL,
-  `min_station_hour` int(11) DEFAULT NULL,
-  `max_station_hour` int(11) DEFAULT NULL,
-  `hour_intervale` int(11) DEFAULT NULL,
-  `auto_print` bit(1) DEFAULT b'0',
-  PRIMARY KEY (`version`),
-  UNIQUE KEY `version_UNIQUE` (`version`)
+CREATE TABLE `product_codes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `color` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `settings`
+-- Dumping data for table `product_codes`
 --
 
-LOCK TABLES `settings` WRITE;
-/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-INSERT INTO `settings` VALUES (100,3,9,19,60,'\0');
-/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+LOCK TABLES `product_codes` WRITE;
+/*!40000 ALTER TABLE `product_codes` DISABLE KEYS */;
+INSERT INTO `product_codes` VALUES (11,'ss','Brown'),(55,'red','dd'),(99,'super red','red');
+/*!40000 ALTER TABLE `product_codes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -55,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-18 12:53:29
+-- Dump completed on 2015-01-18 17:19:20

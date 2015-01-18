@@ -56,5 +56,21 @@ namespace WineMan
             dAdapter.Fill(objDs);
             con.Close();
         }
+        public void GetAllProductCodes(out System.Data.DataSet objDs)
+        {
+            objDs = new System.Data.DataSet();
+
+            string strConn = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            MySqlConnection con = new MySqlConnection(strConn);
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            //cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT * FROM product_codes";
+            MySqlDataAdapter dAdapter = new MySqlDataAdapter();
+            dAdapter.SelectCommand = cmd;
+            con.Open();
+            dAdapter.Fill(objDs);
+            con.Close();
+        }
     }
 }

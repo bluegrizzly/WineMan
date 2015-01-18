@@ -85,7 +85,7 @@ namespace WineMan.Core
             }
         }
 
-        static public bool AddRecord(HttpContext context, string dbName, System.Collections.Specialized.NameValueCollection forms)
+        static public bool AddRecord(HttpContext context, string dbName, System.Collections.Specialized.NameValueCollection forms, bool explicitSetID= false)
         {
             bool ret = false;
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
@@ -112,7 +112,7 @@ namespace WineMan.Core
                 {
                     string colName = col.Field<String>("ColumnName");
 
-                    if (colName == "id")
+                    if (!explicitSetID && colName == "id")
                         continue;
 
                     string value = "";
