@@ -79,7 +79,7 @@ namespace WineMan.Transactions
             ReportDataSource rptSrcStepNames = new ReportDataSource("DataSetStepNames", GetStepNamesData());
             ReportViewer1.LocalReport.DataSources.Add(rptSrcStepNames);
 
-            ReportViewer1.LocalReport.ReportPath = "Reports/Report_Transaction.rdlc";
+            ReportViewer1.LocalReport.ReportPath = "Bin/Reports/Report_Transaction.rdlc";
 
             // Parameters
             string labelColor = "Pink";

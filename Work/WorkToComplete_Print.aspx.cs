@@ -59,7 +59,7 @@ namespace WineMan.Work
 
             
             // Report path
-            ReportViewer1.LocalReport.ReportPath = "Reports/Report_WorkToComplete.rdlc";
+            ReportViewer1.LocalReport.ReportPath = "Bin/Reports/Report_WorkToComplete.rdlc";
 
             // Parameters
             ReportParameter param1 = new ReportParameter("ReportParameter_Date", m_DateStart.ToString("dd MMM yyyy"));
