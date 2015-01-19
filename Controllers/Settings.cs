@@ -56,5 +56,27 @@ namespace WineMan
                 con.Close();
             }
         }
+
+        public int GetHour(DayOfWeek day, bool start)
+        {
+            switch (day)
+            {
+                case DayOfWeek.Sunday:
+                    return 0;
+                case DayOfWeek.Monday:
+                    return start ? 10 : 18;
+                case DayOfWeek.Tuesday:
+                    return start ? 10 : 18;
+                case DayOfWeek.Wednesday:
+                    return start ? 10 : 18;
+                case DayOfWeek.Thursday:
+                    return start ? 10 : 20;
+                case DayOfWeek.Friday:
+                    return start ? 10 : 20;
+                case DayOfWeek.Saturday:
+                    return start ? 10 : 17;
+            }
+            return 0;
+        }
     }
 }

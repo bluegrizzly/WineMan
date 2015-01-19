@@ -20,7 +20,7 @@ namespace WineMan
         public bool done;
         public string comments;
         public string location;
-        public int product_code;
+        public int product_code=0;
 
         private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
 

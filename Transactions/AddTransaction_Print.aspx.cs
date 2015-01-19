@@ -82,15 +82,16 @@ namespace WineMan.Transactions
             ReportViewer1.LocalReport.ReportPath = "Bin/Reports/Report_Transaction.rdlc";
 
             // Parameters
-            string labelColor = "Pink";
+            string labelColor = "White";
             Wine_Category category = Wine_Category.GetRecordByID(m_tx.wine_category_id.ToString());
             Wine_Brand brand = Wine_Brand.GetRecordByID(m_tx.wine_brand_id.ToString());
             Wine_Type type = Wine_Type.GetRecordByID(m_tx.wine_type_id.ToString());
 
-            if (category.symbol.Contains("R"))
-                labelColor = "Red";
-            else if (category.symbol.Contains("W"))
-                labelColor = "Gold";
+            if (m_tx.product_code > 0)
+            {
+                Product_Code code = Product_Code.GetRecordByID(m_tx.product_code);
+                labelColor = code.color;
+            }
 
             ReportParameter paramColor = new ReportParameter("ReportParameter_Color", labelColor);
             ReportViewer1.LocalReport.SetParameters(paramColor);
@@ -101,7 +102,7 @@ namespace WineMan.Transactions
             ReportViewer1.LocalReport.SetParameters(param2);
             ReportParameter param3 = new ReportParameter("ReportParameter_WineCategory", category.name);
             ReportViewer1.LocalReport.SetParameters(param3);
-            ReportParameter param4 = new ReportParameter("ReportParameter_ProductCode", type.id.ToString());
+            ReportParameter param4 = new ReportParameter("ReportParameter_ProductCode", m_tx.product_code.ToString());
             ReportViewer1.LocalReport.SetParameters(param4);
             
             ReportViewer1.LocalReport.Refresh();

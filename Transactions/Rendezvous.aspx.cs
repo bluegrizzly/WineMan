@@ -112,21 +112,6 @@ namespace WineMan.Transactions
             }
             SetupAddButtonUrl();
 
-            // Populate all data
-            for (int j = m_Settings.MinStationHour; j < m_Settings.MaxStationHour; ++j)
-            {
-                int nbInTheHour = 60 / m_Settings.hour_intervale;
-                for (int k=0; k<nbInTheHour; ++k)
-                {
-                    int hour = j;
-                    int min = k * 60/(k+1);
-                    AddTableRow(hour, min);
-                }
-            }
-            
-            Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
-
-            CreateTable(Calendar_RDV.SelectedDate);
         }
 
         protected void AddTableRow(int hour, int min)
@@ -455,6 +440,21 @@ namespace WineMan.Transactions
                 }
             }
             Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
+
+            // Populate all data
+            int minHour = m_Settings.GetHour(Calendar_RDV.SelectedDate.DayOfWeek, true);
+            int maxHour = m_Settings.GetHour(Calendar_RDV.SelectedDate.DayOfWeek, false);
+            for (int j = minHour; j < maxHour; ++j)
+            {
+                int nbInTheHour = 60 / m_Settings.hour_intervale;
+                for (int k = 0; k < nbInTheHour; ++k)
+                {
+                    int hour = j;
+                    int min = k * 60 / (k + 1);
+                    AddTableRow(hour, min);
+                }
+            }
+            CreateTable(Calendar_RDV.SelectedDate);
         }
 
         protected void Calendar_RDV_DayRender(object sender, DayRenderEventArgs e)

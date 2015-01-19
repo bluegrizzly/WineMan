@@ -297,6 +297,12 @@ namespace WineMan.DataSets {
             
             private global::System.Data.DataColumn columndone;
             
+            private global::System.Data.DataColumn columncomments;
+            
+            private global::System.Data.DataColumn columnlocation;
+            
+            private global::System.Data.DataColumn columnproduct_code;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public transactionsDataTable() {
@@ -404,6 +410,30 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn commentsColumn {
+                get {
+                    return this.columncomments;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn locationColumn {
+                get {
+                    return this.columnlocation;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn product_codeColumn {
+                get {
+                    return this.columnproduct_code;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -439,7 +469,7 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public transactionsRow AddtransactionsRow(uint id, uint client_id, uint wine_brand_id, uint wine_type_id, uint wine_category_id, System.DateTime date_creation, System.DateTime date_bottling, int bottling_station, ulong done) {
+            public transactionsRow AddtransactionsRow(uint id, uint client_id, uint wine_brand_id, uint wine_type_id, uint wine_category_id, System.DateTime date_creation, System.DateTime date_bottling, int bottling_station, ulong done, string comments, string location, int product_code) {
                 transactionsRow rowtransactionsRow = ((transactionsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -450,7 +480,10 @@ namespace WineMan.DataSets {
                         date_creation,
                         date_bottling,
                         bottling_station,
-                        done};
+                        done,
+                        comments,
+                        location,
+                        product_code};
                 rowtransactionsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowtransactionsRow);
                 return rowtransactionsRow;
@@ -489,6 +522,9 @@ namespace WineMan.DataSets {
                 this.columndate_bottling = base.Columns["date_bottling"];
                 this.columnbottling_station = base.Columns["bottling_station"];
                 this.columndone = base.Columns["done"];
+                this.columncomments = base.Columns["comments"];
+                this.columnlocation = base.Columns["location"];
+                this.columnproduct_code = base.Columns["product_code"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -512,10 +548,18 @@ namespace WineMan.DataSets {
                 base.Columns.Add(this.columnbottling_station);
                 this.columndone = new global::System.Data.DataColumn("done", typeof(ulong), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columndone);
+                this.columncomments = new global::System.Data.DataColumn("comments", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columncomments);
+                this.columnlocation = new global::System.Data.DataColumn("location", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnlocation);
+                this.columnproduct_code = new global::System.Data.DataColumn("product_code", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnproduct_code);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnid}, true));
                 this.columnid.AllowDBNull = false;
                 this.columnid.Unique = true;
+                this.columncomments.MaxLength = 5592405;
+                this.columnlocation.MaxLength = 20;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -797,6 +841,54 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string comments {
+                get {
+                    try {
+                        return ((string)(this[this.tabletransactions.commentsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'comments\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabletransactions.commentsColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string location {
+                get {
+                    try {
+                        return ((string)(this[this.tabletransactions.locationColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'location\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabletransactions.locationColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int product_code {
+                get {
+                    try {
+                        return ((int)(this[this.tabletransactions.product_codeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'product_code\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabletransactions.product_codeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool Isclient_idNull() {
                 return this.IsNull(this.tabletransactions.client_idColumn);
             }
@@ -889,6 +981,42 @@ namespace WineMan.DataSets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetdoneNull() {
                 this[this.tabletransactions.doneColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IscommentsNull() {
+                return this.IsNull(this.tabletransactions.commentsColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetcommentsNull() {
+                this[this.tabletransactions.commentsColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IslocationNull() {
+                return this.IsNull(this.tabletransactions.locationColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetlocationNull() {
+                this[this.tabletransactions.locationColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool Isproduct_codeNull() {
+                return this.IsNull(this.tabletransactions.product_codeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void Setproduct_codeNull() {
+                this[this.tabletransactions.product_codeColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -1060,6 +1188,9 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
             tableMapping.ColumnMappings.Add("date_bottling", "date_bottling");
             tableMapping.ColumnMappings.Add("bottling_station", "bottling_station");
             tableMapping.ColumnMappings.Add("done", "done");
+            tableMapping.ColumnMappings.Add("comments", "comments");
+            tableMapping.ColumnMappings.Add("location", "location");
+            tableMapping.ColumnMappings.Add("product_code", "product_code");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::MySql.Data.MySqlClient.MySqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
@@ -1075,9 +1206,7 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(param);
             this._adapter.InsertCommand = new global::MySql.Data.MySqlClient.MySqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO `transactions` (`client_id`, `wine_brand_id`, `wine_type_id`, `wine_c" +
-                "ategory_id`, `date_creation`, `date_bottling`, `bottling_station`, `done`) VALUE" +
-                "S (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO `transactions` (`client_id`, `wine_brand_id`, `wine_type_id`, `wine_category_id`, `date_creation`, `date_bottling`, `bottling_station`, `done`, `comments`, `location`, `product_code`) VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             param = new global::MySql.Data.MySqlClient.MySqlParameter();
             param.ParameterName = "@p1";
@@ -1135,11 +1264,29 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
             param.IsNullable = true;
             param.SourceColumn = "done";
             this._adapter.InsertCommand.Parameters.Add(param);
+            param = new global::MySql.Data.MySqlClient.MySqlParameter();
+            param.ParameterName = "@p9";
+            param.MySqlDbType = global::MySql.Data.MySqlClient.MySqlDbType.Text;
+            param.IsNullable = true;
+            param.SourceColumn = "comments";
+            this._adapter.InsertCommand.Parameters.Add(param);
+            param = new global::MySql.Data.MySqlClient.MySqlParameter();
+            param.ParameterName = "@p10";
+            param.DbType = global::System.Data.DbType.String;
+            param.MySqlDbType = global::MySql.Data.MySqlClient.MySqlDbType.VarChar;
+            param.IsNullable = true;
+            param.SourceColumn = "location";
+            this._adapter.InsertCommand.Parameters.Add(param);
+            param = new global::MySql.Data.MySqlClient.MySqlParameter();
+            param.ParameterName = "@p11";
+            param.DbType = global::System.Data.DbType.Int32;
+            param.MySqlDbType = global::MySql.Data.MySqlClient.MySqlDbType.Int32;
+            param.IsNullable = true;
+            param.SourceColumn = "product_code";
+            this._adapter.InsertCommand.Parameters.Add(param);
             this._adapter.UpdateCommand = new global::MySql.Data.MySqlClient.MySqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE `transactions` SET `client_id` = @p1, `wine_brand_id` = @p2, `wine_type_id" +
-                "` = @p3, `wine_category_id` = @p4, `date_creation` = @p5, `date_bottling` = @p6," +
-                " `bottling_station` = @p7, `done` = @p8 WHERE ((`id` = @p9))";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE `transactions` SET `client_id` = @p1, `wine_brand_id` = @p2, `wine_type_id` = @p3, `wine_category_id` = @p4, `date_creation` = @p5, `date_bottling` = @p6, `bottling_station` = @p7, `done` = @p8, `comments` = @p9, `location` = @p10, `product_code` = @p11 WHERE ((`id` = @p12))";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             param = new global::MySql.Data.MySqlClient.MySqlParameter();
             param.ParameterName = "@p1";
@@ -1199,6 +1346,26 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
             this._adapter.UpdateCommand.Parameters.Add(param);
             param = new global::MySql.Data.MySqlClient.MySqlParameter();
             param.ParameterName = "@p9";
+            param.MySqlDbType = global::MySql.Data.MySqlClient.MySqlDbType.Text;
+            param.IsNullable = true;
+            param.SourceColumn = "comments";
+            this._adapter.UpdateCommand.Parameters.Add(param);
+            param = new global::MySql.Data.MySqlClient.MySqlParameter();
+            param.ParameterName = "@p10";
+            param.DbType = global::System.Data.DbType.String;
+            param.MySqlDbType = global::MySql.Data.MySqlClient.MySqlDbType.VarChar;
+            param.IsNullable = true;
+            param.SourceColumn = "location";
+            this._adapter.UpdateCommand.Parameters.Add(param);
+            param = new global::MySql.Data.MySqlClient.MySqlParameter();
+            param.ParameterName = "@p11";
+            param.DbType = global::System.Data.DbType.Int32;
+            param.MySqlDbType = global::MySql.Data.MySqlClient.MySqlDbType.Int32;
+            param.IsNullable = true;
+            param.SourceColumn = "product_code";
+            this._adapter.UpdateCommand.Parameters.Add(param);
+            param = new global::MySql.Data.MySqlClient.MySqlParameter();
+            param.ParameterName = "@p12";
             param.DbType = global::System.Data.DbType.UInt32;
             param.MySqlDbType = global::MySql.Data.MySqlClient.MySqlDbType.UInt32;
             param.IsNullable = true;
@@ -1220,8 +1387,7 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
             this._commandCollection = new global::MySql.Data.MySqlClient.MySqlCommand[1];
             this._commandCollection[0] = new global::MySql.Data.MySqlClient.MySqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT `id`, `client_id`, `wine_brand_id`, `wine_type_id`, `wine_category_id`, `d" +
-                "ate_creation`, `date_bottling`, `bottling_station`, `done` FROM `transactions`";
+            this._commandCollection[0].CommandText = "SELECT * FROM `transactions`";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -1304,7 +1470,7 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<uint> p1, global::System.Nullable<uint> p2, global::System.Nullable<uint> p3, global::System.Nullable<uint> p4, global::System.Nullable<global::System.DateTime> p5, global::System.Nullable<global::System.DateTime> p6, global::System.Nullable<int> p7, global::System.Nullable<ulong> p8) {
+        public virtual int Insert(global::System.Nullable<uint> p1, global::System.Nullable<uint> p2, global::System.Nullable<uint> p3, global::System.Nullable<uint> p4, global::System.Nullable<global::System.DateTime> p5, global::System.Nullable<global::System.DateTime> p6, global::System.Nullable<int> p7, global::System.Nullable<ulong> p8, string p9, string p10, global::System.Nullable<int> p11) {
             if ((p1.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[0].Value = ((uint)(p1.Value));
             }
@@ -1353,6 +1519,24 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
             else {
                 this.Adapter.InsertCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
+            if ((p9 == null)) {
+                this.Adapter.InsertCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[8].Value = ((string)(p9));
+            }
+            if ((p10 == null)) {
+                this.Adapter.InsertCommand.Parameters[9].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[9].Value = ((string)(p10));
+            }
+            if ((p11.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[10].Value = ((int)(p11.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -1373,7 +1557,7 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<uint> p1, global::System.Nullable<uint> p2, global::System.Nullable<uint> p3, global::System.Nullable<uint> p4, global::System.Nullable<global::System.DateTime> p5, global::System.Nullable<global::System.DateTime> p6, global::System.Nullable<int> p7, global::System.Nullable<ulong> p8, uint p9) {
+        public virtual int Update(global::System.Nullable<uint> p1, global::System.Nullable<uint> p2, global::System.Nullable<uint> p3, global::System.Nullable<uint> p4, global::System.Nullable<global::System.DateTime> p5, global::System.Nullable<global::System.DateTime> p6, global::System.Nullable<int> p7, global::System.Nullable<ulong> p8, string p9, string p10, global::System.Nullable<int> p11, uint p12) {
             if ((p1.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[0].Value = ((uint)(p1.Value));
             }
@@ -1422,7 +1606,25 @@ namespace WineMan.DataSets.DataSetTxTableAdapters {
             else {
                 this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
-            this.Adapter.UpdateCommand.Parameters[8].Value = ((uint)(p9));
+            if ((p9 == null)) {
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((string)(p9));
+            }
+            if ((p10 == null)) {
+                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(p10));
+            }
+            if ((p11.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((int)(p11.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[11].Value = ((uint)(p12));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {

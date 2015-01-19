@@ -411,6 +411,7 @@
     <Compile Include="Controllers\Customer.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\Holiday.cs" />
+    <Compile Include="Controllers\Product_Code.cs" />
     <Compile Include="Controllers\Settings.cs" />
     <Compile Include="Controllers\Step.cs" />
     <Compile Include="Controllers\Transaction.cs" />
