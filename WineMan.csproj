@@ -145,15 +145,7 @@
     <Content Include="Admin\WineBrandManager.aspx" />
     <Content Include="Admin\WineCategoriesManager.aspx" />
     <Content Include="Admin\WineTypesManager.aspx" />
-    <Content Include="App_Data\wineman_customers.sql" />
-    <Content Include="App_Data\wineman_holidays.sql" />
-    <Content Include="App_Data\wineman_settings.sql" />
-    <Content Include="App_Data\wineman_steps.sql" />
-    <Content Include="App_Data\wineman_transactions.sql" />
-    <Content Include="App_Data\wineman_transaction_step.sql" />
-    <Content Include="App_Data\wineman_wine_brands.sql" />
-    <Content Include="App_Data\wineman_wine_categories.sql" />
-    <Content Include="App_Data\wineman_wine_types.sql" />
+    <Content Include="App_Data\dumpdb.sql" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
@@ -214,6 +206,8 @@
     <Content Include="DataSets\DataSetStepNames.xsc">
       <DependentUpon>DataSetStepNames.xsd</DependentUpon>
     </Content>
+    <Content Include="App_Data\exportdb.bat" />
+    <Content Include="App_Data\importdb.bat" />
     <None Include="DataSets\DataSetStepNames.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSetStepNames.Designer.cs</LastGenOutput>
@@ -271,6 +265,7 @@
     <Content Include="DataSets\DataSet_Steps.xss">
       <DependentUpon>DataSet_Steps.xsd</DependentUpon>
     </Content>
+    <Content Include="importdb.bat" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
