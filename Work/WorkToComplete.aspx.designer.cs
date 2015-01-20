@@ -67,15 +67,6 @@ namespace WineMan.Work {
         protected global::System.Web.UI.WebControls.DropDownList DropDownList_FilterStep;
         
         /// <summary>
-        /// CheckBox_ShowLate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox CheckBox_ShowLate;
-        
-        /// <summary>
         /// CheckBox_ShowDone control.
         /// </summary>
         /// <remarks>

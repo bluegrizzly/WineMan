@@ -89,8 +89,6 @@ namespace WineMan.Work
                                     " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "') AND transaction_step.done=0" +
                                     " ORDER BY step_id";
 
-                //string sqlQuery = TransactionStep.BuildSQLQuery(oldDate, m_DateStart, EShow.Show_NotDone);
-                //sqlQuery += " ORDER BY step_id";
                 MySqlDataAdapter adp = new MySqlDataAdapter(sqlQuery1, con);
                 adp.Fill(dt);
             }

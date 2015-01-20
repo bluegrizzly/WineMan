@@ -49,10 +49,13 @@ namespace WineMan.Work
 
             string dateStrEnd = context.Request.QueryString["dateend"];
             DateTime dateEnd = DateTime.Now;
-            if (dateStr == "")
+            if (dateStrEnd == "")
                 dateEnd = DateTime.MaxValue;
             else
-                DateTime.TryParse(dateStrEnd, out dateEnd);
+            {
+                if (DateTime.TryParse(dateStrEnd, out dateEnd))
+                    dateEnd = dateEnd.AddDays(1); // add a day so the end date is included
+            }
             
             EShow showFilter = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
 
@@ -84,12 +87,14 @@ namespace WineMan.Work
 
                     string dateStrEnd = context.Request.QueryString["dateend"];
                     DateTime dateEnd = DateTime.Now;
-                    if (dateStr == "")
+                    if (dateStrEnd == "")
                         dateEnd = DateTime.MaxValue;
                     else
-                        DateTime.TryParse(dateStrEnd, out dateEnd);
+                    {
+                        if (DateTime.TryParse(dateStrEnd, out dateEnd))
+                            dateEnd = dateEnd.AddDays(1); // add a day so the end date is included
+                    }
 
-                    bool showlate = context.Request.QueryString["showlate"] == "true"?true : false;
                     EShow showdone = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
                     int filterStep = -1;
                     Int32.TryParse(context.Request.QueryString["filterstep"], out filterStep);
@@ -98,7 +103,7 @@ namespace WineMan.Work
                     string txID = context.Request.QueryString["txid"];
 
                     // Get all transaction not completed.
-                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, showlate, showdone, filterStep, txID);
+                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, false, showdone, filterStep, txID);
 
                     // Sort by steps
                     steps.Sort((x, y) => x.date.CompareTo(y.date));
