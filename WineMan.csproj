@@ -81,8 +81,12 @@
       <Private>True</Private>
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <Private>True</Private>
+    <Reference Include="MySql.Data, Version=6.9.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\MySql.Data.6.9.5\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySqlBackup">
+      <HintPath>packages\MySqlBackup.NET.2.0.6\lib\net45\MySqlBackup.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -317,6 +321,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="Work\DoBackup.aspx" />
     <Content Include="Work\WorkToCompleteTx.aspx" />
     <Content Include="Work\WorkToComplete_Print.aspx" />
     <Content Include="Work\WorkToComplete_PrintHTML.aspx" />
@@ -549,6 +554,13 @@
     <Compile Include="Controllers\Wine_Brand.cs" />
     <Compile Include="Core\Utils.cs" />
     <Compile Include="Views\RendezVousGrid.cs" />
+    <Compile Include="Work\DoBackup.aspx.cs">
+      <DependentUpon>DoBackup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Work\DoBackup.aspx.designer.cs">
+      <DependentUpon>DoBackup.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Work\WorkToCompleteTx.aspx.cs">
       <DependentUpon>WorkToCompleteTx.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

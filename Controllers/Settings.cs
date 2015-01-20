@@ -15,6 +15,7 @@ namespace WineMan
         public int MaxStationHour;
         public int hour_intervale;
         public bool auto_print;
+        public string backup_path;
 
         public Settings()
         {
@@ -47,6 +48,8 @@ namespace WineMan
                         parsed = Int32.TryParse(dr["auto_print"].ToString(), out autoprintInt);
                         System.Diagnostics.Debug.Assert(parsed);
                         auto_print = autoprintInt > 0 ? true : false;
+
+                        backup_path = dr["backup_path"].ToString();
                     }
                     else
                     {

@@ -31,6 +31,15 @@ namespace WineMan.Admin {
         protected global::System.Web.UI.WebControls.Panel Panel3;
         
         /// <summary>
+        /// Panel8 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel8;
+        
+        /// <summary>
         /// Panel4 control.
         /// </summary>
         /// <remarks>
@@ -38,6 +47,15 @@ namespace WineMan.Admin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel Panel4;
+        
+        /// <summary>
+        /// Panel9 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel9;
         
         /// <summary>
         /// Panel5 control.
@@ -56,5 +74,14 @@ namespace WineMan.Admin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel Panel6;
+        
+        /// <summary>
+        /// Panel7 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel7;
     }
 }
