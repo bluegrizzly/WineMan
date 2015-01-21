@@ -210,8 +210,6 @@
     <Content Include="DataSets\DataSetStepNames.xsc">
       <DependentUpon>DataSetStepNames.xsd</DependentUpon>
     </Content>
-    <Content Include="App_Data\exportdb.bat" />
-    <Content Include="App_Data\importdb.bat" />
     <None Include="DataSets\DataSetStepNames.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSetStepNames.Designer.cs</LastGenOutput>
@@ -270,6 +268,7 @@
       <DependentUpon>DataSet_Steps.xsd</DependentUpon>
     </Content>
     <Content Include="importdb.bat" />
+    <Content Include="exportdb.bat" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

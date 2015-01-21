@@ -134,7 +134,7 @@
                 <div class="ui-widget" style="text-align:center" >
                       <asp:TextBox ID="txtLastName" runat="server" Width="150px" CssClass="textboxAuto"  Font-Size="12px" OnTextChanged="txtLastName_TextChanged" BackColor="#E1E8F0" AutoPostBack="True" />
                       <br />
-                      <asp:Label ID="Label1" runat="server" Font-Italic="True" Font-Size="7pt" ForeColor="#999999" Text="Type name or phone to select"></asp:Label>
+                      <asp:Label ID="Label1" runat="server" Font-Italic="True" Font-Size="7pt" ForeColor="#999999" Text="Type name, ID or phone to select"></asp:Label>
                 </div>    
                 </fieldset>
             </asp:Panel>
@@ -273,7 +273,7 @@
                                 <br />
                                 <asp:Button ID="Button_Commit" runat="server" CausesValidation="False" OnClick="Button_Commit_Click" Text="Create" UseSubmitBehavior="False" />
                                 <asp:Button ID="Button_Print" runat="server" OnClick="Button_Print_Click" Text="Print" />
-                                <asp:Button ID="Button_SendEmail" runat="server" OnClick="Button_SendEmail_Click" Text="Send Email" Width="81px" />
+                                <asp:Button ID="Button_SendEmail" runat="server" OnClick="Button_SendEmail_Click" Text="Send Email" Width="66px" Font-Size="X-Small" />
                             </p>
                         </td>
                     </tr>
