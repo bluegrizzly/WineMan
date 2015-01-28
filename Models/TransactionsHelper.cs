@@ -122,6 +122,29 @@ namespace WineMan
             return true;
         }
 
+        static public bool UpdateStepsRecordDate(int txID, Wine_Category category, int stepID, DateTime newDate)
+        {
+            List<TransactionStep> txSteps = TransactionStep.GetRecordsForTx(txID);
+            int nbDays=0;
+            foreach (TransactionStep step in txSteps)
+            {
+                if (step.step_id < stepID)
+                    continue; // we don't care about passed steps
+                else if (step.step_id == stepID)
+                {
+                    nbDays = (newDate - step.date).Days;
+                    step.date = newDate;
+                    step.UpdateDate(newDate);
+                }
+                else 
+                {
+                    step.date = step.date.AddDays(nbDays);
+                    step.UpdateDate(step.date);
+                }
+            }
+            return true;
+        }
+
         public void GetTransactionStepJSONRecords(HttpContext context, List<TransactionStep> steps)
         {
             string retString = @"{";

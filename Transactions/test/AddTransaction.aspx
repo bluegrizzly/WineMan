@@ -63,14 +63,6 @@
 
 <script language="javascript" type="text/javascript">
     $(function () {
-        $("#<%= TextBox_Date.ClientID %>").datepicker({
-              autoclose: true,
-              dateFormat: "M-dd-yy",
-              minDate:0
-          });
-    });
-
-      $(function () {
         $('#<%=txtLastName.ClientID%>').autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -100,10 +92,34 @@
             }
         });
     });
+
+
+    $(function () {
+        $("#<%= TextBox0.ClientID %>").datepicker({
+              autoclose: true,
+              dateFormat: "yy-mm-dd"
+          });
+        $("#<%= TextBox1.ClientID %>").datepicker({
+            autoclose: true,
+            dateFormat: "yy-mm-dd"
+        });
+    });
 </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+
+    <asp:TextBox ID="TextBox0" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox1" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox2" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox3" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox4" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox5" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox6" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox7" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox8" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+    <asp:TextBox ID="TextBox9" runat="server" AutoPostBack="True" Visible="False"></asp:TextBox>
+
     <table style="width:100%;">
     <tr>
         <td class="auto-style1" > 
@@ -280,7 +296,7 @@
                                 <br />
                                 <asp:Button ID="Button_Commit" runat="server" CausesValidation="False" OnClick="Button_Commit_Click" Text="Create" UseSubmitBehavior="False" />
                                 <asp:Button ID="Button_Print" runat="server" OnClick="Button_Print_Click" Text="Print" />
-                                <asp:Button ID="Button_SendEmail" runat="server" OnClick="Button_SendEmail_Click" Text="Send Email" Width="66px" Font-Size="X-Small" Height="22px" style="margin-top: 0px" />
+                                <asp:Button ID="Button_SendEmail" runat="server" OnClick="Button_SendEmail_Click" Text="Send Email" Width="66px" Font-Size="X-Small" />
                             </p>
                         </td>
                     </tr>
@@ -299,12 +315,6 @@
                         <td class="auto-style10" valign="top">
                             <asp:Table ID="Table_Dates" runat="server" BorderWidth="2px" CellPadding="1" CellSpacing="1" GridLines="Both" Height="62px" HorizontalAlign="Center" Width="670px">
                             </asp:Table>
-                            <asp:CheckBox ID="CheckBox_EditDates" runat="server" Text="Edit Dates" AutoPostBack="True" OnCheckedChanged="CheckBox_EditDates_CheckedChanged" />
-                            <asp:DropDownList ID="DropDownList_Steps" runat="server" DataSourceID="SqlDataSource1" DataTextField="name" DataValueField="id" OnSelectedIndexChanged="DropDownList_Steps_SelectedIndexChanged" AutoPostBack="True" Visible="False">
-                            </asp:DropDownList>
-                            <asp:TextBox ID="TextBox_Date" runat="server" Width="85px" Visible="False"></asp:TextBox>
-                            <asp:Button ID="Button_ChangeDate" runat="server" Text="Change Date" OnClick="Button_ChangeDate_Click" Visible="False" />
-                            <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:winemanConnectionString %>" ProviderName="<%$ ConnectionStrings:winemanConnectionString.ProviderName %>" SelectCommand="SELECT id, name FROM steps"></asp:SqlDataSource>
                         </td>
                     </tr>
                 </table>

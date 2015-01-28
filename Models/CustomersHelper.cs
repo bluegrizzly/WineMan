@@ -25,20 +25,20 @@ namespace WineMan
 
             if (inputName == " ")
             {
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers");
+                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers ORDER BY last_name");
                 return result;
             }
 
-            result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE first_name LIKE '%" + inputName + "%'");
+            result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE first_name LIKE '%" + inputName + "%'" + " ORDER BY last_name");
 
             if (result.Count == 0)
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE last_name LIKE '%" + inputName + "%'");
+                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE last_name LIKE '%" + inputName + "%'" + " ORDER BY last_name");
 
             if (result.Count == 0)
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE telephone LIKE '%" + inputName + "%'");
+                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE telephone LIKE '%" + inputName + "%'" + " ORDER BY last_name");
 
             if (result.Count == 0)
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE id = '" + inputName + "'");
+                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE id = '" + inputName + "'" + " ORDER BY last_name");
 
             return result;
         }

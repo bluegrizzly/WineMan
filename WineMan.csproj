@@ -306,6 +306,7 @@
     <Content Include="Global.asax" />
     <Content Include="todo.aspx" />
     <Content Include="Transactions\AddTransaction.aspx" />
+    <Content Include="Transactions\AddTransaction_ModifyDates.aspx" />
     <Content Include="Transactions\AddTransaction_Print.aspx" />
     <Content Include="Transactions\LeftMenu.aspx" />
     <Content Include="Transactions\Rendezvous.aspx" />
@@ -504,6 +505,13 @@
     </Compile>
     <Compile Include="Transactions\AddTransaction.aspx.designer.cs">
       <DependentUpon>AddTransaction.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Transactions\AddTransaction_ModifyDates.aspx.cs">
+      <DependentUpon>AddTransaction_ModifyDates.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Transactions\AddTransaction_ModifyDates.aspx.designer.cs">
+      <DependentUpon>AddTransaction_ModifyDates.aspx</DependentUpon>
     </Compile>
     <Compile Include="Transactions\AddTransaction_Print.aspx.cs">
       <DependentUpon>AddTransaction_Print.aspx</DependentUpon>

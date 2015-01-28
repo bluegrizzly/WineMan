@@ -51,7 +51,6 @@ namespace WineMan.Transactions
                 Label_BottlingStation.Text = c_SelectString;
                 Label_FirstName.Text = c_SelectString;
                 Label_LastName.Text = c_SelectString;
-                CheckBox_EditDates.Enabled = false;
             }
 
             Label_TransactionID.Text = "-";
@@ -134,7 +133,7 @@ namespace WineMan.Transactions
             if (Session["rendezvous"] != null)
             {
                 DateTime rdv = (DateTime)Session["rendezvous"];
-                Label_BottlingDate.Text = rdv.ToString("MMM-dd-yyyy", m_Culture);
+                Label_BottlingDate.Text = rdv.ToString("d", m_Culture);
                 Calendar_RDV.SelectedDate = rdv;
                 Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
             }
@@ -261,7 +260,7 @@ namespace WineMan.Transactions
                 // Pick the automatic rendezvous date if it is not done yet
                 RendezVous rendezvous = new RendezVous();
                 DateTime rdvDate = rendezvous.PickBestAvailableBottlingDate(Calendar_RDV.SelectedDate);
-                Label_BottlingDate.Text = rdvDate.ToString("MMM-dd-yyyy", m_Culture);
+                Label_BottlingDate.Text = rdvDate.ToString("d", m_Culture);
                 //todo add the hour and station
             }
         }
@@ -529,7 +528,6 @@ namespace WineMan.Transactions
                 Button_Commit.Text = "Modify";
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
-                CheckBox_EditDates.Enabled = true;
             }
             else if (Label_TransactionID.Text != "-")
             {
@@ -539,14 +537,12 @@ namespace WineMan.Transactions
                 Button_Commit.Text = "Modify";
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
-                CheckBox_EditDates.Enabled = true;
             }
             else
             {
                 Button_Commit.Text = "Create";
                 Button_Print.Enabled = false;
                 Button_SendEmail.Enabled = false;
-                CheckBox_EditDates.Enabled = false;
             }
         }
 
@@ -576,6 +572,19 @@ namespace WineMan.Transactions
                     {
                         txSteps = TransactionStep.GetRecordsForTx(m_TxID);
 
+                        int indexTextBox = 0;
+                        List<TextBox> listTextBox = new List<TextBox>();
+                        listTextBox.Add(TextBox0);
+                        listTextBox.Add(TextBox1);
+                        listTextBox.Add(TextBox2);
+                        listTextBox.Add(TextBox3);
+                        listTextBox.Add(TextBox4);
+                        listTextBox.Add(TextBox5);
+                        listTextBox.Add(TextBox6);
+                        listTextBox.Add(TextBox7);
+                        listTextBox.Add(TextBox8);
+                        listTextBox.Add(TextBox9);
+
                         foreach(TransactionStep step in txSteps)
                         {
                             //Title
@@ -588,10 +597,19 @@ namespace WineMan.Transactions
 
                             //Date
                             TableCell tCell2 = new TableCell();
+                            TextBox textBox = listTextBox[indexTextBox];
+                            System.Diagnostics.Debug.Assert(indexTextBox < listTextBox.Count);
+                            textBox.Text = step.date.ToString("MMM-dd-yyyy", m_Culture);
+                            textBox.Width = 80;
+                            textBox.Visible = true;
+                            tCell2.Controls.Add(textBox);
+
                             tCell2.HorizontalAlign = HorizontalAlign.Center;
-                            tCell2.Text = step.date.ToString("MMM-dd-yyyy", m_Culture);
+                            //tCell2.Text = step.date.ToString("MMM-dd-yyyy", m_Culture);
                             tCell.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
                             tRowDates.Cells.Add(tCell2);
+
+                            indexTextBox++;
                         }
                     }
                 }
@@ -599,7 +617,7 @@ namespace WineMan.Transactions
                 {
                     foreach (Wine_Category wineCat in categories)
                     {
-                        Step step = Step.GetRecordById(wineCat.step.ToString());
+                        Step step = Step.GetRecord(wineCat.step.ToString());
 
                         DateTime stepDate = selDate.AddDays(wineCat.days);
                         if (step.final_step > 0 && Label_BottlingDate.Text == c_SelectString)
@@ -654,7 +672,7 @@ namespace WineMan.Transactions
             Label_BottlingHour.Text = DateHelper.GetHFormatedDate(tx.date_bottling);
             Label_BottlingStation.Text = tx.bottling_station.ToString();
             DateTime rdv = new DateTime(tx.date_bottling.Year, tx.date_bottling.Month, tx.date_bottling.Day);
-            Label_BottlingDate.Text = rdv.ToString("MMM-dd-yyyy", m_Culture);
+            Label_BottlingDate.Text = rdv.ToString("d", m_Culture);
             Calendar_RDV.SelectedDate = rdv;
             Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
 
@@ -680,77 +698,6 @@ namespace WineMan.Transactions
             {
                 Utils.MessageBox(this, "Not yet implemented");  
             }
-        }
-
-///////////////////////////////////
-// Change dates
-///////////////////////////////////
-        protected void DropDownList_Steps_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (m_TxID == -1)
-                return;
-
-            int stepID=0;
-            Int32.TryParse(DropDownList_Steps.SelectedValue, out stepID);
-            TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, stepID);
-
-            TextBox_Date.Text = txStep.date.ToString("MMM-dd-yyyy");
-        }
-
-        protected void CheckBox_EditDates_CheckedChanged(object sender, EventArgs e)
-        {
-            DropDownList_Steps.Visible = CheckBox_EditDates.Checked;
-            TextBox_Date.Visible = CheckBox_EditDates.Checked;
-            Button_ChangeDate.Visible = CheckBox_EditDates.Checked;
-            if (CheckBox_EditDates.Checked && TextBox_Date.Text == "")
-            {
-                TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, 1); //set yeast by default
-                TextBox_Date.Text = txStep.date.ToString("MMM-dd-yyyy");
-            }
-        }
-
-        protected void Button_ChangeDate_Click(object sender, EventArgs e)
-        {
-            if (m_TxID == -1)
-                return;
-
-            Transaction tx = Transaction.GetRecord(m_TxID);
-
-            DateTime date;
-            if (!DateTime.TryParse(TextBox_Date.Text, out date))
-            {
-                Utils.MessageBox(this, "Error: Cannot change date.  -Invalid date");
-                return;
-            }
-
-            int stepID=0;
-            Int32.TryParse(DropDownList_Steps.SelectedValue, out stepID);
-            TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, stepID); 
-            
-            // Validation1: is step done?
-            if (txStep.done > 0)
-            {
-                Utils.MessageBox(this, "Error: Cannot change date.  -TransactionStep is done.");
-                return;
-            }
-
-            // Is there a rendez vous set before the 
-            Step stepDef = Step.GetLastStep();
-            TransactionStep txBottlingStep = TransactionStep.GetRecordForTx(m_TxID, stepDef.id);
-            DateTime newBottlingDate = txBottlingStep.date.AddDays((date - txStep.date).Days);
-            if (newBottlingDate > tx.date_bottling)
-            {
-                Utils.MessageBox(this, "Error: Cannot change date.  -The appointment in the transaction need to be moved after " +newBottlingDate.ToString("MMM-dd-yyyy"));
-                return;
-            }
-
-            Wine_Category category = Wine_Category.GetRecordByID(DropDownList_Category.SelectedValue);
-
-            // Now do change all other dates
-            // this commit the dates
-            TransactionsHelper.UpdateStepsRecordDate(m_TxID, category, stepID, date);
-
-            // Is there a rendez vous?
         }
     }
 }

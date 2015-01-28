@@ -1,5 +1,13 @@
 ﻿TODO:
 =============
+Commetns #1
+-----------
+- new microvinplus image
+- client sorted by last name alphabetic order (DONE)
+- New customer, use enter for next key
+- add dash to telephone number (DONE)
+- ignore caps for customer name search (DONE all DBs)
+
 Suite au meeting le 15 janvier
 ------------------------------
 * Be able to complete a transaction  (DONE)

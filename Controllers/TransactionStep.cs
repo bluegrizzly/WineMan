@@ -119,6 +119,40 @@ namespace WineMan
             return txSteps;
         }
 
+        public static TransactionStep GetRecordForTx(int txID, int stepID)
+        {
+            TransactionStep txStep = new TransactionStep();
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE transaction_id =" + txID.ToString() + " AND step_id=" +stepID.ToString() ;
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        con.Open();
+                        MySqlDataReader dr = cmd.ExecuteReader();
+
+                        dr.Read();
+                        if (dr.HasRows)
+                        {
+                            txStep.FillRecord(dr);
+                        }
+
+                        dr.Close();
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+
+            return txStep;
+        }
+
         public static List<TransactionStep> GetRecordsForTx(int txID)
         {
             List<TransactionStep> txSteps = new List<TransactionStep>();
@@ -128,6 +162,7 @@ namespace WineMan
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
                     string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE transaction_id =" + txID.ToString();
+                    sqlQuery += " ORDER BY step_id";
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
@@ -152,6 +187,32 @@ namespace WineMan
             }
 
             return txSteps;
+        }
+
+        public bool UpdateDate(DateTime newDate)
+        {
+            bool ret = false;
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string dateStr = newDate.Year.ToString() + "-" + newDate.Month.ToString() + "-" + newDate.Day.ToString();
+                    string sqlQuery = "UPDATE " + c_dbName + " SET date = " + dateStr + " WHERE id=" + id.ToString();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        int result = cmd.ExecuteNonQuery();
+                        ret = true;
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+            return ret;
         }
 
         public static bool DeleteTxRecords(int txID)

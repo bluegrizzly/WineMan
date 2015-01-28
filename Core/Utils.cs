@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
 using System.Web.UI;
+//using CSASPNETMessageBox;
 
 namespace WineMan
 {
@@ -16,7 +17,16 @@ namespace WineMan
 
     public static class Utils
     {
-        public static void MessageBox(this Page Page, String Message) { Page.ClientScript.RegisterStartupScript(Page.GetType(), "MessageBox", "<script language='javascript'>alert('" + Message + "');</script>"); }
+        public static void MessageBox(Page Page, String Message) 
+        {
+            //MessageBox messageBox = new MessageBox();
+            //messageBox.MessageTitle = "Information";
+            //messageBox.MessageText = Message;
+            //messageBox.Show(Page); 
+            Page.Response.Write("<script type=text/javascript>alert('" + Message + "');</script>");
+
+            //Page.ClientScript.RegisterStartupScript(Page.GetType(), "MessageBox", "<script type=text/javascript> alert('" + Message + "')</script>"); 
+        }
 
 
         public static string ResolveUrl(string originalUrl)

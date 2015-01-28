@@ -28,44 +28,14 @@ namespace WineMan
             }
         }
 
-        public static Step GetRecord(string id)
-        {
-            Step ret = new Step();
-
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-            using (MySqlConnection con = new MySqlConnection(connectionString))
-            {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM steps WHERE id = '" + id + "'", con))
-                {
-                    con.Open();
-                    MySqlDataReader dr = cmd.ExecuteReader();
-
-                    dr.Read();
-                    if (dr.HasRows)
-                    {
-                        TransactionStep tx = new TransactionStep();
-                        ret.FillData(dr);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.Assert(false);
-                    }
-                    dr.Close();
-                }
-                con.Close();
-            }
-
-            return ret;
-        }
-
-        public static List<Step> GetAllRecords()
+        public static List<Step> GetRecords(string sqlQuery)
         {
             List<Step> steps = new List<Step>();
-            
+
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM steps", con))
+                using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();
@@ -82,6 +52,29 @@ namespace WineMan
             }
 
             return steps;
+        }
+
+        public static Step GetRecordById(string id)
+        {
+            List<Step> steps = GetRecords("SELECT DISTINCT * FROM steps WHERE id = '" + id + "'");
+            System.Diagnostics.Debug.Assert(steps.Count == 1);
+            if (steps.Count == 1)
+                return steps[0];
+            return null;
+        }
+
+        public static Step GetLastStep()
+        {
+            List<Step> steps = GetRecords("SELECT DISTINCT * FROM steps WHERE final_step = 1");
+            System.Diagnostics.Debug.Assert(steps.Count == 1);
+            if (steps.Count == 1)
+                return steps[0];
+            return null;
+        }
+
+        public static List<Step> GetAllRecords()
+        {
+            return GetRecords("SELECT * FROM steps");
         }
 
         public static string GetStepName(int id)
