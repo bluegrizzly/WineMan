@@ -112,7 +112,8 @@ namespace WineMan
                 txStep.done = 0; // false
                 txStep.transaction_id = tx.id;
                 txStep.step_id = cat.step;
-                txStep.date = tx.date_creation.AddDays(cat.days);
+                txStep.date = new DateTime(tx.date_creation.AddDays(cat.days).Year, tx.date_creation.AddDays(cat.days).Month, tx.date_creation.AddDays(cat.days).Day);
+                
                 if (!TransactionStep.CreateRecord(txStep))
                 {
                     System.Diagnostics.Debug.Assert(false);
@@ -134,12 +135,14 @@ namespace WineMan
                 {
                     nbDays = (newDate - step.date).Days;
                     step.date = newDate;
-                    step.UpdateDate(newDate);
+                    if (step.UpdateDate(newDate) == false)
+                        return false; // TODO revert other changes
                 }
                 else 
                 {
                     step.date = step.date.AddDays(nbDays);
-                    step.UpdateDate(step.date);
+                    if (step.UpdateDate(step.date) == false)
+                        return false; // TODO revert other changes
                 }
             }
             return true;

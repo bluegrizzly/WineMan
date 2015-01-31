@@ -730,17 +730,22 @@ namespace WineMan.Transactions
             // Validation1: is step done?
             if (txStep.done > 0)
             {
-                Utils.MessageBox(this, "Error: Cannot change date.  -TransactionStep is done.");
+                Utils.MessageBox(this, "Error: Cannot change date.  -TransactionStep is completed.");
                 return;
             }
 
-            // Is there a rendez vous set before the 
+            // Is the new bottling date after the one in the appointment?
             Step stepDef = Step.GetLastStep();
             TransactionStep txBottlingStep = TransactionStep.GetRecordForTx(m_TxID, stepDef.id);
             DateTime newBottlingDate = txBottlingStep.date.AddDays((date - txStep.date).Days);
-            if (newBottlingDate > tx.date_bottling)
+            if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0 )
             {
-                Utils.MessageBox(this, "Error: Cannot change date.  -The appointment in the transaction need to be moved after " +newBottlingDate.ToString("MMM-dd-yyyy"));
+                Utils.MessageBox(this, "Error: Cannot change date.  -The appointment date in the transaction need to be moved after " +newBottlingDate.ToString("MMM-dd-yyyy"));
+                return;
+            }
+            else if (Utils.CompareDates(newBottlingDate, tx.date_bottling) == 0 )
+            {
+                Utils.MessageBox(this, "Error: Cannot change date.  -The appointment date is the same. " + newBottlingDate.ToString("MMM-dd-yyyy"));
                 return;
             }
 
@@ -748,9 +753,12 @@ namespace WineMan.Transactions
 
             // Now do change all other dates
             // this commit the dates
-            TransactionsHelper.UpdateStepsRecordDate(m_TxID, category, stepID, date);
-
-            // Is there a rendez vous?
+            if (TransactionsHelper.UpdateStepsRecordDate(m_TxID, category, stepID, date))
+                ShowDates();
+            else
+            {
+                Utils.MessageBox(this, "Fatal Error: Cannot change date.  - An error occurred while changing the dates. please delete the transaction and recreate it. " );
+            }
         }
     }
 }

@@ -198,7 +198,8 @@ namespace WineMan
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
                     string dateStr = newDate.Year.ToString() + "-" + newDate.Month.ToString() + "-" + newDate.Day.ToString();
-                    string sqlQuery = "UPDATE " + c_dbName + " SET date = " + dateStr + " WHERE id=" + id.ToString();
+                    string sqlQuery = "UPDATE " + c_dbName + " SET date = '" + dateStr + "' WHERE id=" + id.ToString();
+                    con.Open();
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
@@ -224,6 +225,7 @@ namespace WineMan
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
                     string sqlQuery = "DELETE FROM " + c_dbName + " WHERE transaction_id=" + txID.ToString();
+                    con.Open();
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {

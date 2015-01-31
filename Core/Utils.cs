@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
 using System.Web.UI;
-//using CSASPNETMessageBox;
+using System.Text;
 
 namespace WineMan
 {
@@ -19,15 +19,9 @@ namespace WineMan
     {
         public static void MessageBox(Page Page, String Message) 
         {
-            //MessageBox messageBox = new MessageBox();
-            //messageBox.MessageTitle = "Information";
-            //messageBox.MessageText = Message;
-            //messageBox.Show(Page); 
-            Page.Response.Write("<script type=text/javascript>alert('" + Message + "');</script>");
-
-            //Page.ClientScript.RegisterStartupScript(Page.GetType(), "MessageBox", "<script type=text/javascript> alert('" + Message + "')</script>"); 
+            Page.RegisterStartupScript("AA", "<script type='text/javascript'>window.onload = function() {alert('"+Message+"');return false;}</script>" );
+            // see http://www.tizag.com/javascriptT/javascriptconfirm.php   for a confirm button
         }
-
 
         public static string ResolveUrl(string originalUrl)
         {
@@ -70,8 +64,29 @@ namespace WineMan
                      "://" + originalUri.Authority + newUrl;
 
             return newUrl;
-        } 
- 
+        }
 
+        // Returns:
+        //     A signed number indicating the relative values of this instance and the value
+        //     parameter.Value Description Less than zero This instance is earlier than
+        //     value. Zero This instance is the same as value. Greater than zero This instance
+        //     is later than value.
+        public static int CompareDates(DateTime date1, DateTime date2)
+        {
+            if (date1.Year < date2.Year)
+                return -1;
+            else if (date1.Year > date2.Year)
+                return 1;
+            else if (date1.Month < date2.Month)
+                return -1;
+            else if (date1.Month > date2.Month)
+                return 1;
+            else if (date1.Day < date2.Day)
+                return -1;
+            else if (date1.Day > date2.Day)
+                return 1;
+
+            return 0;
+        }
     }
 }
