@@ -176,6 +176,7 @@
     <Content Include="packages\Microsoft.SqlServer.Types.11.0.2\nativeBinaries\x86\SqlServerSpatial110.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Reports\Analysis_Transactions.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\index.html" />
@@ -210,6 +211,7 @@
     <Content Include="DataSets\DataSetStepNames.xsc">
       <DependentUpon>DataSetStepNames.xsd</DependentUpon>
     </Content>
+    <Content Include="BaseReport.Master" />
     <None Include="DataSets\DataSetStepNames.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSetStepNames.Designer.cs</LastGenOutput>
@@ -306,7 +308,6 @@
     <Content Include="Global.asax" />
     <Content Include="todo.aspx" />
     <Content Include="Transactions\AddTransaction.aspx" />
-    <Content Include="Transactions\AddTransaction_ModifyDates.aspx" />
     <Content Include="Transactions\AddTransaction_Print.aspx" />
     <Content Include="Transactions\LeftMenu.aspx" />
     <Content Include="Transactions\Rendezvous.aspx" />
@@ -411,6 +412,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BaseReport.Master.cs">
+      <DependentUpon>BaseReport.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BaseReport.Master.designer.cs">
+      <DependentUpon>BaseReport.Master</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\Appointement.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\Customer.cs" />
@@ -484,6 +492,13 @@
     <Compile Include="Models\TransactionsHelper.cs" />
     <Compile Include="Models\WineSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\Analysis_Transactions.aspx.cs">
+      <DependentUpon>Analysis_Transactions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reports\Analysis_Transactions.aspx.designer.cs">
+      <DependentUpon>Analysis_Transactions.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -505,13 +520,6 @@
     </Compile>
     <Compile Include="Transactions\AddTransaction.aspx.designer.cs">
       <DependentUpon>AddTransaction.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Transactions\AddTransaction_ModifyDates.aspx.cs">
-      <DependentUpon>AddTransaction_ModifyDates.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Transactions\AddTransaction_ModifyDates.aspx.designer.cs">
-      <DependentUpon>AddTransaction_ModifyDates.aspx</DependentUpon>
     </Compile>
     <Compile Include="Transactions\AddTransaction_Print.aspx.cs">
       <DependentUpon>AddTransaction_Print.aspx</DependentUpon>
@@ -626,6 +634,9 @@
     <None Include="Properties\PublishProfiles\Release.pubxml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Reports\Report_Analysis_Tx.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\Report_Transaction.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
