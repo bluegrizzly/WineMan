@@ -394,5 +394,16 @@ namespace WineMan
                 return true;
             return false;
         }
+
+        public bool IsStarted()
+        {
+            // Return true if the yeast is done 
+            List<TransactionStep> steps = TransactionStep.GetRecordsForTx(id);
+            TransactionStep yeast = steps[0];
+            if (yeast.done > 0 )
+                return true;
+
+            return false;
+        }
     }
 }

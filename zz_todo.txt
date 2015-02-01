@@ -29,6 +29,8 @@ Suite au meeting le 15 janvier
 * Mettre l'icon de microvin plus sur la transaction print
 
 - remove show late work in transaction steps
+- delete all trnasactionsteps when deleting a transaction
+
 
 Autres dans le backlog
 ----------------------

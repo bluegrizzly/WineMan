@@ -195,18 +195,18 @@
                 </tr>
                 <tr>
                     <td align="center" class="auto-style22" colspan="2">Location:
-                        <asp:TextBox ID="TextBox_Location" runat="server" BackColor="#E1E8F0" Width="47px" AutoPostBack="True"></asp:TextBox>
+                        <asp:TextBox ID="TextBox_Location" runat="server" BackColor="#E1E8F0" Width="47px" AutoPostBack="True" OnTextChanged="TextBox_Location_TextChanged"></asp:TextBox>
                     </td>
                 </tr>
                 <tr>
                     <td align="center" class="auto-style22" colspan="2">Product Code:
-                        <asp:DropDownList ID="DropDownList_ProductCode" runat="server" BackColor="#E1E8F0" AutoPostBack="True">
+                        <asp:DropDownList ID="DropDownList_ProductCode" runat="server" BackColor="#E1E8F0" AutoPostBack="True" OnSelectedIndexChanged="DropDownList_ProductCode_SelectedIndexChanged">
                         </asp:DropDownList>
                     </td>
                 </tr>
                 <tr>
                     <td align="left" class="auto-style22" colspan="2">Comments<br />
-                        <asp:TextBox ID="TextBox_Comment" runat="server" BackColor="#E1E8F0" Font-Size="Small" Height="140%" TextMode="MultiLine" Width="374px" AutoPostBack="True"></asp:TextBox>
+                        <asp:TextBox ID="TextBox_Comment" runat="server" BackColor="#E1E8F0" Font-Size="Small" Height="140%" TextMode="MultiLine" Width="374px" AutoPostBack="True" OnTextChanged="TextBox_Comment_TextChanged"></asp:TextBox>
                     </td>
                 </tr>
 

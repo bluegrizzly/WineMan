@@ -66,6 +66,9 @@ namespace WineMan.Transactions
                 // but before get back the result of the rendezvous
                 RestoreData();
                 UpdateUI();
+
+                if (m_TxID >= 0)
+                    ModifyRecord();
             }
             else if (m_TxID >= 0)
             {
@@ -84,7 +87,7 @@ namespace WineMan.Transactions
             CheckBox_4.Checked = Label_TransactionID.Text != "-";
             CheckBox_4.BackColor = CheckBox_4.Checked ? System.Drawing.Color.Green : System.Drawing.Color.Red;
 
-            Button_Commit.Enabled = (CheckBox_1.Checked && CheckBox_2.Checked && CheckBox_3.Checked);
+            Button_Commit.Enabled = (CheckBox_1.Checked && CheckBox_2.Checked && CheckBox_3.Checked && m_TxID < 0);
             Button_Print.Enabled = (Label_TransactionID.Text != "-");
             Button_SendEmail.Enabled = Button_Print.Enabled;
         }
@@ -123,12 +126,12 @@ namespace WineMan.Transactions
             if (Session["wine_type"] != null)
             {
                 DropDownList_Type.SelectedIndex = (int)Session["wine_type"];
-                OnSelectType();
+                OnSelectType(false);
             }
             if (Session["wine_category"] != null)
             {
                 DropDownList_Category.SelectedIndex = (int)Session["wine_category"];
-                OnSelectCategory();
+                OnSelectCategory(false);
             }
 
             if (Session["rendezvous"] != null)
@@ -208,6 +211,8 @@ namespace WineMan.Transactions
         {
             TextBox texBox = sender as TextBox;
             SelectCustomer(texBox.Text);
+            if (m_TxID >= 0)
+                ModifyRecord();
         }
 
         private void OnSelectBrand()
@@ -220,50 +225,21 @@ namespace WineMan.Transactions
             UpdateComboBoxes();
         }
 
-        private void OnSelectType()
+        private void OnSelectType(bool updateDerfaultCategory)
         {
             if (DropDownList_Type.SelectedIndex > 0)
             {
                 m_Type = Wine_Type.GetRecordByID(DropDownList_Type.SelectedValue);
-                FillWineCategories(m_Type.category_id);
+                FillWineCategories(m_Type.category_id, updateDerfaultCategory);
             }
             UpdateComboBoxes();
         }
-        private void OnSelectCategory()
+        private void OnSelectCategory(bool userInteration)
         {
             UpdateComboBoxes();
-        }
-        //
-        protected void DropDownList_Brand_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnSelectBrand();
-        }
 
-        protected void DropDownList_Type_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnSelectType();
-        }
-
-        protected void DropDownList_Category_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnSelectCategory();
-
-            // when we select a category the rendez vous is not good anymore
-            if (Label_BottlingDate.Text != c_SelectString)
-            {
-                Label_BottlingDate.Text = c_SelectString;
-                Label_BottlingHour.Text = c_SelectString;
-                Label_BottlingStation.Text = c_SelectString;
-                Utils.MessageBox(this, "Wine Category changed.\n***You need to set a new appointment.***");  //TODO not working
-            }
-            else  
-            {
-                // Pick the automatic rendezvous date if it is not done yet
-                RendezVous rendezvous = new RendezVous();
-                DateTime rdvDate = rendezvous.PickBestAvailableBottlingDate(Calendar_RDV.SelectedDate);
-                Label_BottlingDate.Text = rdvDate.ToString("MMM-dd-yyyy", m_Culture);
-                //todo add the hour and station
-            }
+            if (userInteration && m_TxID >= 0)
+                ModifyRecord();
         }
 
         protected void UpdateComboBoxes()
@@ -328,7 +304,7 @@ namespace WineMan.Transactions
                 DropDownList_Type.Items.Insert(0, c_SelectString);
             }
         }
-        protected void FillWineCategories(int categoryID)
+        protected void FillWineCategories(int categoryID, bool selectDefaultCategory)
         {
             System.Data.DataSet objDs;
             m_WineSpecs.GetAllWineCategories(out objDs);
@@ -341,17 +317,21 @@ namespace WineMan.Transactions
                 DropDownList_Category.Items.Insert(0, c_SelectString);
             }
 
-            // Select the category that fit the input
-            for (int i=0; i<DropDownList_Category.Items.Count; i++)
+            if (selectDefaultCategory)
             {
-                if (DropDownList_Category.Items[i].Value == categoryID.ToString())
+                // Select the category that fit the input
+                for (int i = 0; i < DropDownList_Category.Items.Count; i++)
                 {
-                    // disable selection : to validate...
-                    DropDownList_Category.Enabled = false;
-                    DropDownList_Category.BackColor = m_DisabledColor;
+                    if (DropDownList_Category.Items[i].Value == categoryID.ToString())
+                    {
+                        // disable selection : to validate...
+                        DropDownList_Category.Enabled = false;
+                        DropDownList_Category.BackColor = m_DisabledColor;
 
-                    DropDownList_Category.SelectedIndex = i;
-                    break;
+                        DropDownList_Category.SelectedIndex = i;
+                        OnSelectCategory(true);
+                        break;
+                    }
                 }
             }
         }
@@ -374,62 +354,121 @@ namespace WineMan.Transactions
         {
             // CREATE RECORD
             if (Label_TransactionID.Text == "-")
-            {
-                Transaction tx = new Transaction();
-                FillTransactionWithScreenData(tx);
+                CreateRecord();
+            else
+                ModifyRecord();
+        }
 
-                // Create the record
-                if (!Transaction.CreateRecord(tx))
+        protected void CreateRecord()
+        {
+            Transaction tx = new Transaction();
+            FillTransactionWithScreenData(tx);
+
+            // Create the record
+            if (!Transaction.CreateRecord(tx))
+            {
+                Utils.MessageBox(this, "Error: Failed to create a new transaction.");
+                return;
+            }
+            if (!TransactionsHelper.CreateStepsRecord(tx))
+            {
+                Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
+                return;
+            }
+
+            // Update UI.
+            m_TxID = tx.id;
+            UpdateUI();
+        }
+
+        protected DateTime GetBottlingDateFromExistingTx(Transaction tx)
+        {
+            Wine_Category mainCat = Wine_Category.GetRecordByID(DropDownList_Category.SelectedValue);
+                
+            List<Wine_Category> categories;
+            int nbRecords = Wine_Category.GetAllRecordsForName(mainCat.name, out categories);
+            TransactionStep yeast = TransactionStep.GetRecordForTx(m_TxID, 1);
+
+            foreach (Wine_Category wineCat in categories)
+            {
+                Step step = Step.GetRecordById(wineCat.step.ToString());
+
+                DateTime stepDate = yeast.date.AddDays(wineCat.days);
+                if (step.final_step > 0 )
                 {
-                    Utils.MessageBox(this, "Error: Failed to create a new transaction.");
+                    return stepDate;
+                }
+            }
+            System.Diagnostics.Debug.Assert(false);
+            return DateTime.MinValue;
+        }
+
+        protected void ModifyRecord()
+        {
+            Transaction tx = Transaction.GetRecord(m_TxID);
+            bool needToRecreateSteps = CheckTxDifferenceWithScreen(tx);
+
+            //-----------------------------------------------------------
+            // Validate if we can do that.
+            // 
+            if (DropDownList_Category.SelectedIndex == 0)
+            {
+                Utils.MessageBox(this, "Error: The category is invalid");
+                EditRecord();
+                return;
+            }
+            else if (needToRecreateSteps && tx.IsStarted())
+            {
+                Utils.MessageBox(this, "Error: The transaction is already started. The Yeast is done. You cannot change it.");
+                EditRecord();
+                return;
+            }
+            else if (needToRecreateSteps)
+            {
+                DateTime newBottlingDate = GetBottlingDateFromExistingTx(tx);
+
+                // Is the new bottling date after the one in the appointment?
+                Step stepDef = Step.GetLastStep();
+                TransactionStep txBottlingStep = TransactionStep.GetRecordForTx(m_TxID, stepDef.id);
+                if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0)
+                {
+                    Utils.MessageBox(this, "Error:  -The appointment date in the transaction need to be moved after " + newBottlingDate.ToString("MMM-dd-yyyy") + "  before updating this transaction");
+                    EditRecord();
                     return;
                 }
+            }
+
+            //-----------------------------------------------------------
+
+            FillTransactionWithScreenData(tx);
+
+            // Modify the record
+            if (!tx.ModifyRecord())
+            {
+                Utils.MessageBox(this, "Error: Failed to modify a transaction.");
+                EditRecord();
+                return;
+            }
+
+            if (needToRecreateSteps)
+            {
+                // Delete all steps and recreate them.
+                if (!TransactionStep.DeleteTxRecords(tx.id))
+                {
+                    Utils.MessageBox(this, "Error: Failed to delete transaction steps.");
+                    return;
+                }
+
                 if (!TransactionsHelper.CreateStepsRecord(tx))
                 {
                     Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
                     return;
                 }
-
-                // Update UI.
-                m_TxID = tx.id;
-                UpdateUI();
             }
-            // MODIFY RECORD
-            else 
-            {
-                //Utils.MessageBox(this, "Not yet implemented.");
-                //return;
-                Transaction tx = Transaction.GetRecord(m_TxID);
-                bool needToRecreateSteps = CheckTxDifferenceWithScreen(tx);
-                FillTransactionWithScreenData(tx);
 
-                // Modify the record
-                if (!tx.ModifyRecord())
-                {
-                    Utils.MessageBox(this, "Error: Failed to modify a transaction.");
-                    return;
-                }
-
-                if (needToRecreateSteps)
-                {
-                    // Delete all steps and recreate them.
-                    if (!TransactionStep.DeleteTxRecords(tx.id))
-                    {
-                        Utils.MessageBox(this, "Error: Failed to delete transaction steps.");
-                        return;
-                    }
-
-                    if (!TransactionsHelper.CreateStepsRecord(tx))
-                    {
-                        Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
-                        return;
-                    }
-                }
-
-                // Update UI.
-                m_TxID = tx.id;
-                UpdateUI();
-            }
+            // Update UI.
+            m_TxID = tx.id;
+            UpdateUI();
         }
 
         protected void FillTransactionWithScreenData(Transaction tx)
@@ -526,7 +565,7 @@ namespace WineMan.Transactions
             if (m_TxID >= 0)
             {
                 Label_TransactionID.Text = m_TxID.ToString();
-                Button_Commit.Text = "Modify";
+                Button_Commit.Enabled = false;
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
                 CheckBox_EditDates.Enabled = true;
@@ -535,15 +574,15 @@ namespace WineMan.Transactions
             {
                 bool parsed = Int32.TryParse(Label_TransactionID.Text, out m_TxID);
                 System.Diagnostics.Debug.Assert(parsed);
-                
-                Button_Commit.Text = "Modify";
+
+                Button_Commit.Enabled = false;
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
                 CheckBox_EditDates.Enabled = true;
             }
             else
             {
-                Button_Commit.Text = "Create";
+                Button_Commit.Enabled = true;
                 Button_Print.Enabled = false;
                 Button_SendEmail.Enabled = false;
                 CheckBox_EditDates.Enabled = false;
@@ -647,7 +686,7 @@ namespace WineMan.Transactions
             DropDownList_Brand.SelectedValue = tx.wine_brand_id.ToString();
             FillWineTypes(tx.wine_brand_id);
             DropDownList_Type.SelectedValue = tx.wine_type_id.ToString();
-            FillWineCategories(tx.wine_category_id);
+            FillWineCategories(tx.wine_category_id, false);
             DropDownList_Category.SelectedValue = tx.wine_category_id.ToString();
             UpdateComboBoxes();
 
@@ -658,9 +697,14 @@ namespace WineMan.Transactions
             Calendar_RDV.SelectedDate = rdv;
             Calendar_RDV.VisibleDate = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, 1);
 
-            TextBox_Comment.Text = tx.comments;
-            TextBox_Location.Text = tx.location;
-            DropDownList_ProductCode.SelectedValue = tx.product_code.ToString();
+            // we may have a product code that is not valid
+            try
+            {
+                TextBox_Comment.Text = tx.comments;
+                TextBox_Location.Text = tx.location;
+                DropDownList_ProductCode.SelectedValue = tx.product_code.ToString();
+            }
+            catch { }
 
             UpdateUI();
             SaveData();
@@ -759,6 +803,61 @@ namespace WineMan.Transactions
             {
                 Utils.MessageBox(this, "Fatal Error: Cannot change date.  - An error occurred while changing the dates. please delete the transaction and recreate it. " );
             }
+        }
+
+        ///////////////////////////////////
+        // Interface callbacks
+        ///////////////////////////////////
+        protected void DropDownList_Brand_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnSelectBrand();
+        }
+
+        protected void DropDownList_Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnSelectType(true);
+        }
+
+        protected void DropDownList_Category_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnSelectCategory(true);
+
+            // When we select a category the rendez vous is not good anymore
+            //if (Label_BottlingDate.Text != c_SelectString)
+            //{
+            //    Label_BottlingDate.Text = c_SelectString;
+            //    Label_BottlingHour.Text = c_SelectString;
+            //    Label_BottlingStation.Text = c_SelectString;
+            //    Utils.MessageBox(this, "Wine Category changed. ***You need to set a new appointment.***");  //TODO not working
+
+            //    // Need to advise the customer
+            //}
+            //else
+            //{
+            //    // Pick the automatic rendezvous date if it is not done yet
+            //    RendezVous rendezvous = new RendezVous();
+            //    DateTime rdvDate = rendezvous.PickBestAvailableBottlingDate(Calendar_RDV.SelectedDate);
+            //    Label_BottlingDate.Text = rdvDate.ToString("MMM-dd-yyyy", m_Culture);
+            //    //todo add the hour and station
+            //}
+        }
+
+        protected void DropDownList_ProductCode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (m_TxID >= 0)
+                ModifyRecord();
+        }
+
+        protected void TextBox_Comment_TextChanged(object sender, EventArgs e)
+        {
+            if (m_TxID >= 0)
+                ModifyRecord();
+        }
+
+        protected void TextBox_Location_TextChanged(object sender, EventArgs e)
+        {
+            if (m_TxID >= 0)
+                ModifyRecord();
         }
     }
 }
