@@ -167,7 +167,13 @@ namespace WineMan.Transactions
 
         protected void Button_Back_Click(object sender, EventArgs e)
         {
-            Response.Redirect(ViewState["RefUrl"].ToString());
+            string url = ViewState["RefUrl"].ToString();
+            if (url.Contains("?"))
+                url = url.Remove(url.IndexOf("?"));
+
+            url += ("?txid=" + m_tx.id.ToString());
+
+            Response.Redirect(url);
         }
     }
 }

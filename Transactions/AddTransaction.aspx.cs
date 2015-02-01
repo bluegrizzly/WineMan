@@ -104,7 +104,7 @@ namespace WineMan.Transactions
                 Session["rendezvous_station"] = Label_BottlingStation.Text;
             Session["location"] = TextBox_Location.Text;
             Session["comments"] = TextBox_Comment.Text;
-            Session["product_code"] = TextBox_Comment.Text;
+            Session["product_code"] = DropDownList_ProductCode.SelectedIndex;
         }
         private void RestoreData()
         {
@@ -151,7 +151,7 @@ namespace WineMan.Transactions
             if (Session["comments"] != null)
                 TextBox_Comment.Text = (string)Session["comments"];
             if (Session["product_code"] != null)
-                TextBox_Comment.Text = (string)Session["product_code"];
+                DropDownList_ProductCode.SelectedIndex = (int)Session["product_code"];
 
             Session.Clear();
         }

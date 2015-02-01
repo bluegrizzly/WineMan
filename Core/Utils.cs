@@ -19,7 +19,7 @@ namespace WineMan
     {
         public static void MessageBox(Page Page, String Message) 
         {
-            Page.RegisterStartupScript("AA", "<script type='text/javascript'>window.onload = function() {alert('"+Message+"');return false;}</script>" );
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {alert('" + Message +"');return false;}</script>", false );
             // see http://www.tizag.com/javascriptT/javascriptconfirm.php   for a confirm button
         }
 
