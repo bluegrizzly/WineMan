@@ -59,7 +59,7 @@ namespace WineMan
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM wine_brands", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM wine_brands ORDER BY name", con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();

@@ -115,10 +115,11 @@ namespace WineMan
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                string sqlQuery ="SELECT * FROM wine_categories";
+                string sqlQuery = "SELECT * FROM wine_categories";
                 if (onlyStep1)
                     sqlQuery += " WHERE step=1";
 
+                sqlQuery += " ORDER BY name";
                 using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                 {
                     con.Open();

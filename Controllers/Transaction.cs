@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
+using System.Globalization;
 
 namespace WineMan
 {
@@ -22,7 +23,7 @@ namespace WineMan
         public string location;
         public int product_code=0;
 
-        private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
+        private static CultureInfo m_Culture = new System.Globalization.CultureInfo("en-US");
 
         public enum FilterTypes
         {
@@ -52,8 +53,13 @@ namespace WineMan
                 parsed = Int32.TryParse(dr["wine_category_id"].ToString(), out wine_category_id);
                 System.Diagnostics.Debug.Assert(parsed);
 
-                DateTime.TryParse(dr["date_creation"].ToString(), out date_creation);
-                DateTime.TryParse(dr["date_bottling"].ToString(), out date_bottling);
+                string aa = dr["date_creation"].ToString();
+                parsed = DateTime.TryParseExact(dr["date_creation"].ToString(), "G", m_Culture, DateTimeStyles.None, out date_creation);
+                System.Diagnostics.Debug.Assert(parsed);
+
+                aa = dr["date_bottling"].ToString();
+                parsed = DateTime.TryParseExact(dr["date_bottling"].ToString(), "G", m_Culture, DateTimeStyles.None, out date_bottling);
+                System.Diagnostics.Debug.Assert(parsed);
 
                 parsed = Int32.TryParse(dr["bottling_station"].ToString(), out bottling_station);
                 System.Diagnostics.Debug.Assert(parsed);
