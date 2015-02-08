@@ -146,6 +146,7 @@
     <Content Include="Account\Register.aspx" />
     <Content Include="Admin\holidays.aspx" />
     <Content Include="Admin\ProductCodesManager.aspx" />
+    <Content Include="Admin\StepsManager.aspx" />
     <Content Include="Admin\WineBrandManager.aspx" />
     <Content Include="Admin\WineCategoriesManager.aspx" />
     <Content Include="Admin\WineTypesManager.aspx" />
@@ -387,6 +388,13 @@
     </Compile>
     <Compile Include="Admin\ProductCodesManager.aspx.designer.cs">
       <DependentUpon>ProductCodesManager.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\StepsManager.aspx.cs">
+      <DependentUpon>StepsManager.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\StepsManager.aspx.designer.cs">
+      <DependentUpon>StepsManager.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\WineBrandManager.aspx.cs">
       <DependentUpon>WineBrandManager.aspx</DependentUpon>

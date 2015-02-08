@@ -11,9 +11,16 @@
         Created by Alain Dessureaux<br />alain.dessureaux@gmail.com<br /> Copyright (C) 2015 AndyFire Studio. All rights reserved.
     </p>
 <p>
-        <strong>Versions</strong>:</p>
+        <strong>Versions: 0.8</strong></p>
 <p>
         <asp:TextBox ID="TextBox_Versions" runat="server" Font-Size="Small" ForeColor="#333333" Height="214px" ReadOnly="True" TextMode="MultiLine" Width="841px">
+Version 0.8: ( fev 2015)
+- New page to manage the production steps. Admin->Managers->Production Steps
+- Date problem fixed.
+- Now check if entry exist before adding it (Brands, Types, Categories, Product codes and Customers (with name and postal code)
+- Remove ability to delete brand, type, category (this would corrupt other tables if we do so)
+
+
 Version 0.7: (1 fev 2015)
 - Customers:
     - Customers sorted by last name alphabetic order 

@@ -9,7 +9,7 @@ namespace WineMan
 {
     public class HandlerHelper 
     {
-        public void ProcessRequest(HttpContext context, string dbName, bool explicitSetID=false)
+        public void ProcessRequest(HttpContext context, string dbName, bool explicitSetID=false, bool processDoublon=false)
         {
             NameValueCollection forms = context.Request.Form;
             string strOperation = forms.Get("oper");
@@ -44,6 +44,14 @@ namespace WineMan
             else if (strOperation == "add")
             {
                 string strOut = string.Empty;
+
+                if (processDoublon && DBAccess.IsRecordExistWithSameName(context, dbName, forms, explicitSetID))
+                {
+                    strOut = "Error: An entry with same name exists";
+                    context.Response.Write(strOut);
+                    return;
+                }
+
                 if (DBAccess.AddRecord(context, dbName, forms, explicitSetID))
                     strOut = "Record successfully added";
                 else

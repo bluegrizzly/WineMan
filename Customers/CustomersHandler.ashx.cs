@@ -16,7 +16,7 @@ namespace WineMan.Customers
         HandlerHelper m_Helper = new HandlerHelper();
         public void ProcessRequest(HttpContext context)
         {
-            m_Helper.ProcessRequest(context, dbName);
+            m_Helper.ProcessRequest(context, dbName, false, true);
         }
 
         public bool IsReusable

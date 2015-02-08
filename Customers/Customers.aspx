@@ -25,7 +25,7 @@
                         { name: 'address', index: 'address', width: 100, editable: true },
                         { name: 'city', index: 'city', width: 80, editable: true },
                         { name: 'province', index: 'province', width: 30, editable: true },
-                        { name: 'postal_code', index: 'postal_code', width: 50, editable: true },
+                        { name: 'postal_code', index: 'postal_code', width: 50, editable: true, formatter: formatPostalCode },
                         { name: 'email', index: 'email', width: 100, editable: true },
                         { name: 'telephone', index: 'telephone', width: 78, editable: true, formatter: formatPhoneNumber },
                         { name: 'telephone_bur', index: 'telephone_bur', width: 78, editable: true, formatter: formatPhoneNumber },
@@ -57,6 +57,9 @@
             var re = new RegExp("([0-9]{3})([0-9]{3})([0-9]{3,6})", "g");
             cellvalue = cellvalue.replace(re, "($1)-$2-$3");
             return cellvalue;
+        }
+        function formatPostalCode(cellvalue, options, rowObject) {
+            return cellvalue.toUpperCase().replace("/\W/g", '').replace("/(...)/", '$1 ');
         }
         $('#jQGridDemo').jqGrid('navGrid', '#jQGridDemoPager',
                    {

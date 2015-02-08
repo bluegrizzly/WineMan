@@ -18,7 +18,7 @@ namespace WineMan.Admin
         {
             string dbName = context.Request.QueryString["db"];
             string explicitSetID = context.Request.QueryString["explicitsetid"];
-            m_Helper.ProcessRequest(context, dbName, explicitSetID == "true");
+            m_Helper.ProcessRequest(context, dbName, explicitSetID == "true", true);
         }
 
         public bool IsReusable

@@ -85,6 +85,44 @@ namespace WineMan.Core
             }
         }
 
+        static public bool IsRecordExistWithSameName(HttpContext context, string dbName, System.Collections.Specialized.NameValueCollection forms, bool explicitSetID= false)
+        {
+            bool ret = false;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                // Open the SqlConnection.
+                con.Open();
+
+                try
+                {
+                    // Create the command
+                    string sqlCmd;
+                    if (dbName == "customers") // Special case for customers
+                    {
+                        sqlCmd = "SELECT * FROM " + dbName + " WHERE first_name='" + forms.Get("first_name").ToString() + "'" +
+                            " AND last_name='" + forms.Get("last_name").ToString() + "'" +
+                            " AND postal_code='" + forms.Get("postal_code").ToString() + "'";
+                    }
+                    else
+                        sqlCmd = "SELECT * FROM " + dbName + " WHERE name='" + forms.Get("name").ToString() + "'";
+
+                    using (MySqlCommand command = new MySqlCommand(sqlCmd, con))
+                    {
+                        MySqlDataReader reader = command.ExecuteReader();
+                        reader.Read();
+                        if (reader.HasRows)
+                            ret = true;
+
+                        reader.Close();
+                    }
+                }
+                catch { }
+                con.Close();
+            }
+            return ret;
+        }
+
         static public bool AddRecord(HttpContext context, string dbName, System.Collections.Specialized.NameValueCollection forms, bool explicitSetID= false)
         {
             bool ret = false;
@@ -206,6 +244,8 @@ namespace WineMan.Core
                     }
                     catch
                     {
+                        if (!firstRow)
+                            sqlCmd = sqlCmd.TrimEnd(',');
                         continue;
                     }
                 }
