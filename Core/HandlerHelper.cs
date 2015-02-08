@@ -33,8 +33,25 @@ namespace WineMan
             else if (strOperation == "del")
             {
                 string strOut = string.Empty;
-
                 string idToDelete = forms.Get("EmpId").ToString();
+
+                if (dbName == "customers")
+                {
+                    List<Transaction> allTx;
+                    if (Transaction.GetAllRecordsForCustomer(idToDelete, out allTx) > 0 )
+                    {
+                        string numbers="";
+                        foreach (Transaction tx in allTx)
+                        {
+                            numbers += tx.id.ToString() + ",";
+                        }
+
+                        strOut = "Error: Customer is referenced in transactions: " + numbers;
+                        context.Response.Write(strOut);
+                        return;
+                    }
+                }
+
                 if (DBAccess.DeleteRecord(context, dbName, idToDelete))
                     strOut = "Record successfully deleted";
                 else

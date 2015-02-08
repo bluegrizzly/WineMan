@@ -100,9 +100,7 @@ namespace WineMan.Core
                     string sqlCmd;
                     if (dbName == "customers") // Special case for customers
                     {
-                        sqlCmd = "SELECT * FROM " + dbName + " WHERE first_name='" + forms.Get("first_name").ToString() + "'" +
-                            " AND last_name='" + forms.Get("last_name").ToString() + "'" +
-                            " AND postal_code='" + forms.Get("postal_code").ToString() + "'";
+                        sqlCmd = Customer.GetDoublonValidationSqlQuery(forms);
                     }
                     else
                         sqlCmd = "SELECT * FROM " + dbName + " WHERE name='" + forms.Get("name").ToString() + "'";
@@ -283,7 +281,7 @@ namespace WineMan.Core
                    try
                    {
                        int result = command.ExecuteNonQuery();
-                       ret = true;
+                       ret = result>0;
                    }
                    catch { ret = false; }
                }

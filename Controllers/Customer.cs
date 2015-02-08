@@ -8,6 +8,7 @@ namespace WineMan
 {
     public class Customer : BaseController
     {
+        const string c_dbName = "customers";
         public int id;
         public string first_name;
         public string last_name;
@@ -53,6 +54,14 @@ namespace WineMan
                 parsed = Int32.TryParse(dr["language"].ToString(), out language);
                 System.Diagnostics.Debug.Assert(parsed);
             }
+        }
+
+        public static string GetDoublonValidationSqlQuery(System.Collections.Specialized.NameValueCollection forms)
+        {
+            string sqlCmd = "SELECT * FROM " + c_dbName+ " WHERE first_name='" + forms.Get("first_name").ToString() + "'" +
+                " AND last_name='" + forms.Get("last_name").ToString() + "'" +
+                " AND postal_code='" + forms.Get("postal_code").ToString() + "'";
+            return sqlCmd;
         }
 
         public static Customer GetRecordByName(string firstName, string lastName)

@@ -13,6 +13,15 @@ namespace WineMan {
     public partial class About {
         
         /// <summary>
+        /// Panel2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel2;
+        
+        /// <summary>
         /// TextBox_Versions control.
         /// </summary>
         /// <remarks>

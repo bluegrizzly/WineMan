@@ -6,7 +6,12 @@
     <h2>
        Customers
     </h2>
-
+    <div style="text-align:center">
+            <asp:Label ID="Label1" runat="server" Text="Search: "></asp:Label>
+            <asp:TextBox ID="TextBox_CustomerSearch" runat="server" AutoPostBack="True" Width="128px"></asp:TextBox>
+            <asp:Button ID="Button_ClearCustomer" runat="server" OnClick="Button_ClearCustomer_Click" Text="X" Width="21px" />
+    &nbsp;<asp:Label ID="Label2" runat="server" Font-Size="X-Small" Text="(name or tel or id)"></asp:Label>
+    </div>
         <asp:Panel ID="Panel1" runat="server" ScrollBars="Horizontal" Width="100%">
     <table id="jQGridDemo">
     </table>
@@ -15,7 +20,8 @@
         </asp:Panel>
     <script type="text/javascript">
         jQuery("#jQGridDemo").jqGrid({
-            url: '<%=ResolveUrl("~/Customers/CustomersHandler.ashx") %>',
+            url: '<%=ResolveUrl("~/Customers/CustomersHandler.ashx") %>' +
+                        "?filtercustomer=" + document.getElementById('<%= TextBox_CustomerSearch.ClientID%>').value,
             datatype: "json",
             colNames: ['Id', 'First Name', 'Last Name', 'Address', 'City', 'Province', 'Postal Code', 'Email', 'Tel', 'Tel Bur', 'Fax', 'Language'],
             colModel: [
@@ -119,17 +125,16 @@
                        closeOnEscape: true,
                        closeAfterDelete: true,
                        reloadAfterSubmit: true,
-                       closeOnEscape: true,
                        drag: true,
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
 
                                $("#jQGridDemo").trigger("reloadGrid", [{ current: true }]);
-                               return [false, response.responseText]
+                               return [true, response.responseText]
                            }
                            else {
                                $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')
-                               return [true, response.responseText]
+                               return [false, response.responseText]
                            }
                        },
                        delData: {

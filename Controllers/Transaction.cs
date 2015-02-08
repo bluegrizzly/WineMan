@@ -386,6 +386,37 @@ namespace WineMan
             return transactions;
         }
 
+        public static int GetAllRecordsForCustomer(string idToDelete, out List<Transaction> allTx)
+        {
+            allTx = new List<Transaction>();
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE client_id ='" + idToDelete + "'";
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        con.Open();
+                        MySqlDataReader dr = cmd.ExecuteReader();
+
+                        while (dr.Read())
+                        {
+                            Transaction tx = new Transaction();
+                            tx.FillRecord(dr);
+                            allTx.Add(tx);
+                        }
+
+                        dr.Close();
+                    }
+                    con.Close();
+                }
+            }
+            catch { }
+
+            return allTx.Count;
+        }
+
         public bool AreAllStepDone(out int nbDone, out int total)
         {
             List<TransactionStep> steps = TransactionStep.GetRecordsForTx(id);

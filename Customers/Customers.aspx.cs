@@ -14,5 +14,10 @@ namespace WineMan.Customers
         protected void Page_Load(object sender, EventArgs e)
         {
         }
+
+        protected void Button_ClearCustomer_Click(object sender, EventArgs e)
+        {
+            TextBox_CustomerSearch.Text = "";
+        }
     }
 }
