@@ -98,10 +98,12 @@ namespace WineMan.Core
                 {
                     // Create the command
                     string sqlCmd;
-                    if (dbName == "customers") // Special case for customers
-                    {
+                    if (dbName == Customer.c_dbName) // Special case for customers
                         sqlCmd = Customer.GetDoublonValidationSqlQuery(forms);
-                    }
+                    else if (dbName == Wine_Category.c_dbName)
+                        sqlCmd = Wine_Category.GetDoublonValidationSqlQuery(forms);
+                    else if (dbName == Wine_Type.c_dbName)
+                        sqlCmd = Wine_Type.GetDoublonValidationSqlQuery(forms);
                     else
                         sqlCmd = "SELECT * FROM " + dbName + " WHERE name='" + forms.Get("name").ToString() + "'";
 

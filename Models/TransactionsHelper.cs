@@ -39,25 +39,34 @@ namespace WineMan
             }
             
             System.Diagnostics.Debug.Assert(false);
-            return "";
+            return "not found";
         }
 
         public string GetBrandName(int brandId)
         {
             Wine_Brand brand = Wine_Brand.GetRecordByID(brandId.ToString());
-            return brand.name;
+            if (brand != null)
+                return brand.name;
+            else
+                return "not found";
         }
 
         public string GetTypeName(int brandId)
         {
             Wine_Type type = Wine_Type.GetRecordByID(brandId.ToString());
-            return type.name;
+            if (type != null)
+                return type.name;
+            else
+                return "not found";
         }
 
         public string GetCategoryName(int categoryId)
         {
             Wine_Category category = Wine_Category.GetRecordByID(categoryId.ToString());
-            return category.name;
+            if (category != null)
+                return category.name;
+            else
+                return "not found";
         }
 
         // Get all transactions in JSON format for the grid
@@ -166,6 +175,9 @@ namespace WineMan
                 retString += @"{""id"":" + iterNb + @", ""cell"" :[";
                 iterNb++;
                 Transaction tx = Transaction.GetRecord(step.transaction_id);
+                if (tx == null)
+                    continue;
+
                 Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
 
                 retString += @"""" + step.id.ToString() + @""",";

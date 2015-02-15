@@ -224,7 +224,7 @@ namespace WineMan
                     {
                         List<Customer> customers = CustomersHelper.GetSimilarCustomers(filterCustomer);
 
-                        bool firstCase=true;
+                        bool firstCase = true;
                         foreach (Customer custo in customers)
                         {
                             if (firstCase)
@@ -324,77 +324,44 @@ namespace WineMan
         // get the records with bottling dates
         public static List<Transaction> GetRecords(DateTime bottlingDate)
         {
-            List<Transaction> transactions = new List<Transaction>();
+            string dateStr = bottlingDate.ToString("yyyy-MM-dd");
+            dateStr += " %";
+            return GetRecordsFromSqlQuery ( "SELECT * FROM " + c_dbName + " WHERE date_bottling LIKE '" + dateStr + "'");
+        }
 
-            try
-            {
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-                using (MySqlConnection con = new MySqlConnection(connectionString))
-                {
-                    string dateStr = bottlingDate.ToString("yyyy-MM-dd");
-                    dateStr += " %";
-                    using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM " + c_dbName + " WHERE date_bottling LIKE '" + dateStr + "'", con))
-                    {
-                        con.Open();
-                        MySqlDataReader dr = cmd.ExecuteReader();
-
-                        while (dr.Read())
-                        {
-                            Transaction tx = new Transaction();
-                            tx.FillRecord(dr);
-                            transactions.Add(tx);
-                        }
-
-                        dr.Close();
-                    }
-                    con.Close();
-                }
-            }
-            catch { }
-
-            return transactions;
+        public static List<Transaction> GetAllRecordsWithWineCategory(string categoryID)
+        {
+            return GetRecordsFromSqlQuery("SELECT * FROM " + c_dbName + " WHERE wine_category_id=" + categoryID);
+        }
+        public static List<Transaction> GetAllRecordsWithWineBrand(string brandID)
+        {
+            return GetRecordsFromSqlQuery("SELECT * FROM " + c_dbName + " WHERE wine_brand_id=" + brandID);
+        }
+        public static List<Transaction> GetAllRecordsWithWineType(string typeID)
+        {
+            return GetRecordsFromSqlQuery("SELECT * FROM " + c_dbName + " WHERE wine_type_id=" + typeID);
         }
 
         public static List<Transaction> GetAllnotDone()
         {
-            List<Transaction> transactions = new List<Transaction>();
-
-            try
-            {
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-                using (MySqlConnection con = new MySqlConnection(connectionString))
-                {
-                    using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM " + c_dbName + " WHERE done = 0", con))
-                    {
-                        con.Open();
-                        MySqlDataReader dr = cmd.ExecuteReader();
-
-                        while (dr.Read())
-                        {
-                            Transaction tx = new Transaction();
-                            tx.FillRecord(dr);
-                            transactions.Add(tx);
-                        }
-
-                        dr.Close();
-                    }
-                    con.Close();
-                }
-            }
-            catch { }
-
-            return transactions;
+            return GetRecordsFromSqlQuery("SELECT * FROM " + c_dbName + " WHERE done = 0");
         }
 
         public static int GetAllRecordsForCustomer(string idToDelete, out List<Transaction> allTx)
         {
-            allTx = new List<Transaction>();
+            string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE client_id ='" + idToDelete + "'";
+            allTx = GetRecordsFromSqlQuery(sqlQuery);
+            return allTx.Count;
+        }
+
+        protected static List<Transaction> GetRecordsFromSqlQuery(string sqlQuery)
+        {
+            List<Transaction> transactions = new List<Transaction>();
             try
             {
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE client_id ='" + idToDelete + "'";
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
                         con.Open();
@@ -404,7 +371,7 @@ namespace WineMan
                         {
                             Transaction tx = new Transaction();
                             tx.FillRecord(dr);
-                            allTx.Add(tx);
+                            transactions.Add(tx);
                         }
 
                         dr.Close();
@@ -414,7 +381,7 @@ namespace WineMan
             }
             catch { }
 
-            return allTx.Count;
+            return transactions;
         }
 
         public bool AreAllStepDone(out int nbDone, out int total)

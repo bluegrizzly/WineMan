@@ -110,6 +110,7 @@
                        closeOnEscape: true,//Closes the popup on pressing escape key
                        closeAfterAdd: true,//Closes the add window after add
                        width: 400,
+                       closeAfterEdit: true,
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
                                $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
@@ -119,6 +120,7 @@
                                $(this).jqGrid('setGridParam', { datatype: 'json' }).trigger('reloadGrid')//Reloads the grid after Add
                                return [false, response.responseText]
                            }
+                           $('#jQGridDemo').autoclose;
                        }
                    },
                    {   //DELETE

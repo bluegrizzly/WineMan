@@ -18,7 +18,7 @@ namespace WineMan.Controllers
         [HttpGet]
         public string WineBrandSelect()
         {
-            List <Wine_Brand> brands = Wine_Brand.GetAllRecords();
+            List <Wine_Brand> brands = Wine_Brand.GetAllRecords(false);
             string selectString = "<select>";
             foreach (Wine_Brand brand in brands)
             {

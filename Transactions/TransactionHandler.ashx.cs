@@ -19,6 +19,8 @@ namespace WineMan.Transactions
         public void ProcessRequest(HttpContext context)
         {
             string operation = context.Request.QueryString["operation"];
+            NameValueCollection forms = context.Request.Form;
+            string strOperation = forms.Get("oper");
 
             if (operation != null)
             {
@@ -33,6 +35,23 @@ namespace WineMan.Transactions
                         context.Response.Write(@"""" + url + @"""");
                     }
                 }
+            }
+            else if (strOperation == "del")
+            {
+                string strOut = string.Empty;
+                string idToDelete = forms.Get("EmpId").ToString();
+
+                // TODO : Confirm to user
+
+                //1. delete all transaction steps related to this transaction
+                TransactionStep.DeleteTxRecords(idToDelete);
+
+                //2. delete the transaction
+                if (DBAccess.DeleteRecord(context, dbName, idToDelete))
+                    strOut = "Record successfully deleted";
+                else
+                    strOut = "Error in removing record";
+                context.Response.Write(strOut);
             }
             else
             {

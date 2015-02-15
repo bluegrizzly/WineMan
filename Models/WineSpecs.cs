@@ -16,7 +16,7 @@ namespace WineMan
             MySqlConnection con = new MySqlConnection(strConn);
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
-            cmd.CommandText = "SELECT id, name FROM wine_brands";
+            cmd.CommandText = "SELECT id, name FROM wine_brands WHERE active=1";
             MySqlDataAdapter dAdapter = new MySqlDataAdapter();
             dAdapter.SelectCommand = cmd;
             con.Open();
@@ -32,7 +32,7 @@ namespace WineMan
             MySqlConnection con = new MySqlConnection(strConn);
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
-            cmd.CommandText = "SELECT id, name FROM wine_types WHERE brand_id =@brand_id";
+            cmd.CommandText = "SELECT id, name FROM wine_types WHERE brand_id =@brand_id AND active=1";
             cmd.Parameters.AddWithValue("@brand_id", brandID);
             MySqlDataAdapter dAdapter = new MySqlDataAdapter();
             dAdapter.SelectCommand = cmd;

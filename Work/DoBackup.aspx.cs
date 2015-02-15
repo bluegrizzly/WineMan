@@ -51,5 +51,16 @@ namespace WineMan.Work
                 TextBox_Log.ForeColor = System.Drawing.Color.Red;
             }
         }
+
+        protected void Button_ImportCustomers_Click(object sender, EventArgs e)
+        {
+            string appPath = Request.PhysicalApplicationPath;
+            string saveDir = @"\Uploads\";
+            if (FileUpload1.HasFile)
+            {
+                string savePath = appPath + saveDir +
+                    Server.HtmlEncode(FileUpload1.FileName);
+            }
+        }
     }
 }

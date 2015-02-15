@@ -453,7 +453,7 @@ namespace WineMan.Transactions
             if (needToRecreateSteps)
             {
                 // Delete all steps and recreate them.
-                if (!TransactionStep.DeleteTxRecords(tx.id))
+                if (!TransactionStep.DeleteTxRecords(tx.id.ToString()))
                 {
                     Utils.MessageBox(this, "Error: Failed to delete transaction steps.");
                     return;

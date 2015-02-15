@@ -8,6 +8,7 @@ namespace WineMan
 {
     public class Wine_Brand
     {
+        public const string c_dbName = "wine_brands";
         public int id=0;
         public string name;
         public bool active;
@@ -52,14 +53,20 @@ namespace WineMan
             return ret;
         }
 
-        public static List<Wine_Brand> GetAllRecords()
+        public static List<Wine_Brand> GetAllRecords(bool activeOnly=true)
         {
             List<Wine_Brand> brands = new List<Wine_Brand>();
 
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM wine_brands ORDER BY name", con))
+                string sqlQuery = "SELECT * FROM " + c_dbName;
+                if (activeOnly)
+                    sqlQuery += " WHERE active=1";
+
+                sqlQuery += " ORDER BY name";
+
+                using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();

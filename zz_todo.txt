@@ -1,5 +1,9 @@
 ﻿TODO:
 =============
+Comments #2
+- Need to be allowed to change any dates.
+- Need a button to confirm when doing a modification
+
 Comments Charles
 ----------------
 - add steps in manager (DONE)

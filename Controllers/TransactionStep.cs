@@ -216,7 +216,7 @@ namespace WineMan
             return ret;
         }
 
-        public static bool DeleteTxRecords(int txID)
+        public static bool DeleteTxRecords(string txID)
         {
             bool ret = false;
             try
@@ -224,7 +224,7 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string sqlQuery = "DELETE FROM " + c_dbName + " WHERE transaction_id=" + txID.ToString();
+                    string sqlQuery = "DELETE FROM " + c_dbName + " WHERE transaction_id=" + txID;
                     con.Open();
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))

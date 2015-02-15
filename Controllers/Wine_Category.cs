@@ -8,7 +8,8 @@ namespace WineMan
 {
     public class Wine_Category
     {
-        public int id=-1;
+        public const string c_dbName = "wine_categories";
+        public int id = -1;
         public string name;
         public float cost;
         public int step;
@@ -45,6 +46,13 @@ namespace WineMan
             }
         }
 
+        public static string GetDoublonValidationSqlQuery(System.Collections.Specialized.NameValueCollection forms)
+        {
+            string sqlCmd = "SELECT * FROM " + c_dbName + " WHERE name='" + forms.Get("name").ToString() + "'" +
+                " AND step='" + forms.Get("step").ToString() + "'";
+            return sqlCmd;
+        }
+
         public static Wine_Category GetRecordByID(string id)
         {
             Wine_Category ret = new Wine_Category();
@@ -52,7 +60,7 @@ namespace WineMan
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM wine_categories WHERE id = '" + id + "'", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT DISTINCT * FROM "+ c_dbName + " WHERE id = '" + id + "'", con))
                 {
                     con.Open();
                     MySqlDataReader dr = cmd.ExecuteReader();
@@ -118,6 +126,15 @@ namespace WineMan
                 string sqlQuery = "SELECT * FROM wine_categories";
                 if (onlyStep1)
                     sqlQuery += " WHERE step=1";
+
+                //if (activeOnly)
+                //{
+                //    if (onlyStep1)
+                //        sqlQuery += " AND ";
+                //    else
+                //        sqlQuery += " WHERE ";
+                //    sqlQuery += "active=1";
+                //}
 
                 sqlQuery += " ORDER BY name";
                 using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
