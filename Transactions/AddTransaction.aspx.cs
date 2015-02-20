@@ -367,12 +367,12 @@ namespace WineMan.Transactions
             // Create the record
             if (!Transaction.CreateRecord(tx))
             {
-                Utils.MessageBox(this, "Error: Failed to create a new transaction.");
+                Utils.MessageBox(this, "** Error **\\nFailed to create a new transaction.");
                 return;
             }
             if (!TransactionsHelper.CreateStepsRecord(tx))
             {
-                Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
+                Utils.MessageBox(this, "** Error **\\nFailed to create a transaction steps.");
                 return;
             }
 
@@ -413,13 +413,13 @@ namespace WineMan.Transactions
             // 
             if (DropDownList_Category.SelectedIndex == 0)
             {
-                Utils.MessageBox(this, "Error: The category is invalid");
+                Utils.MessageBox(this, "** Error **\\nThe category is invalid");
                 EditRecord();
                 return;
             }
             else if (needToRecreateSteps && tx.IsStarted())
             {
-                Utils.MessageBox(this, "Error: The transaction is already started. The Yeast is done. You cannot change it.");
+                Utils.MessageBox(this, "** Error **\\nThe transaction is already started. The Yeast is done. You cannot change it.");
                 EditRecord();
                 return;
             }
@@ -432,7 +432,7 @@ namespace WineMan.Transactions
                 TransactionStep txBottlingStep = TransactionStep.GetRecordForTx(m_TxID, stepDef.id);
                 if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0)
                 {
-                    Utils.MessageBox(this, "Error:  -The appointment date in the transaction need to be moved after " + newBottlingDate.ToString("MMM-dd-yyyy") + "  before updating this transaction");
+                    Utils.MessageBox(this, "** Error **\\nThe appointment date in the transaction need to be moved after " + newBottlingDate.ToString("MMM-dd-yyyy") + "  before updating this transaction");
                     EditRecord();
                     return;
                 }
@@ -445,7 +445,7 @@ namespace WineMan.Transactions
             // Modify the record
             if (!tx.ModifyRecord())
             {
-                Utils.MessageBox(this, "Error: Failed to modify a transaction.");
+                Utils.MessageBox(this, "** Error **\\nFailed to modify a transaction.");
                 EditRecord();
                 return;
             }
@@ -455,13 +455,13 @@ namespace WineMan.Transactions
                 // Delete all steps and recreate them.
                 if (!TransactionStep.DeleteTxRecords(tx.id.ToString()))
                 {
-                    Utils.MessageBox(this, "Error: Failed to delete transaction steps.");
+                    Utils.MessageBox(this, "** Error **\\nFailed to delete transaction steps.");
                     return;
                 }
 
                 if (!TransactionsHelper.CreateStepsRecord(tx))
                 {
-                    Utils.MessageBox(this, "Error: Failed to create a transaction steps.");
+                    Utils.MessageBox(this, "** Error **\\nFailed to create a transaction steps.");
                     return;
                 }
             }
@@ -483,7 +483,7 @@ namespace WineMan.Transactions
                 tx.client_id = numValue;
             else
             {
-                Utils.MessageBox(this, "Error: The client is missing.");
+                Utils.MessageBox(this, "** Error **\\nThe client is missing.");
                 return;
             }
 
@@ -493,7 +493,7 @@ namespace WineMan.Transactions
                 tx.wine_brand_id = numValue;
             else
             {
-                Utils.MessageBox(this, "Error: Please select a Brand.");
+                Utils.MessageBox(this, "** Error **\\nPlease select a Brand.");
                 return;
             }
 
@@ -503,7 +503,7 @@ namespace WineMan.Transactions
                 tx.wine_type_id = numValue;
             else
             {
-                Utils.MessageBox(this, "Error: Please select a Type.");
+                Utils.MessageBox(this, "** Error **\\nPlease select a Type.");
                 return;
             }
 
@@ -513,7 +513,7 @@ namespace WineMan.Transactions
                 tx.wine_category_id = numValue;
             else
             {
-                Utils.MessageBox(this, "Error: Please select a Category.");
+                Utils.MessageBox(this, "** Error **\\nPlease select a Category.");
                 return;
             }
 
@@ -530,7 +530,7 @@ namespace WineMan.Transactions
             }
             else
             {
-                Utils.MessageBox(this, "Error: Please select a Bottling date and time.");
+                Utils.MessageBox(this, "** Error **\\nPlease select a Bottling date and time.");
                 return;
             }
 
@@ -763,7 +763,7 @@ namespace WineMan.Transactions
             DateTime date;
             if (!DateTime.TryParse(TextBox_Date.Text, out date))
             {
-                Utils.MessageBox(this, "Error: Cannot change date.  -Invalid date");
+                Utils.MessageBox(this, "** Error **\\nCannot change date.\\nInvalid input date");
                 return;
             }
 
@@ -774,34 +774,46 @@ namespace WineMan.Transactions
             // Validation1: is step done?
             if (txStep.done > 0)
             {
-                Utils.MessageBox(this, "Error: Cannot change date.  -TransactionStep is completed.");
+                Utils.MessageBox(this, "** Error **\\nCannot change date.\\nTransactionStep is completed.");
                 return;
             }
 
-            // Is the new bottling date after the one in the appointment?
-            Step stepDef = Step.GetLastStep();
-            TransactionStep txBottlingStep = TransactionStep.GetRecordForTx(m_TxID, stepDef.id);
-            DateTime newBottlingDate = txBottlingStep.date.AddDays((date - txStep.date).Days);
-            if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0 )
+            if (Utils.CompareDates(date, txStep.date) > 0)
             {
-                Utils.MessageBox(this, "Error: Cannot change date.  -The appointment date in the transaction need to be moved after " +newBottlingDate.ToString("MMM-dd-yyyy"));
-                return;
-            }
-            else if (Utils.CompareDates(newBottlingDate, tx.date_bottling) == 0 )
-            {
-                Utils.MessageBox(this, "Error: Cannot change date.  -The appointment date is the same. " + newBottlingDate.ToString("MMM-dd-yyyy"));
-                return;
-            }
+                // Is the new bottling date after the one in the appointment?
+                DateTime newBottlingDate = TransactionsHelper.GetFinalStepDate(tx, date, txStep);
 
-            Wine_Category category = Wine_Category.GetRecordByID(DropDownList_Category.SelectedValue);
+                if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0)
+                {
+                    Utils.MessageBox(this, "** Error **\\nCannot change date.\\nThe appointment date in the transaction need to be moved after " + newBottlingDate.ToString("MMM-dd-yyyy"));
+                    return;
+                }
+                else if (Utils.CompareDates(newBottlingDate, tx.date_bottling) == 0)
+                {
+                    Utils.MessageBox(this, "** Error **\\nCannot change date.\\nThe appointment date is the same. " + newBottlingDate.ToString("MMM-dd-yyyy"));
+                    return;
+                }
+            }
+            else if (Utils.CompareDates(date, txStep.date) == 0)
+            {
+                Utils.MessageBox(this, "** Error **\\nCannot change date.\\nThe date is the same");
+                return;
+            }
 
             // Now do change all other dates
             // this commit the dates
-            if (TransactionsHelper.UpdateStepsRecordDate(m_TxID, category, stepID, date))
+            string datesAdjusted;
+            if (TransactionsHelper.UpdateStepsRecordDate(tx, stepID, date, out datesAdjusted))
+            {
                 ShowDates();
+                if (datesAdjusted != null)
+                    Utils.MessageBox(this, "Success : The date has been changed.\\nThe dates for ulterior steps have also been updated: " + datesAdjusted);
+                else
+                    Utils.MessageBox(this, "Success : The date has been changed.");
+            }
             else
             {
-                Utils.MessageBox(this, "Fatal Error: Cannot change date.  - An error occurred while changing the dates. please delete the transaction and recreate it. " );
+                Utils.MessageBox(this, "** Fatal Error** : \\nCannot change date.\\nAn error occurred while changing the dates. please delete the transaction and recreate it. ");
             }
         }
 

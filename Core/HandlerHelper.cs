@@ -114,6 +114,20 @@ namespace WineMan
                         return;
                     }
                 }
+                else if (dbName == Step.c_dbName)
+                {
+                    List<TransactionStep> allSteps = TransactionStep.GetRecordsWithStepID(idToDelete);
+                    if (allSteps.Count > 0)
+                    {
+                        string numbers = "";
+                        foreach (TransactionStep txStep in allSteps)
+                            numbers += txStep.id.ToString() + "(tx:" + txStep.transaction_id + ")" + ",";
+
+                        strOut = "Error: Wine Type is referenced in Transactions ID: " + numbers;
+                        context.Response.Write(strOut);
+                        return;
+                    }
+                }
 
                 if (DBAccess.DeleteRecord(context, dbName, idToDelete))
                     strOut = "Record successfully deleted";

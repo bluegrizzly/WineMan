@@ -8,6 +8,7 @@ namespace WineMan
 {
     public class Step : BaseController
     {
+        public const string c_dbName = "steps";
         public int id;
         public string name;
         public string name_french;

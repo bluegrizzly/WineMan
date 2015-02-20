@@ -450,7 +450,7 @@ namespace WineMan.Transactions
                 DateTime minDate = (DateTime)Session["rendezvous"];
                 if (Calendar_RDV.SelectedDate < minDate)
                 {
-                    Utils.MessageBox(this, "Error: The date cannot be before: " + minDate.ToString("D",m_Culture));
+                    Utils.MessageBox(this, "** Error **\\nThe date cannot be before: " + minDate.ToString("D", m_Culture));
 
                     Calendar_RDV.SelectedDate = minDate;
                 }

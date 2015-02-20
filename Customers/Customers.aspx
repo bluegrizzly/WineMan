@@ -128,6 +128,14 @@
                        closeAfterDelete: true,
                        reloadAfterSubmit: true,
                        drag: true,
+                       width: 400,
+                       beforeShowForm: function ($form) {
+                           var sel_id = $('#jQGridDemo').jqGrid('getGridParam', 'selrow');
+                           $("td.delmsg", $form[0]).html("\nDo you really want to delete the customer:\n<b>" +
+                                 $('#jQGridDemo').jqGrid('getCell', sel_id, 'first_name') + " " +
+                                 $('#jQGridDemo').jqGrid('getCell', sel_id, 'last_name') +
+                                 "</b>?");
+                       },
                        afterSubmit: function (response, postdata) {
                            if (response.responseText == "") {
 

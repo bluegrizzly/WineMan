@@ -19,7 +19,7 @@ Comments Charles
 
 Comments #1
 -----------
-- new microvinplus image
+- new microvinplus image (DONE)
 - client sorted by last name alphabetic order (DONE)
 - New customer, use enter for next key
 - add dash to telephone number (DONE)

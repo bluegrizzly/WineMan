@@ -22,6 +22,11 @@ namespace WineMan
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {alert('" + Message +"');return false;}</script>", false );
             // see http://www.tizag.com/javascriptT/javascriptconfirm.php   for a confirm button
         }
+        public static bool MessageBoxQuestion(Page Page, String Message)
+        {
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {var answer = confirm('" + Message + "');return false;}</script>", false);
+            return true;
+        }
 
         public static string ResolveUrl(string originalUrl)
         {

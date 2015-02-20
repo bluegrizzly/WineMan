@@ -498,7 +498,7 @@
     <Compile Include="Models\CustomersHelper.cs" />
     <Compile Include="Models\RendezVous.cs" />
     <Compile Include="Models\TransactionsHelper.cs" />
-    <Compile Include="Models\WineSpecs.cs" />
+    <Compile Include="Transactions\WineSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\Analysis_Transactions.aspx.cs">
       <DependentUpon>Analysis_Transactions.aspx</DependentUpon>

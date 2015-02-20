@@ -203,7 +203,13 @@
                                    closeAfterDelete: true,
                                    reloadAfterSubmit: true,
                                    closeOnEscape: true,
+                                   width:500,
                                    drag: true,
+                                   beforeShowForm: function ($form) {
+                                       var sel_id = $('#jQGridDemo').jqGrid('getGridParam', 'selrow');
+                                       $("td.delmsg", $form[0]).html("*** WARNING ***\n\nDo you really want delete the transaction: <b>id=" +
+                                             $('#jQGridDemo').jqGrid('getCell', sel_id, 'id') + "</b>?\n\nAll transactions steps related to this transaction\nwill also be deleted ");
+                                   },
                                    afterSubmit: function (response, postdata) {
                                        if (response.responseText == "") {
 

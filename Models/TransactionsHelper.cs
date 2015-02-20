@@ -132,26 +132,64 @@ namespace WineMan
             return true;
         }
 
-        static public bool UpdateStepsRecordDate(int txID, Wine_Category category, int stepID, DateTime newDate)
+        static public DateTime GetFinalStepDate(Transaction tx, DateTime date, TransactionStep txStep)
         {
-            List<TransactionStep> txSteps = TransactionStep.GetRecordsForTx(txID);
-            int nbDays=0;
-            foreach (TransactionStep step in txSteps)
+            DateTime finalDate = date;
+            List<Wine_Category> categories;
+            Wine_Category.GetAllRecordsForID(tx.wine_category_id.ToString(), out categories);
+            int nbDays = 0;
+            foreach (Wine_Category category in categories)
             {
-                if (step.step_id < stepID)
+                if (category.step < txStep.step_id)
                     continue; // we don't care about passed steps
-                else if (step.step_id == stepID)
+                else if (category.step == txStep.step_id)
                 {
-                    nbDays = (newDate - step.date).Days;
-                    step.date = newDate;
-                    if (step.UpdateDate(newDate) == false)
-                        return false; // TODO revert other changes
+                    finalDate = date;
+                    nbDays = category.days;
                 }
+                else
+                {
+                    finalDate = finalDate.AddDays(category.days - nbDays);
+                    nbDays = category.days;
+                }
+            }
+            return finalDate;
+        }
+
+        static public bool UpdateStepsRecordDate(Transaction tx, int stepID, DateTime date, out string datesAdjusted)
+        {
+            List<Wine_Category> categories;
+            Wine_Category.GetAllRecordsForID(tx.wine_category_id.ToString(), out categories);
+            int nbDays = 0;
+            datesAdjusted = null;
+
+            foreach (Wine_Category category in categories)
+            {
+                if (category.step < stepID)
+                    continue; // we don't care about passed steps
                 else 
                 {
-                    step.date = step.date.AddDays(nbDays);
-                    if (step.UpdateDate(step.date) == false)
+                    TransactionStep txStep = TransactionStep.GetRecordForTx(tx.id, category.step);
+
+                    DateTime newCurrentDate = date;
+                    if (category.step == stepID)
+                        nbDays = category.days;
+                    else
+                    {
+                        newCurrentDate = newCurrentDate.AddDays(category.days - nbDays);
+                        nbDays = category.days;
+                        // do not change date if the new date is before the current one.
+                        if (newCurrentDate < txStep.date)
+                            continue;
+                    }
+                    DateTime oldDate = txStep.date;
+                    txStep.date = newCurrentDate;
+                    if (txStep.UpdateDate(newCurrentDate) == false)
                         return false; // TODO revert other changes
+
+                    // notify that we changed a ulterior date
+                    if (category.step != stepID)
+                        datesAdjusted += "\\n * [Step:" + Step.GetStepName(category.step) + " Old Date:" + oldDate.ToString("MMM-dd-yyyy") + " New Date:" + txStep.date.ToString("MMM-dd-yyyy");
                 }
             }
             return true;

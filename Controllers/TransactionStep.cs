@@ -119,25 +119,41 @@ namespace WineMan
             return txSteps;
         }
 
+        public static List<TransactionStep> GetRecordsWithStepID(string stepID)
+        {
+            string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE step_id =" + stepID;
+            return GetRecordSqlQuery(sqlQuery);
+        }
+
         public static TransactionStep GetRecordForTx(int txID, int stepID)
         {
-            TransactionStep txStep = new TransactionStep();
+            string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE transaction_id =" + txID.ToString() + " AND step_id=" + stepID.ToString();
+            List<TransactionStep> steps = GetRecordSqlQuery(sqlQuery);
+            if (steps.Count > 0)
+                return steps[0];
+            else
+                return null;
+        }
+
+        public static List<TransactionStep> GetRecordSqlQuery(string sqlQuery)
+        {
+            List<TransactionStep> allTxStep = new List<TransactionStep>();
             try
             {
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE transaction_id =" + txID.ToString() + " AND step_id=" +stepID.ToString() ;
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
                         con.Open();
                         MySqlDataReader dr = cmd.ExecuteReader();
 
-                        dr.Read();
-                        if (dr.HasRows)
+                        while (dr.Read())
                         {
-                            txStep.FillRecord(dr);
+                            TransactionStep txstep = new TransactionStep();
+                            txstep.FillRecord(dr);
+                            allTxStep.Add(txstep);
                         }
 
                         dr.Close();
@@ -150,7 +166,7 @@ namespace WineMan
                 System.Diagnostics.Debug.Assert(false, e.Message);
             }
 
-            return txStep;
+            return allTxStep;
         }
 
         public static List<TransactionStep> GetRecordsForTx(int txID)
