@@ -20,6 +20,17 @@ namespace WineMan
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // Create an administrator
+            if (!Roles.RoleExists("Administrator"))
+                Roles.CreateRole("Administrator");
+
+            Membership.DeleteUser("admin");
+            MembershipUser adminUser = Membership.CreateUser("admin", "piepasri");
+
+            if (!Roles.IsUserInRole("admin", "Administrator"))
+                Roles.AddUserToRole("admin", "Administrator");
+
         }
 
         void Application_End(object sender, EventArgs e)

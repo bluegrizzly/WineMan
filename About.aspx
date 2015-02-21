@@ -20,6 +20,7 @@ Version 0.95
     -Transactions page : Green when transaction is done
     -Transaction to complete : from red to green depending of the number of steps completed.
     -Transaction Steps to complete: Green when done.
+- Allow only administrator to go on Admin pages.
 Version 0.9: (19 fev 2015)
 - Allow deleting brand,type and category with errors if they are in uses
 - Do not show the brand,type if they are not active
