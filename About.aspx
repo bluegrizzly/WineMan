@@ -15,6 +15,11 @@
             <br />
             <br />
             Versions: 0.9</strong><asp:TextBox ID="TextBox_Versions" runat="server" Font-Size="Small" ForeColor="#333333" Height="282px" ReadOnly="True" TextMode="MultiLine" Width="100%" BackColor="#F2F2F2">
+Version 0.95
+- Added color code : 
+    -Transactions page : Green when transaction is done
+    -Transaction to complete : from red to green depending of the number of steps completed.
+    -Transaction Steps to complete: Green when done.
 Version 0.9: (19 fev 2015)
 - Allow deleting brand,type and category with errors if they are in uses
 - Do not show the brand,type if they are not active

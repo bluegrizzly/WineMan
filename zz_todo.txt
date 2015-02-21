@@ -8,7 +8,7 @@ Comments Charles
 ----------------
 - add steps in manager (DONE)
 - disable delete brand (DONE)
-- change bottling for Wine Ready (DONE) (NEED TO do it on the )
+- change bottling for Wine Ready (DONE) (NEED TO do it on the DB)
 - check name doublon when adding. (brand etc, customer) (DONE)
 - assurer qu'on ajoute pas un client qui existe deja (DONE)
 - add a search in customer page (DONE)
