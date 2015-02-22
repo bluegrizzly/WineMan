@@ -40,7 +40,7 @@ namespace WineMan.Work
         protected void Button_Print_Click(object sender, EventArgs e)
         {
             ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, false);
-            reportPrint.Print();
+            reportPrint.PrintWithDialog();
         }
 
         private void FillData()

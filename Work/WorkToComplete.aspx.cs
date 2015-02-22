@@ -29,6 +29,10 @@ namespace WineMan.Work
                 {
                     DropDownList_FilterStep.Items.Add(step.name);
                 }
+
+
+                // select today for the end date
+                txtDateEnd.Text = DateTime.Now.ToString("MMM-dd-yyyy");
             }
         }
 

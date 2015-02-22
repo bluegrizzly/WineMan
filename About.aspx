@@ -21,6 +21,9 @@ Version 0.95
     -Transaction to complete : from red to green depending of the number of steps completed.
     -Transaction Steps to complete: Green when done.
 - Allow only administrator to go on Admin pages.
+- Show Printer dialog (to choose the printer) for the transaction steps to complete.
+- Transaction Steps: set the end date to be the current date by default. So you see the work to be done only up to today only. You can remove the date to see all steps to do in the future.
+
 Version 0.9: (19 fev 2015)
 - Allow deleting brand,type and category with errors if they are in uses
 - Do not show the brand,type if they are not active

@@ -15,9 +15,11 @@ using System.Drawing.Printing;
 using Microsoft.Reporting.WebForms;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Windows.Forms;
 
 namespace WineMan
 {
+
     /// <summary>
     /// The ReportPrintDocument will print all of the pages of a ServerReport or LocalReport.
     /// The pages are rendered when the print document is constructed.  Once constructed,
@@ -41,11 +43,41 @@ namespace WineMan
             RenderAllLocalReportPages(localReport);
         }
 
+        public void PrintWithDialog()
+        {
+            // Little hack so the dialog show on top
+            Form currentForm = new Form();
+            currentForm.Show();
+            currentForm.Activate();
+            currentForm.TopMost = true;
+            currentForm.Focus();
+            currentForm.Visible = false;
+
+            PrintDialog pd = new PrintDialog();
+            if (pd.ShowDialog() == DialogResult.OK)
+            {
+                m_pageSettings.PrinterSettings = pd.PrinterSettings;
+
+                //Choose paper size from the paper sizes defined in ur printer.
+                //Here we use Linq to quickly choose by name
+                foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)
+                {
+                    if (ps.Kind == PaperKind.Letter)
+                    {
+                        m_pageSettings.PaperSize = ps;
+                        break;
+                    }
+                }
+
+                Print();
+            }
+            currentForm.Close();
+        }
         private ReportPrintDocument(Report report, bool landscape)
         {
             // Set the page settings to the default defined in the report
             ReportPageSettings reportPageSettings = report.GetDefaultPageSettings();
-
+            
             // The page settings object will use the default printer unless
             // PageSettings.PrinterSettings is changed.  This assumes there
             // is a default printer.
@@ -53,7 +85,6 @@ namespace WineMan
             //m_pageSettings.PaperSize = new PaperSize("letter", 1100, 850); ; // reportPageSettings.PaperSize;
             //m_pageSettings.Margins = reportPageSettings.Margins;
             //m_pageSettings.Landscape = landscape;
-
 
             m_pageSettings = new PageSettings(); //Declare a new PageSettings for printing
             m_pageSettings.Landscape = landscape;
