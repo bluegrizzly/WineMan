@@ -41,7 +41,7 @@ Suite au meeting le 15 janvier
 * pouvoir reseter une date de depart sur une transaction STEP (DONE)
 * bouton mal place dans transaction
 * db pour les symboles (DONE)
-* Show the print dialog when printing work to complete
+* Show the print dialog when printing work to complete (DONE)
 * Date: MMM/dd/yyyy (DONE)
 * Mettre l'icon de microvin plus sur la transaction print (DONE)
 
@@ -54,7 +54,7 @@ Autres dans le backlog
 - send an email with the transaction (and add pub)
 - Admin:
     - only for adminitrator (DONE)
-- if disable a type, we need to see them when editing old transactions. but not see them with new tx
+- if a type or brand is disabled, we need to see them when editing old transactions. but not see them with new tx (DONE)
 
 
 Questions
@@ -65,7 +65,7 @@ Questions
 - tableau synthese de fabrication.  besoin?
 - travaux interne: tu peux utiliser un client pascal Interne
 - If a recipes changes (category) we need to update all existing transactions?
-
+- How do you want to treat the obsolete brand, type, category.   Delete ?  replace by what in the old tx
 
 TEST:
 --------------------------

@@ -281,7 +281,7 @@ namespace WineMan.Transactions
         protected void FillWineBrands()
         {
             System.Data.DataSet objDs;
-            m_WineSpecs.GetAllWineBrands(out objDs);
+            m_WineSpecs.GetAllWineBrands(m_TxID >= 0, out objDs);
             if (objDs.Tables[0].Rows.Count > 0)
             {
                 DropDownList_Brand.DataSource = objDs.Tables[0];
@@ -294,7 +294,7 @@ namespace WineMan.Transactions
         protected void FillWineTypes(int brandID)
         {
             System.Data.DataSet objDs;
-            m_WineSpecs.GetAllWineTypes(brandID, out objDs);
+            m_WineSpecs.GetAllWineTypes(brandID, m_TxID >= 0, out objDs);
             if (objDs.Tables[0].Rows.Count > 0)
             {
                 DropDownList_Type.DataSource = objDs.Tables[0];

@@ -8,7 +8,7 @@ namespace WineMan
 {
     public class WineSpecs
     {
-        public void GetAllWineBrands(out System.Data.DataSet objDs)
+        public void GetAllWineBrands(bool includeDisabled, out System.Data.DataSet objDs)
         {
             objDs = new System.Data.DataSet();
 
@@ -16,7 +16,9 @@ namespace WineMan
             MySqlConnection con = new MySqlConnection(strConn);
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
-            cmd.CommandText = "SELECT id, name FROM wine_brands WHERE active=1";
+            cmd.CommandText = "SELECT id, name FROM wine_brands";
+            if (!includeDisabled)
+                cmd.CommandText += " WHERE active=1";
             MySqlDataAdapter dAdapter = new MySqlDataAdapter();
             dAdapter.SelectCommand = cmd;
             con.Open();
@@ -24,7 +26,7 @@ namespace WineMan
             con.Close();
         }
 
-        public void GetAllWineTypes(int brandID, out System.Data.DataSet objDs)
+        public void GetAllWineTypes(int brandID, bool includeDisabled, out System.Data.DataSet objDs)
         {
             objDs = new System.Data.DataSet();
 
@@ -32,7 +34,9 @@ namespace WineMan
             MySqlConnection con = new MySqlConnection(strConn);
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
-            cmd.CommandText = "SELECT id, name FROM wine_types WHERE brand_id =@brand_id AND active=1";
+            cmd.CommandText = "SELECT id, name FROM wine_types WHERE brand_id =@brand_id";
+            if (!includeDisabled)
+                cmd.CommandText += " AND active=1";
             cmd.Parameters.AddWithValue("@brand_id", brandID);
             MySqlDataAdapter dAdapter = new MySqlDataAdapter();
             dAdapter.SelectCommand = cmd;
