@@ -12,7 +12,8 @@ namespace WineMan.Account
         protected void Page_Load(object sender, EventArgs e)
         {
             //RegisterHyperLink.NavigateUrl = "Register.aspx?ReturnUrl=" + HttpUtility.UrlEncode(Request.QueryString["ReturnUrl"]);
-            Page.Form.DefaultFocus = LoginUser.FindControl("Password").ClientID;
+            if (LoginUser != null)
+                Page.Form.DefaultFocus = LoginUser.FindControl("Password").ClientID;
         }
     }
 }
