@@ -450,9 +450,9 @@ namespace WineMan.Transactions
                 DateTime minDate = (DateTime)Session["rendezvous"];
                 if (Calendar_RDV.SelectedDate < minDate)
                 {
-                    Utils.MessageBox(this, "** Error **\\nThe date cannot be before: " + minDate.ToString("D", m_Culture));
+                    Utils.MessageBox(this, "** Warning **\\nThis appointment date is going to be BEFORE the wine is ready.\\nWine ready: " + minDate.ToString("D", m_Culture));
 
-                    Calendar_RDV.SelectedDate = minDate;
+                    //Calendar_RDV.SelectedDate = minDate;
                 }
             }
             Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);

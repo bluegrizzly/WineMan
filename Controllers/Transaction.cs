@@ -151,6 +151,10 @@ namespace WineMan
 
         public static Transaction GetRecord(int txID)
         {
+            return GetRecord(txID.ToString());
+        }
+        public static Transaction GetRecord(string txID)
+        {
             Transaction transaction = null;
 
             try
@@ -158,7 +162,7 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM " + c_dbName + " WHERE id = " + txID.ToString(), con))
+                    using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM " + c_dbName + " WHERE id = " + txID, con))
                     {
                         con.Open();
                         MySqlDataReader dr = cmd.ExecuteReader();

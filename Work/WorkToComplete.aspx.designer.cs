@@ -76,13 +76,22 @@ namespace WineMan.Work {
         protected global::System.Web.UI.WebControls.CheckBox CheckBox_ShowDone;
         
         /// <summary>
-        /// txtDate control.
+        /// txtDateStart control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate;
+        protected global::System.Web.UI.WebControls.TextBox txtDateStart;
+        
+        /// <summary>
+        /// Button_ClearStart control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_ClearStart;
         
         /// <summary>
         /// txtDateEnd control.
@@ -92,6 +101,15 @@ namespace WineMan.Work {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDateEnd;
+        
+        /// <summary>
+        /// Button_ClearEnd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_ClearEnd;
         
         /// <summary>
         /// Button_Print control.

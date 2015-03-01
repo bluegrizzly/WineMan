@@ -271,11 +271,17 @@ namespace WineMan
             context.Response.Write(retString);
         }
 
-        public bool SetTransactionStepToDone(List<string> ids)
+        public bool SetTransactionStepToDone(List<string> ids, bool undo=false)
         {
-            string sqlQuery = "UPDATE " + c_dbTransactionStepName + " SET done=1 WHERE ";
+            string sqlQuery = "UPDATE " + c_dbTransactionStepName + " SET done=";
+
             bool res = false;
             bool first =true;
+
+            if (undo)
+                sqlQuery += "0 WHERE ";
+            else
+                sqlQuery += "1 WHERE ";
 
             foreach (string id in ids)
             {
@@ -311,12 +317,16 @@ namespace WineMan
             return res;
         }
 
-        public bool SetTransactionToDone(List<string> ids)
+        public bool SetTransactionToDone(List<string> ids, bool undo=false)
         {
-
-            string sqlQuery = "UPDATE " + c_dbTransactionName + " SET done=1 WHERE ";
+            string sqlQuery = "UPDATE " + c_dbTransactionName + " SET done=";
             bool res = false;
             bool first = true;
+
+            if (undo)
+                sqlQuery += "0 WHERE ";
+            else
+                sqlQuery += "1 WHERE ";
 
             List<int> txNotDone = new List<int>();
             

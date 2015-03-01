@@ -34,9 +34,16 @@ namespace WineMan.Work
         {
             if (operation != null && operation == "settodone")
             {
+                bool undo = false;
                 string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
                 List<string> data = JsonConvert.DeserializeObject<List<string>>(jsonString);
-                m_TransactionHelper.SetTransactionToDone(data);
+                if (data.Count == 1)
+                {
+                    Transaction tx = Transaction.GetRecord(data[0]);
+                    if (tx.done)
+                        undo = true;
+                }
+                m_TransactionHelper.SetTransactionToDone(data, undo);
             }
 
             string showReadyOnly = context.Request.QueryString["showreadyonly"];
@@ -67,9 +74,16 @@ namespace WineMan.Work
         {
             if (operation != null && operation == "settodone")
             {
+                bool undo = false;
                 string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
                 List<string> data = JsonConvert.DeserializeObject<List<string>>(jsonString);
-                m_TransactionHelper.SetTransactionStepToDone(data);
+                if (data.Count == 1)
+                {
+                    TransactionStep step = TransactionStep.GetRecord(data[0]);
+                    if (step.done > 0)
+                        undo = true;
+                }
+                m_TransactionHelper.SetTransactionStepToDone(data, undo);
             }
             
             {

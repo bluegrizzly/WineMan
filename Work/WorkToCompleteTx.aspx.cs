@@ -11,12 +11,16 @@ namespace WineMan.Work
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if (txtDate.Text == "")
-            //    txtDate.Text = DateTime.Now.ToString("yyyy-MM-d");
-            //DateTime dd;
-            //DateTime.TryParse(txtDate.Text, out dd);
+        }
 
-            //Label_SelectedDate.Text = dd.ToString("MMM dd yyy");
+        protected void Button_ClearStart_Click(object sender, EventArgs e)
+        {
+            txtDateStart.Text = "";
+        }
+
+        protected void Button_ClearEnd_Click(object sender, EventArgs e)
+        {
+            txtDateEnd.Text = "";
         }
     }
 }

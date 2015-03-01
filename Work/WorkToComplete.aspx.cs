@@ -38,12 +38,22 @@ namespace WineMan.Work
 
         protected void Button_Print_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Work/WorkToComplete_Print.aspx?date=" + txtDate.Text + "&dateEnd=" + txtDateEnd.Text);
+            Response.Redirect("~/Work/WorkToComplete_Print.aspx?date=" + txtDateStart.Text + "&dateEnd=" + txtDateEnd.Text);
         }
 
         protected void Button_ClearTxID_Click(object sender, EventArgs e)
         {
             TextBox_TxID.Text = "";
+        }
+
+        protected void Button_ClearStart_Click(object sender, EventArgs e)
+        {
+            txtDateStart.Text = "";
+        }
+
+        protected void Button_ClearEnd_Click(object sender, EventArgs e)
+        {
+            txtDateEnd.Text = "";
         }
     }
 }

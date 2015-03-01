@@ -125,6 +125,16 @@ namespace WineMan
             return GetRecordSqlQuery(sqlQuery);
         }
 
+        public static TransactionStep GetRecord(string id)
+        {
+            string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE id =" + id;
+            List<TransactionStep> steps = GetRecordSqlQuery(sqlQuery);
+            if (steps.Count > 0)
+                return steps[0];
+            else
+                return null;
+        }
+
         public static TransactionStep GetRecordForTx(int txID, int stepID)
         {
             string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE transaction_id =" + txID.ToString() + " AND step_id=" + stepID.ToString();
