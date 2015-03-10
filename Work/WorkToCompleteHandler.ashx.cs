@@ -45,6 +45,14 @@ namespace WineMan.Work
                 }
                 m_TransactionHelper.SetTransactionToDone(data, undo);
             }
+            else if (operation != null && operation == "setlocation")
+            {
+                string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
+                List<string> data = JsonConvert.DeserializeObject<List<string>>(jsonString);
+
+                string location = context.Request.QueryString["location"];
+                m_TransactionHelper.SetLocation(data, location);
+            }
 
             string showReadyOnly = context.Request.QueryString["showreadyonly"];
             string dateStr = context.Request.QueryString["date"];

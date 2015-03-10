@@ -97,6 +97,8 @@ namespace WineMan
                 retString += @"""" + tx.date_creation.ToString() + @""", ";
                 retString += @"""" + tx.date_bottling.ToString() + @""", ";
                 retString += @"""" + tx.bottling_station.ToString() + @""", ";
+                retString += @"""" + tx.location.ToString() + @""", ";
+                retString += @"""" + tx.product_code.ToString() + @""", ";
                 retString += @"""" + tx.done.ToString() + @"""";
                 retString += "]}";
             }
@@ -156,7 +158,13 @@ namespace WineMan
             return finalDate;
         }
 
-        static public bool UpdateStepsRecordDate(Transaction tx, int stepID, DateTime date, out string datesAdjusted)
+        static public bool UpdateStepRecordDate(Transaction tx, int stepID, DateTime date)
+        {
+            TransactionStep txStep = TransactionStep.GetRecordForTx(tx.id, stepID);
+            return txStep.UpdateDate(date);
+        }
+
+        static public bool UpdateAndAdjustStepsRecordDate(Transaction tx, int stepID, DateTime date, out string datesAdjusted)
         {
             List<Wine_Category> categories;
             Wine_Category.GetAllRecordsForID(tx.wine_category_id.ToString(), out categories);
@@ -264,6 +272,7 @@ namespace WineMan
                 retString += @"""" + GetCategoryName(tx.wine_category_id) + @""",";
                 retString += @"""" + tx.date_creation.ToString() + @""",";
                 retString += @"""" + stepsDone + @""",";
+                retString += @"""" + tx.location + @""",";
                 retString += @"""" + tx.done.ToString() + @"""";
                 retString += "]}";
             }
@@ -315,6 +324,47 @@ namespace WineMan
                 }
             }
             return res;
+        }
+
+        public bool SetLocation(List<string> ids, string location)
+        {
+            string sqlQuery = "UPDATE " + c_dbTransactionName + " SET location=" + location;
+            bool res = false;
+            bool first = true;
+            foreach (string id in ids)
+            {
+                if (first)
+                { 
+                    first = false;
+                    sqlQuery += " WHERE id=" + id;
+                }
+                else
+                    sqlQuery += " OR id=" + id;
+            }
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                // Open the SqlConnection.
+                con.Open();
+
+                using (MySqlCommand command = new MySqlCommand(sqlQuery, con))
+                {
+                    try
+                    {
+                        int result = command.ExecuteNonQuery();
+                        res = true;
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.Assert(false, e.Message);
+                        res = false;
+                    }
+                }
+            }
+
+            return res;
+
         }
 
         public bool SetTransactionToDone(List<string> ids, bool undo=false)

@@ -301,6 +301,15 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.CheckBox CheckBox_EditDates;
         
         /// <summary>
+        /// Panel_EditDates control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel_EditDates;
+        
+        /// <summary>
         /// DropDownList_Steps control.
         /// </summary>
         /// <remarks>
@@ -326,6 +335,15 @@ namespace WineMan.Transactions {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button_ChangeDate;
+        
+        /// <summary>
+        /// Button_ResetDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_ResetDate;
         
         /// <summary>
         /// SqlDataSource1 control.

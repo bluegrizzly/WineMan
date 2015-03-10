@@ -13,6 +13,7 @@ namespace WineMan
         public string name;
         public string name_french;
         public int final_step;
+        public const int c_YeastID = 1;
 
         public void FillData(MySqlDataReader dr)
         {

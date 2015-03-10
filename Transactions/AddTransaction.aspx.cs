@@ -432,7 +432,7 @@ namespace WineMan.Transactions
                 TransactionStep txBottlingStep = TransactionStep.GetRecordForTx(m_TxID, stepDef.id);
                 if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0)
                 {
-                    Utils.MessageBox(this, "** Error **\\nThe appointment date in the transaction need to be moved after " + newBottlingDate.ToString("MMM-dd-yyyy") + "  before updating this transaction");
+                    Utils.MessageBox(this, "** Error **\\nTo complete this modification, the appointment date in the transaction need to be moved after: " + newBottlingDate.ToString("MMM-dd-yyyy") + "  before updating this transaction");
                     EditRecord();
                     return;
                 }
@@ -464,6 +464,9 @@ namespace WineMan.Transactions
                     Utils.MessageBox(this, "** Error **\\nFailed to create a transaction steps.");
                     return;
                 }
+
+                // Success
+                Utils.MessageBox(this, "** Success **\\nThe transaction steps of transaction: " + tx.id.ToString() + " have been recreated to match the new category recipes.");
             }
 
             // Update UI.
@@ -746,6 +749,8 @@ namespace WineMan.Transactions
             DropDownList_Steps.Visible = CheckBox_EditDates.Checked;
             TextBox_Date.Visible = CheckBox_EditDates.Checked;
             Button_ChangeDate.Visible = CheckBox_EditDates.Checked;
+            Button_ResetDate.Visible = CheckBox_EditDates.Checked;
+            Panel_EditDates.Visible = CheckBox_EditDates.Checked;
             if (CheckBox_EditDates.Checked && TextBox_Date.Text == "")
             {
                 TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, 1); //set yeast by default
@@ -755,20 +760,31 @@ namespace WineMan.Transactions
 
         protected void Button_ChangeDate_Click(object sender, EventArgs e)
         {
-            if (m_TxID == -1)
-                return;
-
-            Transaction tx = Transaction.GetRecord(m_TxID);
-
             DateTime date;
             if (!DateTime.TryParse(TextBox_Date.Text, out date))
             {
                 Utils.MessageBox(this, "** Error **\\nCannot change date.\\nInvalid input date");
                 return;
             }
-
-            int stepID=0;
+            int stepID = 0;
             Int32.TryParse(DropDownList_Steps.SelectedValue, out stepID);
+
+            // Update all dates when changing the yeast date
+            ChangeTxStepDates(date, stepID);
+        }
+
+        protected void Button_ResetDate_Click(object sender, EventArgs e)
+        {
+            // Reset the Yeast date starting today
+            ChangeTxStepDates(DateTime.Now, Step.c_YeastID);
+        }
+
+        protected void ChangeTxStepDates(DateTime date, int stepID )
+        {
+            if (m_TxID == -1)
+                return;
+
+            Transaction tx = Transaction.GetRecord(m_TxID);
             TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, stepID); 
             
             // Validation1: is step done?
@@ -800,20 +816,39 @@ namespace WineMan.Transactions
                 return;
             }
 
-            // Now do change all other dates
-            // this commit the dates
-            string datesAdjusted;
-            if (TransactionsHelper.UpdateStepsRecordDate(tx, stepID, date, out datesAdjusted))
+            if (stepID == Step.c_YeastID)
             {
-                ShowDates();
-                if (datesAdjusted != null)
-                    Utils.MessageBox(this, "Success : The date has been changed.\\nThe dates for ulterior steps have also been updated: " + datesAdjusted);
+                // Now do change all other dates
+                // this commit the dates
+                string datesAdjusted;
+                if (TransactionsHelper.UpdateAndAdjustStepsRecordDate(tx, stepID, date, out datesAdjusted))
+                {
+                    ShowDates();
+                    if (datesAdjusted != null)
+                        Utils.MessageBox(this, "Success : The date has been changed.\\nThe dates for ulterior steps have also been updated: " + datesAdjusted);
+                    else
+                        Utils.MessageBox(this, "Success : The date has been changed.");
+                }
                 else
-                    Utils.MessageBox(this, "Success : The date has been changed.");
+                {
+                    Utils.MessageBox(this, "** Fatal Error** : \\nCannot change date.\\nAn error occurred while changing the dates. please delete the transaction and recreate it. ");
+                }
             }
             else
             {
-                Utils.MessageBox(this, "** Fatal Error** : \\nCannot change date.\\nAn error occurred while changing the dates. please delete the transaction and recreate it. ");
+                if (TransactionsHelper.UpdateStepRecordDate(tx, stepID, date))
+                {
+                    ShowDates();
+                    Utils.MessageBox(this, "Success : The date has been changed.");
+
+                    Step lastStep = Step.GetLastStep();
+                    if (stepID != lastStep.id)
+                        Utils.MessageBox(this, "** Warning **\\nThe date of step " + Step.GetStepName(stepID) + " changed. This transaction doesn't follow the repipes anymore.");
+                }
+                else
+                {
+                    Utils.MessageBox(this, "** Error ** : \\nCannot change date.\\nAn error occurred while changing the dates.");
+                }
             }
         }
 
