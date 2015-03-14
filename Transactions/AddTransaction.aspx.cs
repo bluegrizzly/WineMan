@@ -906,5 +906,18 @@ namespace WineMan.Transactions
             if (m_TxID >= 0)
                 ModifyRecord();
         }
+
+        public void OnConfirm(object sender, EventArgs e)
+        {
+            string confirmValue = Request.Form["confirm_value"];
+            if (confirmValue == "Yes")
+            {
+                this.Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('You clicked YES!')", true);
+            }
+            else
+            {
+                this.Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('You clicked NO!')", true);
+            }
+        }
     }
 }

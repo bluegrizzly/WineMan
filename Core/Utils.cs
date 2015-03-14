@@ -24,7 +24,7 @@ namespace WineMan
         }
         public static bool MessageBoxQuestion(Page Page, String Message)
         {
-            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {var answer = confirm('" + Message + "');return false;}</script>", false);
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {var answer = confirm('" + Message + "');return answer;}</script>", false);
             return true;
         }
 

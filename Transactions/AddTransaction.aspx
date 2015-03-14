@@ -104,7 +104,22 @@
                 });
             }
         });
-    });
+      });
+
+    function ConfirmDropDownValueChange(source, arguments) {
+        // Only ask confirmation for transaction editing
+        if (document.getElementById('<%=Label_TransactionID.ClientID%>').innerText == "-") {
+            arguments.IsValid = true;
+            return;
+        }
+            
+        arguments.IsValid = confirm("Are you sure? \nThis operation will change all transaction step dates.");
+        if (!arguments.IsValid)
+        {
+            // Replace old value here.
+        }
+    }
+
 </script>
 
 </asp:Content>
@@ -153,7 +168,6 @@
         </td>
         <td  > 
 
-
         <asp:Panel ID="Panel2" runat="server" BorderWidth="2" Width="400" Height="300">
             
             <table style="width:100%; height: 275px;" cellspacing="3">
@@ -181,8 +195,9 @@
             <tr>
                 <td align="right" class="auto-style22">Category :&nbsp;</td>
                 <td>
-                    <asp:DropDownList ID="DropDownList_Category" runat="server" AutoPostBack="True" BackColor="#E1E8F0" OnSelectedIndexChanged="DropDownList_Category_SelectedIndexChanged">
+                    <asp:DropDownList ID="DropDownList_Category" runat="server" BackColor="#E1E8F0" OnSelectedIndexChanged="DropDownList_Category_SelectedIndexChanged" CausesValidation="True" ValidationGroup="Group1" AutoPostBack="True">
                     </asp:DropDownList>
+                    <asp:CustomValidator ID="ConfirmDropDownValidator" runat="server" ClientValidationFunction="ConfirmDropDownValueChange" Display="Dynamic" ValidationGroup="Group1" />
                 </td>
             </tr>
                 <tr>
@@ -219,7 +234,6 @@
             </asp:Panel>
         </td>
         <td class="auto-style14"  > 
-
 
             <asp:Panel ID="Panel15" runat="server" BorderWidth="2" Width="315" Height="300" HorizontalAlign="Left">
                 <table width="100%">

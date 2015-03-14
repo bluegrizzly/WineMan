@@ -16,6 +16,7 @@ using Microsoft.Reporting.WebForms;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Forms;
+using System.Management;
 
 namespace WineMan
 {
@@ -30,6 +31,27 @@ namespace WineMan
         private PageSettings m_pageSettings;
         private int m_currentPage;
         private List<Stream> m_pages = new List<Stream>();
+
+
+        static void GetDefaultPrinter()
+        {
+            //string strQuery = "SELECT * FROM Win32_Printer";
+
+            //ObjectQuery objectQuery = new ObjectQuery(strQuery);
+            //ManagementObjectSearcher query = new ManagementObjectSearcher(objectQuery);
+            //ManagementObjectCollection queryCollection = query.Get();
+
+            //foreach( ManagementObject managementObject in queryCollection )
+            //{
+            //    PropertyDataCollection propertyDataCollection = managementObject.Properties;
+
+            //    if ((bool)managementObject["Default"]) // DEFAULT PRINTER
+            //    {
+            //        Console.WriteLine(managementObject["Name"]);
+            //        Console.WriteLine(managementObject["Location"]);
+            //    }
+            //}
+        }
 
         public ReportPrintDocument(ServerReport serverReport, bool landscape)
             : this((Report)serverReport, landscape)
@@ -75,22 +97,11 @@ namespace WineMan
         }
         private ReportPrintDocument(Report report, bool landscape)
         {
-            // Set the page settings to the default defined in the report
-            ReportPageSettings reportPageSettings = report.GetDefaultPageSettings();
-            
-            // The page settings object will use the default printer unless
-            // PageSettings.PrinterSettings is changed.  This assumes there
-            // is a default printer.
-            //m_pageSettings = new PageSettings();
-            //m_pageSettings.PaperSize = new PaperSize("letter", 1100, 850); ; // reportPageSettings.PaperSize;
-            //m_pageSettings.Margins = reportPageSettings.Margins;
-            //m_pageSettings.Landscape = landscape;
-
             m_pageSettings = new PageSettings(); //Declare a new PageSettings for printing
             m_pageSettings.Landscape = landscape;
             m_pageSettings.Margins = new Margins(20, 20, 30, 20);
-            //Choose paper size from the paper sizes defined in ur printer.
-            //Here we use Linq to quickly choose by name
+            m_pageSettings.PrinterSettings.PrinterName = "Brother MFC-J615W Printer";
+            //Choose paper size from the paper sizes defined in printer.
             foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)
             {
                 if (ps.Kind == PaperKind.Letter)

@@ -30,9 +30,14 @@ namespace WineMan.Transactions
 
                     if (m_Settings.auto_print)
                     {
-                        ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
-                        reportPrint.Print();
-                        Response.Redirect(Request.UrlReferrer.ToString());
+                        if (m_Settings.default_printer == "")
+                            Utils.MessageBox(this, "** Error **\\nNo Default Printer selected.\\nPlease go in the Admin->Settings and set a default printer.");
+                        else
+                        {
+                            ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
+                            reportPrint.Print();
+                            Response.Redirect(Request.UrlReferrer.ToString());
+                        }
                     }
                 }
                 else
@@ -60,8 +65,13 @@ namespace WineMan.Transactions
 
         protected void Button2_Click(object sender, EventArgs e)
         {
-            ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
-            reportPrint.Print();
+            if (m_Settings.default_printer == "")
+                Utils.MessageBox(this, "** Error **\\nNo Default Printer selected.\\nPlease go in the Admin->Settings and set a default printer.");
+            else
+            {
+                ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
+                reportPrint.Print();
+            }
         }
 
         private void FillData()

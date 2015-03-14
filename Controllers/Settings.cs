@@ -8,14 +8,16 @@ namespace WineMan
 {
     public class Settings : BaseController
     {
+        const string c_dbName = "settings";
         const int c_CurrentVersion = 100;
         public int NbStations;
-        public int Version;
+        public int version;
         public int MinStationHour;
         public int MaxStationHour;
         public int hour_intervale;
         public bool auto_print;
         public string backup_path;
+        public string default_printer;
 
         public Settings()
         {
@@ -30,7 +32,7 @@ namespace WineMan
                     dr.Read();
                     if (dr.HasRows)
                     {
-                        bool parsed = Int32.TryParse(dr["version"].ToString(), out Version);
+                        bool parsed = Int32.TryParse(dr["version"].ToString(), out version);
                         System.Diagnostics.Debug.Assert(parsed);
 
                         parsed = Int32.TryParse(dr["nb_stations"].ToString(), out NbStations);
@@ -50,6 +52,8 @@ namespace WineMan
                         auto_print = autoprintInt > 0 ? true : false;
 
                         backup_path = dr["backup_path"].ToString();
+
+                        default_printer = dr["default_printer"].ToString();
                     }
                     else
                     {
@@ -58,6 +62,35 @@ namespace WineMan
                 }
                 con.Close();
             }
+        }
+
+        public bool Save()
+        {
+            bool ret = false;
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string sqlQuery = "UPDATE " + c_dbName + " SET default_printer='" + default_printer + "'" +
+                        ", backup_path='" + backup_path + "'" +
+                        ", auto_print=" + (auto_print ? "1" : "0") +
+                        " WHERE version="+version;
+                    con.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        int result = cmd.ExecuteNonQuery();
+                        ret = true;
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+            return ret;
         }
 
         public int GetHour(DayOfWeek day, bool start)
