@@ -20,6 +20,7 @@ namespace WineMan.Transactions
             int txID=-1;
             if (!IsPostBack)
             {
+                ReportViewer1.ShowPrintButton = true;
                 if (Request.QueryString["Tx"] != null)
                 {
                     Label_Tx.Text = Request.QueryString["Tx"];
@@ -35,6 +36,7 @@ namespace WineMan.Transactions
                         else
                         {
                             ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
+                            reportPrint.SetPrinter(m_Settings.default_printer);
                             reportPrint.Print();
                             Response.Redirect(Request.UrlReferrer.ToString());
                         }
@@ -58,18 +60,19 @@ namespace WineMan.Transactions
             }
         }
 
-        protected void Button1_Click(object sender, EventArgs e)
+        protected void ButtonShow_Click(object sender, EventArgs e)
         {
             FillData();
         }
 
-        protected void Button2_Click(object sender, EventArgs e)
+        protected void ButtonPrint_Click(object sender, EventArgs e)
         {
             if (m_Settings.default_printer == "")
                 Utils.MessageBox(this, "** Error **\\nNo Default Printer selected.\\nPlease go in the Admin->Settings and set a default printer.");
             else
             {
                 ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
+                reportPrint.SetPrinter(m_Settings.default_printer);
                 reportPrint.Print();
             }
         }
@@ -185,5 +188,6 @@ namespace WineMan.Transactions
 
             Response.Redirect(url);
         }
+
     }
 }

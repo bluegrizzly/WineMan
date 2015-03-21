@@ -32,27 +32,6 @@ namespace WineMan
         private int m_currentPage;
         private List<Stream> m_pages = new List<Stream>();
 
-
-        static void GetDefaultPrinter()
-        {
-            //string strQuery = "SELECT * FROM Win32_Printer";
-
-            //ObjectQuery objectQuery = new ObjectQuery(strQuery);
-            //ManagementObjectSearcher query = new ManagementObjectSearcher(objectQuery);
-            //ManagementObjectCollection queryCollection = query.Get();
-
-            //foreach( ManagementObject managementObject in queryCollection )
-            //{
-            //    PropertyDataCollection propertyDataCollection = managementObject.Properties;
-
-            //    if ((bool)managementObject["Default"]) // DEFAULT PRINTER
-            //    {
-            //        Console.WriteLine(managementObject["Name"]);
-            //        Console.WriteLine(managementObject["Location"]);
-            //    }
-            //}
-        }
-
         public ReportPrintDocument(ServerReport serverReport, bool landscape)
             : this((Report)serverReport, landscape)
         {
@@ -98,9 +77,27 @@ namespace WineMan
         private ReportPrintDocument(Report report, bool landscape)
         {
             m_pageSettings = new PageSettings(); //Declare a new PageSettings for printing
+            m_pageSettings.PrinterSettings = new report. 
             m_pageSettings.Landscape = landscape;
+            // Hard coded margins
             m_pageSettings.Margins = new Margins(20, 20, 30, 20);
-            m_pageSettings.PrinterSettings.PrinterName = "Brother MFC-J615W Printer";
+
+            //Choose paper size from the paper sizes defined in printer.
+            foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)
+            {
+                if (ps.Kind == PaperKind.Letter)
+                {
+                    m_pageSettings.PaperSize = ps;
+                    break;
+                }
+            }
+        }
+
+        public void SetPrinter(string printerName)
+        {
+            m_pageSettings.PrinterSettings.PrinterName = printerName;
+            PrinterSettings.PrinterName = printerName;
+
             //Choose paper size from the paper sizes defined in printer.
             foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)
             {

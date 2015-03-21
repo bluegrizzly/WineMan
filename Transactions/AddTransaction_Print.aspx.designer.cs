@@ -31,22 +31,22 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.ScriptManager ScriptManager1;
         
         /// <summary>
-        /// Button1 control.
+        /// Button_Show control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Button Button_Show;
         
         /// <summary>
-        /// Button2 control.
+        /// Button_Print control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button2;
+        protected global::System.Web.UI.WebControls.Button Button_Print;
         
         /// <summary>
         /// Button_Back control.

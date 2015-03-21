@@ -635,6 +635,9 @@ namespace WineMan.Transactions
                             tCell.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
                             tRowDates.Cells.Add(tCell2);
                         }
+
+                        // Check if the recipes is broken
+                        Label_BrokenRecipes.Visible = TransactionsHelper.CheckBrokenRecipes(tx);
                     }
                 }
                 else // no records yet so let just guess the dates.

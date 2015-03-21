@@ -134,6 +134,36 @@ namespace WineMan
             return true;
         }
 
+        // Return true if the transaction steps dates doesn't follow the recipes
+        static public bool CheckBrokenRecipes(Transaction tx)
+        {
+            List<Wine_Category> categories;
+            Wine_Category.GetAllRecordsForID(tx.wine_category_id.ToString(), out categories);
+            List<TransactionStep> txSteps = TransactionStep.GetRecordsForTx(tx.id);
+            DateTime startDate = txSteps[0].date;
+
+            foreach (TransactionStep step in txSteps)
+            {
+                Wine_Category category = null;
+                foreach (Wine_Category cat in categories)
+                {
+                    if (cat.step == step.step_id)
+                    {
+                        category = cat;
+                        break;
+                    }
+                }
+                if (category==null)
+                    return true;
+
+                DateTime stepDate = startDate.AddDays(category.days);
+                if (Utils.CompareDates(stepDate, step.date) != 0)
+                    return true;
+            }
+
+            return false;
+        }
+
         static public DateTime GetFinalStepDate(Transaction tx, DateTime date, TransactionStep txStep)
         {
             DateTime finalDate = date;
@@ -164,11 +194,11 @@ namespace WineMan
             return txStep.UpdateDate(date);
         }
 
+        // Starting from the yeast, recreate the dates 
         static public bool UpdateAndAdjustStepsRecordDate(Transaction tx, int stepID, DateTime date, out string datesAdjusted)
         {
             List<Wine_Category> categories;
             Wine_Category.GetAllRecordsForID(tx.wine_category_id.ToString(), out categories);
-            int nbDays = 0;
             datesAdjusted = null;
 
             foreach (Wine_Category category in categories)
@@ -180,16 +210,16 @@ namespace WineMan
                     TransactionStep txStep = TransactionStep.GetRecordForTx(tx.id, category.step);
 
                     DateTime newCurrentDate = date;
-                    if (category.step == stepID)
-                        nbDays = category.days;
-                    else
-                    {
-                        newCurrentDate = newCurrentDate.AddDays(category.days - nbDays);
-                        nbDays = category.days;
+
+                    newCurrentDate = newCurrentDate.AddDays(category.days);
+
+                        // **Not anymore**
                         // do not change date if the new date is before the current one.
-                        if (newCurrentDate < txStep.date)
-                            continue;
-                    }
+                        //if (newCurrentDate < txStep.date)
+                        //    continue;
+                    if (Utils.CompareDates(txStep.date, newCurrentDate) == 0)
+                        continue;
+
                     DateTime oldDate = txStep.date;
                     txStep.date = newCurrentDate;
                     if (txStep.UpdateDate(newCurrentDate) == false)
@@ -364,7 +394,6 @@ namespace WineMan
             }
 
             return res;
-
         }
 
         public bool SetTransactionToDone(List<string> ids, bool undo=false)
