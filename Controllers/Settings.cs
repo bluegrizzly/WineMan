@@ -18,6 +18,7 @@ namespace WineMan
         public bool auto_print;
         public string backup_path;
         public string default_printer;
+        public string default_printerreports;
 
         public Settings()
         {
@@ -52,8 +53,13 @@ namespace WineMan
                         auto_print = autoprintInt > 0 ? true : false;
 
                         backup_path = dr["backup_path"].ToString();
+                        backup_path = backup_path.Replace("/", @"\");
 
                         default_printer = dr["default_printer"].ToString();
+                        default_printer = default_printer.Replace("/", @"\");
+
+                        default_printerreports = dr["default_printerreports"].ToString();
+                        default_printerreports = default_printerreports.Replace("/", @"\");
                     }
                     else
                     {
@@ -72,8 +78,9 @@ namespace WineMan
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string sqlQuery = "UPDATE " + c_dbName + " SET default_printer='" + default_printer + "'" +
-                        ", backup_path='" + backup_path + "'" +
+                    string sqlQuery = "UPDATE " + c_dbName + " SET default_printer='" + default_printer.Replace(@"\", "/") + "'" +
+                        ", default_printerreports='" + default_printerreports.Replace(@"\", "/") + "'" +
+                        ", backup_path='" + backup_path.Replace(@"\", "/") + "'" +
                         ", auto_print=" + (auto_print ? "1" : "0") +
                         " WHERE version="+version;
                     con.Open();

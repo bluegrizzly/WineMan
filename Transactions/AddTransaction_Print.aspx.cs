@@ -20,7 +20,7 @@ namespace WineMan.Transactions
             int txID=-1;
             if (!IsPostBack)
             {
-                ReportViewer1.ShowPrintButton = true;
+                ReportViewer1.AsyncRendering = false;
                 if (Request.QueryString["Tx"] != null)
                 {
                     Label_Tx.Text = Request.QueryString["Tx"];
@@ -32,7 +32,7 @@ namespace WineMan.Transactions
                     if (m_Settings.auto_print)
                     {
                         if (m_Settings.default_printer == "")
-                            Utils.MessageBox(this, "** Error **\\nNo Default Printer selected.\\nPlease go in the Admin->Settings and set a default printer.");
+                            Utils.MessageBox(this, "** Error **\\nNo Default Printer[Transactions] selected.\\nPlease go in the Admin->Settings and set a default printer.");
                         else
                         {
                             ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);

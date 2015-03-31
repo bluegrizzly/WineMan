@@ -44,6 +44,27 @@ namespace WineMan
             RenderAllLocalReportPages(localReport);
         }
 
+        private ReportPrintDocument(Report report, bool landscape)
+        {
+            ReportPageSettings reportPageSettings = report.GetDefaultPageSettings();
+
+            m_pageSettings = new PageSettings(); //Declare a new PageSettings for printing
+            m_pageSettings.Landscape = landscape;
+            m_pageSettings.PaperSize = reportPageSettings.PaperSize;
+            // Hard coded margins
+            m_pageSettings.Margins = new Margins(20, 20, 30, 20);
+
+            //Choose paper size from the paper sizes defined in printer.
+            foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)
+            {
+                if (ps.Kind == PaperKind.Letter)
+                {
+                    m_pageSettings.PaperSize = ps;
+                    break;
+                }
+            }
+        }
+
         public void PrintWithDialog()
         {
             // Little hack so the dialog show on top
@@ -73,24 +94,6 @@ namespace WineMan
                 Print();
             }
             currentForm.Close();
-        }
-        private ReportPrintDocument(Report report, bool landscape)
-        {
-            m_pageSettings = new PageSettings(); //Declare a new PageSettings for printing
-            m_pageSettings.PrinterSettings = new report. 
-            m_pageSettings.Landscape = landscape;
-            // Hard coded margins
-            m_pageSettings.Margins = new Margins(20, 20, 30, 20);
-
-            //Choose paper size from the paper sizes defined in printer.
-            foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)
-            {
-                if (ps.Kind == PaperKind.Letter)
-                {
-                    m_pageSettings.PaperSize = ps;
-                    break;
-                }
-            }
         }
 
         public void SetPrinter(string printerName)
@@ -195,10 +198,18 @@ namespace WineMan
 
         private void RenderAllLocalReportPages(LocalReport localReport)
         {
-            string deviceInfo = CreateEMFDeviceInfo();
-            
-            Warning[] warnings;
-            localReport.Render("IMAGE", deviceInfo, LocalReportCreateStreamCallback, out warnings);
+            try
+            {
+                string deviceInfo = CreateEMFDeviceInfo();
+
+                Warning[] warnings;
+
+                localReport.Render("IMAGE", deviceInfo, LocalReportCreateStreamCallback, out warnings);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("error :: " + e);
+            }
         }
 
         private Stream LocalReportCreateStreamCallback(

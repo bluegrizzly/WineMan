@@ -39,8 +39,18 @@ namespace WineMan.Work
 
         protected void Button_Print_Click(object sender, EventArgs e)
         {
+            Settings m_Settings = new Settings();
             ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, false);
-            reportPrint.PrintWithDialog();
+            //reportPrint.PrintWithDialog();
+            if (m_Settings.default_printerreports == "")
+            {
+                Utils.MessageBox(this, "No Default Printer[Reports] selected.\\nPlease go in the Admin->Settings and set a default printer.");
+            }
+            else
+            {
+                reportPrint.SetPrinter(m_Settings.default_printerreports);
+                reportPrint.Print();
+            }
         }
 
         private void FillData()

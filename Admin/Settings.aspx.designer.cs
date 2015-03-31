@@ -31,6 +31,15 @@ namespace WineMan.Admin {
         protected global::System.Web.UI.WebControls.DropDownList DropDownList_Printers;
         
         /// <summary>
+        /// DropDownList_PrintersReports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_PrintersReports;
+        
+        /// <summary>
         /// TextBox_BackupPath control.
         /// </summary>
         /// <remarks>

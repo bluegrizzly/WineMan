@@ -87,6 +87,11 @@ namespace WineMan
         {
             List<TransactionStep> txSteps = new List<TransactionStep>();
 
+            // validate the string before.
+            int n;
+            if (txID != null && txID.Length > 0 && int.TryParse(txID, out n) == false)
+                return txSteps;
+
             try
             {
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
