@@ -411,8 +411,16 @@ namespace WineMan.Transactions
 
             SaveRendezVousValues(); // pass it to the next page
 
+            ReturnToTransactionPage();
+        }
+
+        protected void ReturnToTransactionPage()
+        {
+            if (ViewState["RefUrl"] == null)
+                return;
+
             string refUrl = (string)ViewState["RefUrl"];
-            
+
             // Return a flag to know that we started from the AddTransaction page.
             if (refUrl.Contains("AddTransaction"))
             {
@@ -427,32 +435,18 @@ namespace WineMan.Transactions
         }
         protected void Button_Cancel_Click(object sender, EventArgs e)
         {
-            if (ViewState["RefUrl"] == null)
-                return;
-
-            string refUrl = (string)ViewState["RefUrl"];
-
-            // Return a flag to know that we started from the AddTransaction page.
-            if (refUrl.Contains("AddTransaction"))
-            {
-                refUrl += "?FromAdd=true";
-            }
-
-            if (refUrl != null)
-                Response.Redirect(refUrl);
+            ReturnToTransactionPage();
         }
 
         protected void Calendar_RDV_SelectionChanged(object sender, EventArgs e)
         {
             if (Request.QueryString["FromAddTx"] == "true")
             {
-                // Make sure the date is not before the minimum date:
-                DateTime minDate = (DateTime)Session["rendezvous"];
+                // Warning: Make sure the date is not before the minimum date
+                DateTime minDate = (DateTime)Session["wineready_date"];
                 if (Calendar_RDV.SelectedDate < minDate)
                 {
                     Utils.MessageBox(this, "** Warning **\\nThis appointment date is going to be BEFORE the wine is ready.\\nWine ready: " + minDate.ToString("D", m_Culture));
-
-                    //Calendar_RDV.SelectedDate = minDate;
                 }
             }
             Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);

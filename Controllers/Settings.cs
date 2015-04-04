@@ -19,6 +19,8 @@ namespace WineMan
         public string backup_path;
         public string default_printer;
         public string default_printerreports;
+        public int transaction_starting_id;
+
 
         public Settings()
         {
@@ -60,6 +62,9 @@ namespace WineMan
 
                         default_printerreports = dr["default_printerreports"].ToString();
                         default_printerreports = default_printerreports.Replace("/", @"\");
+
+                        parsed = Int32.TryParse(dr["transaction_starting_id"].ToString(), out transaction_starting_id);
+                        System.Diagnostics.Debug.Assert(parsed);
                     }
                     else
                     {
@@ -82,6 +87,7 @@ namespace WineMan
                         ", default_printerreports='" + default_printerreports.Replace(@"\", "/") + "'" +
                         ", backup_path='" + backup_path.Replace(@"\", "/") + "'" +
                         ", auto_print=" + (auto_print ? "1" : "0") +
+                        ", transaction_starting_id=" + transaction_starting_id.ToString() +
                         " WHERE version="+version;
                     con.Open();
 

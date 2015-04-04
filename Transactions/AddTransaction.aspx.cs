@@ -105,7 +105,15 @@ namespace WineMan.Transactions
             Session["location"] = TextBox_Location.Text;
             Session["comments"] = TextBox_Comment.Text;
             Session["product_code"] = DropDownList_ProductCode.SelectedIndex;
+
+            if (m_TxID >=0 )
+            {
+                TransactionStep step = TransactionStep.GetRecordForTx(m_TxID, Step.GetLastStep().id);
+                if (step != null)
+                    Session["wineready_date"] = step.date;
+            }
         }
+
         private void RestoreData()
         {
             if (Session["customer_id"] != null)
@@ -745,8 +753,17 @@ namespace WineMan.Transactions
             TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, stepID);
 
             TextBox_Date.Text = txStep.date.ToString("MMM-dd-yyyy");
+
+            SetChangeDateButtonTooltip(stepID);
         }
 
+        protected void SetChangeDateButtonTooltip(int stepID)
+        {
+            if (stepID == Step.c_YeastID)
+                Button_ChangeDate.ToolTip = "Change this date and push dates of all other transaction steps to match the recipes";
+            else
+                Button_ChangeDate.ToolTip = "Change only the date for this transaction step";
+        }
         protected void CheckBox_EditDates_CheckedChanged(object sender, EventArgs e)
         {
             DropDownList_Steps.Visible = CheckBox_EditDates.Checked;
@@ -758,6 +775,7 @@ namespace WineMan.Transactions
             {
                 TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, 1); //set yeast by default
                 TextBox_Date.Text = txStep.date.ToString("MMM-dd-yyyy");
+                SetChangeDateButtonTooltip(txStep.step_id);
             }
         }
 
@@ -786,31 +804,27 @@ namespace WineMan.Transactions
         {
             if (m_TxID == -1)
                 return;
-
             Transaction tx = Transaction.GetRecord(m_TxID);
-            TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, stepID); 
+            TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, stepID);
+            DateTime originalDate = txStep.date;
             
             // Validation1: is step done?
             if (txStep.done > 0)
             {
-                Utils.MessageBox(this, "** Error **\\nCannot change date.\\nTransactionStep is completed.");
-                return;
+                Utils.MessageBox(this, "** Warning **\\nYou are changing a TransactionStep that is completed.");
+                //return;  //now allow it
             }
 
-            if (Utils.CompareDates(date, txStep.date) > 0)
+            // Date pushing Validation. Only yeast is pushing dates.
+            if (stepID == Step.c_YeastID && Utils.CompareDates(date, txStep.date) > 0)
             {
                 // Is the new bottling date after the one in the appointment?
                 DateTime newBottlingDate = TransactionsHelper.GetFinalStepDate(tx, date, txStep);
 
                 if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0)
                 {
-                    Utils.MessageBox(this, "** Error **\\nCannot change date.\\nThe appointment date in the transaction need to be moved after " + newBottlingDate.ToString("MMM-dd-yyyy"));
-                    return;
-                }
-                else if (Utils.CompareDates(newBottlingDate, tx.date_bottling) == 0)
-                {
-                    Utils.MessageBox(this, "** Error **\\nCannot change date.\\nThe appointment date is the same. " + newBottlingDate.ToString("MMM-dd-yyyy"));
-                    return;
+                    Utils.MessageBox(this, "** Warning **\\nThe appointment date now before the wine is ready.\\n\\nWine ready new date: " + newBottlingDate.ToString("MMM-dd-yyyy") + "\\nAppointement date:" + tx.date_bottling.ToString("MMM-dd-yyyy"));
+                    //return;  //now allow it
                 }
             }
             else if (Utils.CompareDates(date, txStep.date) == 0)
@@ -842,7 +856,10 @@ namespace WineMan.Transactions
                 if (TransactionsHelper.UpdateStepRecordDate(tx, stepID, date))
                 {
                     ShowDates();
-                    Utils.MessageBox(this, "Success : The date has been changed.");
+                    string msg = "Success : The date of step " + Step.GetStepName(stepID) +
+                                 " has been changed.\\n\\nBefore: " + originalDate.ToString("MMM-dd-yyyy") +
+                                 "\\nAfter:" + date.ToString("MMM-dd-yyyy");
+                    Utils.MessageBox(this, msg);
 
                     Step lastStep = Step.GetLastStep();
                     if (stepID != lastStep.id)

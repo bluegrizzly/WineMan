@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Text;
+using System.Management;
 
 namespace WineMan
 {
@@ -92,6 +93,32 @@ namespace WineMan
                 return 1;
 
             return 0;
+        }
+
+        public static List<string> GetAllPrinters()
+        {
+            List<string> printers = new List<string>();
+
+            System.Management.ManagementScope objMS = new System.Management.ManagementScope(ManagementPath.DefaultPath);
+            objMS.Connect();
+
+            SelectQuery objQuery = new SelectQuery("SELECT * FROM Win32_Printer");
+            ManagementObjectSearcher objMOS = new ManagementObjectSearcher(objMS, objQuery);
+            System.Management.ManagementObjectCollection objMOC = objMOS.Get();
+
+            foreach (ManagementObject Printers in objMOC)
+            {
+                string serverName = @"\\" + Printers["ServerName"] + @"\";
+                if (Convert.ToBoolean(Printers["Local"]))       // LOCAL PRINTERS.
+                {
+                    printers.Add(Printers["Name"].ToString());
+                }
+                if (Convert.ToBoolean(Printers["Network"]))     // ALL NETWORK PRINTERS.
+                {
+                    printers.Add(Printers["Name"].ToString());
+                }
+            }
+            return printers;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace WineMan
         const string c_dbTransactionStepName = "transaction_step";
         const string c_dbTransactionName = "transactions";
 
-        public List<TransactionStep> GetAllStepsOfThisDay(DateTime dateStart, DateTime dateEnd, bool showlate, EShow showdone, int stepID, string txID)
+        public List<TransactionStep> GetAllStepsOfThisDay(DateTime dateStart, DateTime dateEnd, bool showlate, EShow showdone, int stepID, string txID, string customer)
         {
             List<TransactionStep> steps = new List<TransactionStep> ();
             steps = TransactionStep.GetRecords(dateStart, dateEnd, showdone, stepID, txID);
@@ -25,6 +25,33 @@ namespace WineMan
                 stepsLate = TransactionStep.GetRecords(oldDate, dateStart, EShow.Show_NotDone, stepID, txID);
                 steps.AddRange(stepsLate);
             }
+
+            // Filter the customer
+            if (customer != null && customer.Length > 0)
+            {
+                List<Customer> customers = CustomersHelper.GetSimilarCustomers(customer);
+
+                for (int i=steps.Count-1; i >=0; i--)
+                {
+                    TransactionStep step = steps[i];
+                    bool found = false;
+                    Transaction tx = Transaction.GetRecord(step.transaction_id);
+                    foreach (Customer cus in customers)
+                    {
+                        if (tx.client_id == cus.id)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        steps.RemoveAt(i);
+                    }
+                }
+            }
+
             return steps;
         }
 
@@ -434,7 +461,8 @@ namespace WineMan
 
             if (txNotDone.Count > 0)
             {
-                //Utils.MessageBox(HttpContext.Current.Handler as System.Web.UI.Page, "Cannot complete these transactions because they still have steps not completed. :");
+                // Cannot show page 
+                //Utils.MessageBox(HttpContext.Current.Handler as System.Web.UI.Page, "** Error **\\nCannot complete these transactions because they still have steps not completed.");
             }
             if (first)
                 return false; // nothing processed

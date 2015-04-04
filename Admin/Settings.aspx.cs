@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Management;
 
 namespace WineMan.Admin
 {
@@ -25,26 +24,12 @@ namespace WineMan.Admin
                 if (!isHavingDefaultReports)
                     DropDownList_PrintersReports.Items.Add(selectString);
 
-                System.Management.ManagementScope objMS = new System.Management.ManagementScope(ManagementPath.DefaultPath);
-                objMS.Connect();
 
-                SelectQuery objQuery = new SelectQuery("SELECT * FROM Win32_Printer");
-                ManagementObjectSearcher objMOS = new ManagementObjectSearcher(objMS, objQuery);
-                System.Management.ManagementObjectCollection objMOC = objMOS.Get();
-
-                foreach (ManagementObject Printers in objMOC)
+                List<string> printers = Utils.GetAllPrinters();
+                foreach (string printer in printers)
                 {
-                    string serverName = @"\\" + Printers["ServerName"] + @"\";
-                    if (Convert.ToBoolean(Printers["Local"]))       // LOCAL PRINTERS.
-                    {
-                        DropDownList_Printers.Items.Add(Printers["Name"].ToString());
-                        DropDownList_PrintersReports.Items.Add(Printers["Name"].ToString());
-                    }
-                    if (Convert.ToBoolean(Printers["Network"]))     // ALL NETWORK PRINTERS.
-                    {
-                        DropDownList_Printers.Items.Add(Printers["Name"].ToString());
-                        DropDownList_PrintersReports.Items.Add(Printers["Name"].ToString());
-                    }
+                    DropDownList_Printers.Items.Add(printer);
+                    DropDownList_PrintersReports.Items.Add(printer);
                 }
 
                 if (isHavingDefault)
@@ -57,6 +42,8 @@ namespace WineMan.Admin
 
                 // Autoprint
                 CheckBox_AutoPrint.Checked = m_Settings.auto_print;
+
+                TextBox_StartTXID.Text = m_Settings.transaction_starting_id.ToString();
             }
         }
 
@@ -66,6 +53,13 @@ namespace WineMan.Admin
             m_Settings.default_printerreports = DropDownList_PrintersReports.SelectedValue;
             m_Settings.backup_path = TextBox_BackupPath.Text;
             m_Settings.auto_print = CheckBox_AutoPrint.Checked;
+
+            if (!Int32.TryParse(TextBox_StartTXID.Text, out m_Settings.transaction_starting_id))
+            {
+                Utils.MessageBox(this, "** Error **\\nTransaction ID is not valid.");
+                m_Settings.transaction_starting_id = 0;
+            }
+
             if (m_Settings.Save())
                 Utils.MessageBox(this, "** Success **\\nThe settings have been saved.");
             else

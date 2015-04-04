@@ -74,7 +74,27 @@ namespace WineMan.Work
             
             EShow showFilter = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
 
-            List<Transaction> transactions = Transaction.GetRecords(date, dateEnd, showFilter, showReadyOnly=="true");
+            string txID = context.Request.QueryString["txid"];
+            string customer = context.Request.QueryString["customer"];
+
+            // Check for specific transaction
+            List<Transaction> transactions = new List<Transaction>();
+            int txIDnb=-1;
+            if (txID != null && txID.Length > 0 && Int32.TryParse(txID, out txIDnb))
+            {
+                Transaction tx = Transaction.GetRecord(txIDnb);
+                if (tx != null)
+                {
+                    transactions.Add(tx);
+                    m_TransactionHelper.GetTransactionToCompleteJSONRecords(context, transactions);
+                    return;
+                }
+            }
+            
+            // Get all tx
+            transactions = Transaction.GetRecords(date, dateEnd, showFilter, showReadyOnly == "true", customer);
+
+            // Get the JSON
             m_TransactionHelper.GetTransactionToCompleteJSONRecords(context, transactions);
         }
 
@@ -123,9 +143,10 @@ namespace WineMan.Work
                     if (filterStep == 0)
                         filterStep = - 1;
                     string txID = context.Request.QueryString["txid"];
+                    string customer = context.Request.QueryString["customer"];
 
                     // Get all transaction not completed.
-                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, false, showdone, filterStep, txID);
+                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, false, showdone, filterStep, txID, customer);
 
                     // Sort by steps
                     steps.Sort((x, y) => x.date.CompareTo(y.date));

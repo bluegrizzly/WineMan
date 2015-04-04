@@ -52,7 +52,7 @@ namespace WineMan
             m_pageSettings.Landscape = landscape;
             m_pageSettings.PaperSize = reportPageSettings.PaperSize;
             // Hard coded margins
-            m_pageSettings.Margins = new Margins(20, 20, 30, 20);
+            m_pageSettings.Margins = new Margins(25, 20, 30, 20);
 
             //Choose paper size from the paper sizes defined in printer.
             foreach (PaperSize ps in m_pageSettings.PrinterSettings.PaperSizes)

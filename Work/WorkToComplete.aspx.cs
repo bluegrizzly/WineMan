@@ -24,12 +24,11 @@ namespace WineMan.Work
             {
                 DropDownList_FilterStep.Items.Clear();
                 List<Step> steps = Step.GetAllRecords();
-                DropDownList_FilterStep.Items.Add("All");
+                DropDownList_FilterStep.Items.Add(new ListItem("All", "-1"));
                 foreach (Step step in steps)
                 {
-                    DropDownList_FilterStep.Items.Add(step.name);
+                    DropDownList_FilterStep.Items.Add(new ListItem(step.name, step.id.ToString()));
                 }
-
 
                 // select today for the end date
                 txtDateEnd.Text = DateTime.Now.ToString("MMM-dd-yyyy");
@@ -38,7 +37,12 @@ namespace WineMan.Work
 
         protected void Button_Print_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Work/WorkToComplete_Print.aspx?date=" + txtDateStart.Text + "&dateEnd=" + txtDateEnd.Text);
+            string argums = "?date=" + txtDateStart.Text + 
+                "&dateEnd=" + txtDateEnd.Text + 
+                "&txid=" + TextBox_TxID.Text + 
+                "&step=" + DropDownList_FilterStep.SelectedValue.ToString() +
+                "&customer=" + TextBox_Customer.Text;
+            Response.Redirect("~/Work/WorkToComplete_Print.aspx" + argums);
         }
 
         protected void Button_ClearTxID_Click(object sender, EventArgs e)
@@ -54,6 +58,11 @@ namespace WineMan.Work
         protected void Button_ClearEnd_Click(object sender, EventArgs e)
         {
             txtDateEnd.Text = "";
+        }
+
+        protected void Button_ClearCustomer_Click(object sender, EventArgs e)
+        {
+            TextBox_Customer.Text = "";
         }
     }
 }

@@ -140,8 +140,8 @@ namespace WineMan
             {
                 sqlQuery = "SELECT DISTINCT * FROM " + c_dbName + " WHERE first_name LIKE '%" + filterCustomer + "%'" +
                     " OR last_name LIKE '%" + filterCustomer + "%'" +
-                    " OR id LIKE '" + filterCustomer + "'" +
-                    " OR telephone LIKE '" + filterCustomer + "'" +
+                    " OR id = '" + filterCustomer + "'" +
+                    " OR telephone LIKE '%" + filterCustomer + "%'" +
                     " ORDER BY last_name";
             }
             return sqlQuery;

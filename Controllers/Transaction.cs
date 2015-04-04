@@ -80,10 +80,16 @@ namespace WineMan
         {
             try
             {
+                Settings settings = new Settings();
+                int initialID = 0;
+                Transaction initTx = GetRecord(settings.transaction_starting_id);
+                if (initTx == null)
+                    initialID = settings.transaction_starting_id;
+
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string values = AddIntParameter(0, true) + //id
+                    string values = AddIntParameter(initialID, true) + //id
                                     AddIntParameter(tx.client_id) +
                                     AddIntParameter(tx.wine_brand_id) +
                                     AddIntParameter(tx.wine_type_id) +
@@ -274,7 +280,7 @@ namespace WineMan
         }
 
 
-        public static List<Transaction> GetRecords(DateTime dateStart, DateTime dateEnd, EShow showFilter = EShow.Show_NotDone, bool showReadyOnly=false)
+        public static List<Transaction> GetRecords(DateTime dateStart, DateTime dateEnd, EShow showFilter = EShow.Show_NotDone, bool showReadyOnly=false, string customer=null)
         {
             List<Transaction> transactions = new List<Transaction>();
 
@@ -321,6 +327,31 @@ namespace WineMan
                 }
             }
             catch { }
+
+            // Filter the customer
+            if (customer != null && customer.Length > 0)
+            {
+                List<Customer> customers = CustomersHelper.GetSimilarCustomers(customer);
+
+                for (int i = transactions.Count - 1; i >= 0; i--)
+                {
+                    Transaction tx = transactions[i];
+                    bool found = false;
+                    foreach (Customer cus in customers)
+                    {
+                        if (tx.client_id == cus.id)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        transactions.RemoveAt(i);
+                    }
+                }
+            }
 
             return transactions;
         }
