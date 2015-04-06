@@ -50,23 +50,29 @@ namespace WineMan.Transactions
         private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
 
         const int c_NbColumnPerStation = 6;
+
+        int m_TxID = -1;
+        bool m_FromAddTx = false;
         protected void Page_Load(object sender, EventArgs e)
         {
+            m_FromAddTx = Request.QueryString["FromAddTx"] == "true";
+            if (Request.QueryString["txid"] != null)
+                Int32.TryParse(Request.QueryString["txid"], out m_TxID);
+
             if (!IsPostBack)
             {
-                // if the page is not coming from the add transaction, we need to clear the session data 
-                // this means that we are not required to pass data to the add transaction page.
-                if (Request.QueryString["FromAddTx"] != "true")
-                    Session.Clear();
-
-                if (Request.UrlReferrer != null)
-                    ViewState["RefUrl"] = Request.UrlReferrer.ToString();
-
                 // set the calendar date
                 if (Session["rendezvous"] != null)
                     Calendar_RDV.SelectedDate = (DateTime)Session["rendezvous"];
                 else
                     Calendar_RDV.SelectedDate = Calendar_RDV.TodaysDate;
+
+                // if the page is not coming from the add transaction, we need to clear the session data 
+                // this means that we are not required to pass data to the add transaction page.
+                if (!m_FromAddTx)
+                {
+                    Session.Clear();
+                }
 
                 // Make sure the date is not a holiday
                 while (Holiday.IsHoliday(Calendar_RDV.SelectedDate))
@@ -78,6 +84,8 @@ namespace WineMan.Transactions
             }
 
             m_CustomerName = Request.QueryString["customer"];
+
+            Button_Select.Enabled = false; // will turn on when selecying a line
 
             if (Session["rendezvous_hour"] != null)
             {
@@ -124,18 +132,34 @@ namespace WineMan.Transactions
                 }
             }
 
+            // Get all transactions for this day
+            m_Transactions = Transaction.GetRecords(Calendar_RDV.SelectedDate);
+            m_Holidays = Holiday.GetAllRecords();
+
+            // add the special hours from all transactions 
+            foreach (Transaction tx in m_Transactions)
+            {
+                if (tx.date_bottling.Minute != 0)
+                {
+                    AddTableRow(tx.date_bottling.Hour, tx.date_bottling.Minute);
+                }
+            }
+
             Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
 
             CreateTable(Calendar_RDV.SelectedDate);
-
         }
 
         protected void AddTableRow(int hour, int min)
         {
+            int rowKey = RendezVousTableRow.GetRowKey(hour, min);
+            if (m_TableRows.ContainsKey(rowKey))
+                return;
+
             RendezVousTableRow row = new RendezVousTableRow();
             row.Row = new TableRow();
 
-            m_TableRows.Add(RendezVousTableRow.GetRowKey(hour, min), row);
+            m_TableRows.Add(rowKey, row);
 
             for (int station = 0; station < m_Settings.NbStations; ++station)
             {
@@ -159,13 +183,9 @@ namespace WineMan.Transactions
 
         protected void Page_LoadComplete(object sender, EventArgs e)
         {
-            Button_Select.Visible = (Request.QueryString["FromAddTx"] == "true");
-            Button_Print.Visible = (Request.QueryString["FromAddTx"] != "true");
-            Button_Cancel.Visible = (Request.QueryString["FromAddTx"] == "true");
-
-            // Get all transactions for this day
-            m_Transactions = Transaction.GetRecords(Calendar_RDV.SelectedDate);
-            m_Holidays = Holiday.GetAllRecords();
+            Button_Select.Visible = m_FromAddTx;
+            Button_Print.Visible = !m_FromAddTx;
+            Button_Cancel.Visible = m_FromAddTx;
 
             foreach (KeyValuePair<int, RendezVousTableRow> row in m_TableRows)
             {
@@ -178,8 +198,7 @@ namespace WineMan.Transactions
 
                     foreach (Transaction tx in m_Transactions)
                     {
-                        // TODO check for the minutes
-                        if (tx.date_bottling.Hour == hour && tx.bottling_station == rdvData.Key)
+                        if (tx.date_bottling.Hour == hour && tx.bottling_station == rdvData.Key && tx.date_bottling.Minute == min)
                         {
                             foundTx = tx;
                             break;
@@ -189,7 +208,7 @@ namespace WineMan.Transactions
                     if (foundTx!=null)
                     {
                         GetCell(CellKind.Gray, cell);
-                        rdvData.Value.RadioButton.Visible = false;
+                        rdvData.Value.RadioButton.Visible = (m_TxID == foundTx.id);
 
                         // Hour
                         TableCell cellHour = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 1];
@@ -247,6 +266,8 @@ namespace WineMan.Transactions
                         if (cell.Controls.Count > 0 && radioButton == cell.Controls[0])
                         {
                             SelectLine(row, row.Cells.GetCellIndex(cell));
+
+                            Button_Select.Enabled = true;
                             return;
                         }
                     }
@@ -280,6 +301,21 @@ namespace WineMan.Transactions
                 int min = RendezVousTableRow.GetMinFromKey(selectedHour);
                 Session["rendezvous_hour"] = GetHourMinName(hour) + "h" + GetHourMinName(min); 
                 Session["rendezvous_station"] = selectedStation .ToString();
+
+                // Save transaction
+                if (m_TxID >=0)
+                {
+                    Transaction tx = Transaction.GetRecord(m_TxID);
+                    tx.date_bottling = new DateTime(Calendar_RDV.SelectedDate.Year, Calendar_RDV.SelectedDate.Month, Calendar_RDV.SelectedDate.Day);
+                    tx.date_bottling = tx.date_bottling.AddHours(hour);
+                    tx.date_bottling = tx.date_bottling.AddMinutes(min);
+                    tx.bottling_station = selectedStation;
+
+                    if (!tx.ModifyRecord())
+                    {
+                        Utils.MessageBox(this, "** Error **\\nFailed to modify a transaction.");
+                    }
+                }
             }
         }
 
@@ -404,9 +440,27 @@ namespace WineMan.Transactions
             return ret;
         }
 
+        protected string GetRefUrl(string basePath)
+        {
+            string refUrl = basePath;
+
+            // Return a flag to know that we started from the AddTransaction page.
+            if (refUrl.Contains("AddTransaction"))
+            {
+                if (!refUrl.Contains("?"))
+                    refUrl += "?FromAdd=true";
+                else
+                    refUrl += "&FromAdd=true";
+
+                if (m_TxID >= 0 && !refUrl.Contains("txid="))
+                    refUrl += "&txid=" + m_TxID.ToString();
+            }
+            return refUrl;
+        }
+
         protected void Button_Select_Click(object sender, EventArgs e)
         {
-            if (ViewState["RefUrl"] == null)
+            if (!m_FromAddTx)
                 return;
 
             SaveRendezVousValues(); // pass it to the next page
@@ -416,23 +470,15 @@ namespace WineMan.Transactions
 
         protected void ReturnToTransactionPage()
         {
-            if (ViewState["RefUrl"] == null)
+            if (!m_FromAddTx)
                 return;
 
-            string refUrl = (string)ViewState["RefUrl"];
-
-            // Return a flag to know that we started from the AddTransaction page.
-            if (refUrl.Contains("AddTransaction"))
-            {
-                if (!refUrl.Contains("?"))
-                    refUrl += "?FromAdd=true";
-                else
-                    refUrl += "&FromAdd=true";
-            }
+            string refUrl = GetRefUrl("/Transactions/AddTransaction.aspx");
 
             if (refUrl != null)
                 Response.Redirect(refUrl);
         }
+
         protected void Button_Cancel_Click(object sender, EventArgs e)
         {
             ReturnToTransactionPage();
@@ -440,16 +486,20 @@ namespace WineMan.Transactions
 
         protected void Calendar_RDV_SelectionChanged(object sender, EventArgs e)
         {
-            if (Request.QueryString["FromAddTx"] == "true")
+            if (m_FromAddTx && Session["wineready_date"] != null) 
             {
                 // Warning: Make sure the date is not before the minimum date
+
                 DateTime minDate = (DateTime)Session["wineready_date"];
                 if (Calendar_RDV.SelectedDate < minDate)
                 {
                     Utils.MessageBox(this, "** Warning **\\nThis appointment date is going to be BEFORE the wine is ready.\\nWine ready: " + minDate.ToString("D", m_Culture));
                 }
             }
-            Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
+            //Label_Date.Text = Calendar_RDV.SelectedDate.ToString("D", m_Culture);
+            Session["rendezvous"] = Calendar_RDV.SelectedDate;
+
+            Response.Redirect(GetRefUrl(Request.RawUrl));
         }
 
         protected void Calendar_RDV_DayRender(object sender, DayRenderEventArgs e)
@@ -479,10 +529,13 @@ namespace WineMan.Transactions
             if (!m_TableRows.ContainsKey(hourKey))
             {
                 string url = "~/Transactions/Rendezvous.aspx?FromAddTx=";
-                if (Request.QueryString["FromAddTx"] == "true")
+                if (m_FromAddTx)
                     url += "true";
                 else
                     url += "false";
+                if (m_TxID >= 0)
+                    url += "&txid=" + m_TxID.ToString();
+
                 url += "&customer=" + m_CustomerName + "&NewHourRow=" + hourKey.ToString();
                 Button_AddHour_S1.PostBackUrl = url;
             }

@@ -66,9 +66,6 @@ namespace WineMan.Transactions
                 // but before get back the result of the rendezvous
                 RestoreData();
                 UpdateUI();
-
-                if (m_TxID >= 0)
-                    ModifyRecord();
             }
             else if (m_TxID >= 0)
             {
@@ -440,9 +437,9 @@ namespace WineMan.Transactions
                 TransactionStep txBottlingStep = TransactionStep.GetRecordForTx(m_TxID, stepDef.id);
                 if (Utils.CompareDates(newBottlingDate, tx.date_bottling) > 0)
                 {
-                    Utils.MessageBox(this, "** Error **\\nTo complete this modification, the appointment date in the transaction need to be moved after: " + newBottlingDate.ToString("MMM-dd-yyyy") + "  before updating this transaction");
-                    EditRecord();
-                    return;
+                    Utils.MessageBox(this, "** Warning **\\nThe appointment date is now before the wine ready date.\\nThe appointment date in the transaction would need to be moved after: " + newBottlingDate.ToString("MMM-dd-yyyy") + "  before updating this transaction");
+                    //EditRecord();
+                    //return;
                 }
             }
 
@@ -683,6 +680,8 @@ namespace WineMan.Transactions
         {
             SaveData();
             string arguments = Label_FirstName.Text + " " + Label_LastName.Text;
+            if (m_TxID >= 0)
+                arguments += "&txid=" + m_TxID.ToString();
             Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + arguments);
         }
 
