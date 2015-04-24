@@ -862,7 +862,7 @@ namespace WineMan.Transactions
 
                     Step lastStep = Step.GetLastStep();
                     if (stepID != lastStep.id)
-                        Utils.MessageBox(this, "** Warning **\\nThe date of step " + Step.GetStepName(stepID) + " changed. This transaction doesn't follow the repipes anymore.");
+                        Utils.MessageBox(this, "** Warning **\\nThe date of step " + Step.GetStepName(stepID) + " changed. This transaction doesn't follow the recipes anymore.");
                 }
                 else
                 {

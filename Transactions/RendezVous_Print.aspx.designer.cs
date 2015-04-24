@@ -22,6 +22,15 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
+        /// Button_Back control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_Back;
+        
+        /// <summary>
         /// btnPrint control.
         /// </summary>
         /// <remarks>
@@ -31,13 +40,22 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Button btnPrint;
         
         /// <summary>
-        /// Button_Back control.
+        /// Label_Printer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button_Back;
+        protected global::System.Web.UI.WebControls.Label Label_Printer;
+        
+        /// <summary>
+        /// DropDownList_Printer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_Printer;
         
         /// <summary>
         /// Panel_Main control.
