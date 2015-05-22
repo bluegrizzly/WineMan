@@ -283,6 +283,15 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Button Button_SendEmail;
         
         /// <summary>
+        /// Button_Duplicate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button_Duplicate;
+        
+        /// <summary>
         /// Panel3 control.
         /// </summary>
         /// <remarks>

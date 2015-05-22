@@ -12,8 +12,8 @@ namespace WineMan
         const int c_CurrentVersion = 100;
         public int NbStations;
         public int version;
-        public int MinStationHour;
-        public int MaxStationHour;
+        public int MinStationHour; // OBSOLETE
+        public int MaxStationHour; // OBSOLETE
         public int hour_intervale;
         public bool auto_print;
         public string backup_path;
@@ -88,7 +88,8 @@ namespace WineMan
                         ", backup_path='" + backup_path.Replace(@"\", "/") + "'" +
                         ", auto_print=" + (auto_print ? "1" : "0") +
                         ", transaction_starting_id=" + transaction_starting_id.ToString() +
-                        " WHERE version="+version;
+                        ", hour_intervale=" + hour_intervale.ToString() +
+                        " WHERE version=" + version;
                     con.Open();
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))

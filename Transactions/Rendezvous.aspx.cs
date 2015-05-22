@@ -121,7 +121,11 @@ namespace WineMan.Transactions
             SetupAddButtonUrl();
 
             // Populate all data
-            for (int j = m_Settings.MinStationHour; j < m_Settings.MaxStationHour; ++j)
+
+            int minHour;
+            int maxHour;
+            OpenHours.GetDayOpenHour(Calendar_RDV.SelectedDate.DayOfWeek, out minHour, out maxHour);
+            for (int j = minHour; j < maxHour; ++j)
             {
                 int nbInTheHour = 60 / m_Settings.hour_intervale;
                 for (int k = 0; k < nbInTheHour; ++k)

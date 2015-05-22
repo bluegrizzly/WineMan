@@ -150,6 +150,7 @@
     <Content Include="Account\ChangePasswordSuccess.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Register.aspx" />
+    <Content Include="Admin\openhours.aspx" />
     <Content Include="Admin\holidays.aspx" />
     <Content Include="Admin\ProductCodesManager.aspx" />
     <Content Include="Admin\Settings.aspx" />
@@ -381,6 +382,13 @@
     <Compile Include="Account\Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\openhours.aspx.cs">
+      <DependentUpon>openhours.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\openhours.aspx.designer.cs">
+      <DependentUpon>openhours.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Admin\holidays.aspx.cs">
       <DependentUpon>holidays.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -448,6 +456,7 @@
     <Compile Include="Controllers\Customer.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\Holiday.cs" />
+    <Compile Include="Controllers\OpenHours.cs" />
     <Compile Include="Controllers\Product_Code.cs" />
     <Compile Include="Controllers\Settings.cs" />
     <Compile Include="Controllers\Step.cs" />

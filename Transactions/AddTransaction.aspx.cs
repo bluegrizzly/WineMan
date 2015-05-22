@@ -87,6 +87,8 @@ namespace WineMan.Transactions
             Button_Commit.Enabled = (CheckBox_1.Checked && CheckBox_2.Checked && CheckBox_3.Checked && m_TxID < 0);
             Button_Print.Enabled = (Label_TransactionID.Text != "-");
             Button_SendEmail.Enabled = Button_Print.Enabled;
+
+            Button_Duplicate.Visible = Button_Print.Enabled;
         }
         private void SaveData()
         {
@@ -937,6 +939,14 @@ namespace WineMan.Transactions
             {
                 this.Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('You clicked NO!')", true);
             }
+        }
+
+        protected void Button_Duplicate_Click(object sender, EventArgs e)
+        {
+            // Create a new transaction but with the same fields.
+            m_TxID = -1;
+            Label_TransactionID.Text = "-";
+            UpdateUI();
         }
     }
 }

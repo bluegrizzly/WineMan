@@ -59,13 +59,16 @@
                          </asp:MenuItem>
                         <asp:MenuItem Text="Bottling" >
                             <asp:MenuItem NavigateUrl="~/Transactions/RendezVous.aspx" Text="Bottling Stations" />
+                            <asp:MenuItem NavigateUrl="~/Work/WorkToCompleteTx.aspx?mode=close" Text="Transactions To complete" />
                          </asp:MenuItem>
                         <asp:MenuItem Text="Wine Work" >
                             <asp:MenuItem NavigateUrl="~/Work/WorkToComplete.aspx?mode=close" Text="Transactions Steps To complete" />
-                            <asp:MenuItem NavigateUrl="~/Work/WorkToCompleteTx.aspx?mode=close" Text="Transactions To complete" />
                          </asp:MenuItem>
                         <asp:MenuItem Text="Admin" >
-                            <asp:MenuItem NavigateUrl="~/Admin/holidays.aspx" Text="Holidays" />
+                            <asp:MenuItem Text="Schedule >>" >
+                                <asp:MenuItem NavigateUrl="~/Admin/holidays.aspx" Text="Holidays" />
+                                <asp:MenuItem NavigateUrl="~/Admin/openhours.aspx" Text="Open Hours" />
+                            </asp:MenuItem>
                             <asp:MenuItem Text="Managers >>" >
                                 <asp:MenuItem NavigateUrl="~/Admin/WineBrandManager.aspx" Text="Wine Brands" />
                                 <asp:MenuItem NavigateUrl="~/Admin/WineTypesManager.aspx" Text="Wine Types" />

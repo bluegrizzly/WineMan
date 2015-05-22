@@ -80,10 +80,6 @@ namespace WineMan
 
         public static bool IsHoliday(DateTime date)
         {
-            // First check if it is a sunday
-            if (date.DayOfWeek == System.DayOfWeek.Sunday)
-                return true;
-
             List<Holiday> allHolidays = GetAllRecords();
             foreach (Holiday holiday in allHolidays)
             {

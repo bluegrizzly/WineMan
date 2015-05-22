@@ -44,6 +44,8 @@ namespace WineMan.Admin
                 CheckBox_AutoPrint.Checked = m_Settings.auto_print;
 
                 TextBox_StartTXID.Text = m_Settings.transaction_starting_id.ToString();
+
+                TextBox_IntervalAppointments.Text = m_Settings.hour_intervale.ToString();
             }
         }
 
@@ -53,6 +55,12 @@ namespace WineMan.Admin
             m_Settings.default_printerreports = DropDownList_PrintersReports.SelectedValue;
             m_Settings.backup_path = TextBox_BackupPath.Text;
             m_Settings.auto_print = CheckBox_AutoPrint.Checked;
+
+            if (!Int32.TryParse(TextBox_IntervalAppointments.Text, out m_Settings.hour_intervale))
+            {
+                Utils.MessageBox(this, "** Error **\\nIntervale is not valid.");
+                m_Settings.transaction_starting_id = 60;
+            }
 
             if (!Int32.TryParse(TextBox_StartTXID.Text, out m_Settings.transaction_starting_id))
             {

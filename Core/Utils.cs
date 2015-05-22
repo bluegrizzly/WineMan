@@ -6,6 +6,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Text;
 using System.Management;
+using MySql.Data.MySqlClient;
 
 namespace WineMan
 {
@@ -119,6 +120,58 @@ namespace WineMan
                 }
             }
             return printers;
+        }
+
+        public static void InitialSetup()
+        {
+            try
+            {
+                // 1. TABLE openhours 
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string sqlQuery = @"CREATE TABLE IF NOT EXISTS `openhours` (
+                                        `id` INT NOT NULL AUTO_INCREMENT,
+                                        `day` VARCHAR(45) NULL,
+                                        `hour_start` INT NULL DEFAULT 10,
+                                        `hour_end` INT NULL DEFAULT 18,
+                                        PRIMARY KEY (`id`),
+                                        UNIQUE INDEX `id_UNIQUE` (`id` ASC))";
+
+                    con.Open();
+                    int result = -1;
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        result = cmd.ExecuteNonQuery();
+                    }
+
+                    sqlQuery = @"SELECT COUNT(*) FROM openhours";
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        result =  Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+
+                    if (result <= 0)
+                    {
+                        for (int i = 0; i < 7; i++)
+                        {
+                            DayOfWeek day = (System.DayOfWeek)i;
+
+                            sqlQuery = @"INSERT INTO `openhours` (`day`, `hour_start`, `hour_end`) VALUES ('" + day.ToString() + @"', '9', '18')";
+                            using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                            {
+                                result = cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
         }
     }
 }

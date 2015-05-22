@@ -31,6 +31,8 @@ namespace WineMan
             if (!Roles.IsUserInRole("admin", "Administrator"))
                 Roles.AddUserToRole("admin", "Administrator");
 
+            // make sure all db are created
+            Utils.InitialSetup();
         }
 
         void Application_End(object sender, EventArgs e)
