@@ -124,7 +124,7 @@
                 "&customer=" + document.getElementById('<%= TextBox_Customer.ClientID %>').value +
                 "&showtx=true",
             datatype: "json",
-            colNames: ['ID', 'Customer', 'Brand', 'Type', 'Category', 'Creation Date', 'Steps Status', 'Location', 'Done'],
+            colNames: ['TxID', 'Customer', 'Brand', 'Type', 'Category', 'Creation Date', 'Steps Status', 'Location', 'Done'],
             colModel: [
                         { name: 'id', index: 'id', width: 50, stype: 'text', sortable: true, sorttype: 'int' },
                         { name: 'client_id', index: 'client_id', width: 140, sortable: true },

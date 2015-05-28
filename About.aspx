@@ -18,11 +18,19 @@
 Version 1.1 ()
 - Transaction Page:
     - Added a Duplicate Button. That start a new transaction with all the same values that are on screen. You then need to press Create button to create the new transaction.
+    - New TextBox for step dates. The dates can be changed by selecting a date box. The commit is done after selecting the date.
+    - New CheckBox beside the date that allow you to complete or uncomplete the transaction step. The commit is done after checking/unchecking the checkbox.
 - Admin
     - New Open Hours page. This allows defining for every day of the week the open hours.
     - Settings page:
         - Added the Appointment hour intervale settings. This will be used by bottling stations screen and appointments
-- Moved transactions to complete menuitem under Bottling
+- Transaction to Complete page:
+    - Trying to complete a transaction with uncompleted steps will fail and give an error message.
+- Transaction Steps To Complete page:
+    - Added a button to edit transaction. that goes to the selection transaction steps' transaction.
+- Misc:
+    - Moved transactions to complete menuitem under Bottling
+    - Telephone numbers are now always formatted like: (000) 000-0000
 
 Version 1.04 (avril 2015)
 - Fixed the transaction print

@@ -12,6 +12,9 @@ namespace WineMan
 {
     public class Global : System.Web.HttpApplication
     {
+        public Global()
+        {
+        }
 
         void Application_Start(object sender, EventArgs e)
         {

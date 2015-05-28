@@ -220,8 +220,40 @@ namespace WineMan
             return txSteps;
         }
 
+        public bool ModifyRecord()
+        {
+            bool ret = false;
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    string values = AddIntParameter(transaction_id, true, "transaction_id") +
+                                    AddIntParameter(step_id, false, "step_id") +
+                                    AddDateParameter(date, false, "date") +
+                                    AddIntParameter(done, false, "done");
+                    con.Open();
+                    string sqlQuery = "UPDATE " + c_dbName + " SET " + values + " WHERE id=" + id.ToString();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        int result = cmd.ExecuteNonQuery();
+                        ret = true;
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+                return false;
+            }
+            return ret;
+        }
+
         public bool UpdateDate(DateTime newDate)
         {
+            date = newDate;
             bool ret = false;
             try
             {

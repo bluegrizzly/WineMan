@@ -47,9 +47,9 @@ namespace WineMan
                 postal_code = dr["postal_code"].ToString();
                 postal_code.ToUpper();
                 email = dr["email"].ToString(); ;
-                telephone = dr["telephone"].ToString();
-                telephone_bur = dr["telephone_bur"].ToString();
-                telephone_fax = dr["telephone_fax"].ToString();
+                telephone = Utils.FormatTelephone(dr["telephone"].ToString());
+                telephone_bur = Utils.FormatTelephone(dr["telephone_bur"].ToString());
+                telephone_fax = Utils.FormatTelephone(dr["telephone_fax"].ToString());
 
                 parsed = Int32.TryParse(dr["language"].ToString(), out language);
                 System.Diagnostics.Debug.Assert(parsed);

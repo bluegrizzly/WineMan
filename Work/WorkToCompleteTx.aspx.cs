@@ -11,6 +11,7 @@ namespace WineMan.Work
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            Utils.ProcessPendingMessages(this);
         }
 
         protected void Button_ClearStart_Click(object sender, EventArgs e)

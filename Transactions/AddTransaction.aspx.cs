@@ -14,6 +14,9 @@ namespace WineMan.Transactions
 {
     public partial class AddTransaction : System.Web.UI.Page
     {
+        private const string c_PrefixDateID = "Date";
+        private const string c_PrefixDoneID = "Done";
+
         private System.Drawing.Color m_DisabledColor;
         private System.Drawing.Color m_EnabledColor;
         private Wine_Brand m_Brand;
@@ -51,7 +54,6 @@ namespace WineMan.Transactions
                 Label_BottlingStation.Text = c_SelectString;
                 Label_FirstName.Text = c_SelectString;
                 Label_LastName.Text = c_SelectString;
-                CheckBox_EditDates.Enabled = false;
             }
 
             Label_TransactionID.Text = "-";
@@ -87,6 +89,7 @@ namespace WineMan.Transactions
             Button_Commit.Enabled = (CheckBox_1.Checked && CheckBox_2.Checked && CheckBox_3.Checked && m_TxID < 0);
             Button_Print.Enabled = (Label_TransactionID.Text != "-");
             Button_SendEmail.Enabled = Button_Print.Enabled;
+            Button_ResetDate.Visible = Button_Print.Enabled;
 
             Button_Duplicate.Visible = Button_Print.Enabled;
         }
@@ -209,8 +212,6 @@ namespace WineMan.Transactions
         public static string GetAutoCompleteDataDone(string name)
         {
             AddTransaction page = HttpContext.Current.CurrentHandler as AddTransaction;
-//            page.SelectCustomer(name);
-            
             return "";
         }
 
@@ -578,7 +579,7 @@ namespace WineMan.Transactions
                 Button_Commit.Enabled = false;
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
-                CheckBox_EditDates.Enabled = true;
+                Button_ResetDate.Visible = true;
             }
             else if (Label_TransactionID.Text != "-")
             {
@@ -588,14 +589,14 @@ namespace WineMan.Transactions
                 Button_Commit.Enabled = false;
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
-                CheckBox_EditDates.Enabled = true;
+                Button_ResetDate.Visible = true;
             }
             else
             {
                 Button_Commit.Enabled = true;
                 Button_Print.Enabled = false;
                 Button_SendEmail.Enabled = false;
-                CheckBox_EditDates.Enabled = false;
+                Button_ResetDate.Visible = false;
             }
         }
 
@@ -611,6 +612,8 @@ namespace WineMan.Transactions
                 
                 TableRow tRowTitle = new TableRow();
                 Table_Dates.Rows.Add(tRowTitle);
+                Table_Dates.CellSpacing = 0;
+                Table_Dates.CellPadding = 0;
                 TableRow tRowDates = new TableRow();
                 Table_Dates.Rows.Add(tRowDates);
 
@@ -625,6 +628,7 @@ namespace WineMan.Transactions
                     {
                         txSteps = TransactionStep.GetRecordsForTx(m_TxID);
 
+                        int nameIndex = 0;
                         foreach(TransactionStep step in txSteps)
                         {
                             //Title
@@ -633,14 +637,41 @@ namespace WineMan.Transactions
                             tCell.Text = step.GetStepName();
                             tCell.ForeColor = System.Drawing.Color.Black;
                             tCell.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
+                            tCell.RowSpan = 0;
                             tRowTitle.Cells.Add(tCell);
-
+                            
                             //Date
                             TableCell tCell2 = new TableCell();
                             tCell2.HorizontalAlign = HorizontalAlign.Center;
-                            tCell2.Text = step.date.ToString("MMM-dd-yyyy", m_Culture);
-                            tCell.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
+
+                                // Add a textBox
+                            TextBox textBoxCtrl = new TextBox();
+                            tCell2.Controls.Add(textBoxCtrl);
+                            textBoxCtrl.Text = step.date.ToString("MMM-dd-yyyy", m_Culture);
+                            textBoxCtrl.Width = 80;
+                            textBoxCtrl.CssClass = "TheDateTimePicker";
+                            textBoxCtrl.TextChanged += new EventHandler(this.OnDateChangeByUser);
+                            textBoxCtrl.ID = c_PrefixDateID + step.step_id.ToString();
+                            textBoxCtrl.AutoPostBack = true;
+                            textBoxCtrl.BorderWidth = 1;
+                            if (step.done > 0)
+                                textBoxCtrl.BackColor = System.Drawing.Color.Gray;
+                            textBoxCtrl.ToolTip = "Date of the step. Click in it to get the calendar to select a date. The record is modified as soon as you change the date.\nBe careful, changing the yeast (only) will change dates of all steps if not completed to fit the recipes.";
+
+                                // Add a CheckBox 
+                            CheckBox cb = new CheckBox();
+                            tCell2.Controls.Add(cb);
+                            cb.Checked = step.done > 0;
+                            cb.AutoPostBack = true;
+                            cb.ID = c_PrefixDoneID + step.step_id.ToString();
+                            cb.CheckedChanged += new EventHandler(this.OnTxStepChangedByUser);
+                            cb.ToolTip = "When checked the step is completed. You can change the status by clicking the checkbox. The record is modified as soon you click.";
+
+                            tCell2.RowSpan = 0;
+                            tCell2.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
                             tRowDates.Cells.Add(tCell2);
+
+                            nameIndex++;
                         }
 
                         // Check if the recipes is broken
@@ -744,55 +775,48 @@ namespace WineMan.Transactions
 ///////////////////////////////////
 // Change dates
 ///////////////////////////////////
-        protected void DropDownList_Steps_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void OnDateChangeByUser(Object sender, EventArgs e)
         {
-            if (m_TxID == -1)
-                return;
+            System.Diagnostics.Debug.Assert(m_TxID >= 0);
+            TextBox textBox = sender as TextBox;
 
-            int stepID=0;
-            Int32.TryParse(DropDownList_Steps.SelectedValue, out stepID);
-            TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, stepID);
-
-            TextBox_Date.Text = txStep.date.ToString("MMM-dd-yyyy");
-
-            SetChangeDateButtonTooltip(stepID);
-        }
-
-        protected void SetChangeDateButtonTooltip(int stepID)
-        {
-            if (stepID == Step.c_YeastID)
-                Button_ChangeDate.ToolTip = "Change this date and push dates of all other transaction steps to match the recipes";
-            else
-                Button_ChangeDate.ToolTip = "Change only the date for this transaction step";
-        }
-        protected void CheckBox_EditDates_CheckedChanged(object sender, EventArgs e)
-        {
-            DropDownList_Steps.Visible = CheckBox_EditDates.Checked;
-            TextBox_Date.Visible = CheckBox_EditDates.Checked;
-            Button_ChangeDate.Visible = CheckBox_EditDates.Checked;
-            Button_ResetDate.Visible = CheckBox_EditDates.Checked;
-            Panel_EditDates.Visible = CheckBox_EditDates.Checked;
-            if (CheckBox_EditDates.Checked && TextBox_Date.Text == "")
-            {
-                TransactionStep txStep = TransactionStep.GetRecordForTx(m_TxID, 1); //set yeast by default
-                TextBox_Date.Text = txStep.date.ToString("MMM-dd-yyyy");
-                SetChangeDateButtonTooltip(txStep.step_id);
-            }
-        }
-
-        protected void Button_ChangeDate_Click(object sender, EventArgs e)
-        {
             DateTime date;
-            if (!DateTime.TryParse(TextBox_Date.Text, out date))
+            if (!DateTime.TryParse(textBox.Text, out date))
             {
                 Utils.MessageBox(this, "** Error **\\nCannot change date.\\nInvalid input date");
                 return;
             }
             int stepID = 0;
-            Int32.TryParse(DropDownList_Steps.SelectedValue, out stepID);
+            string id = textBox.ID.Replace(c_PrefixDateID, "");
+            bool parsed = Int32.TryParse(id, out stepID);
+            System.Diagnostics.Debug.Assert(parsed);
 
-            // Update all dates when changing the yeast date
+            // Update the date directly
             ChangeTxStepDates(date, stepID);
+        }
+
+        private void OnTxStepChangedByUser(Object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.Assert(m_TxID >= 0);
+            CheckBox cb = sender as CheckBox;
+
+            int stepID = 0;
+            string id = cb.ID.Replace(c_PrefixDoneID, "");
+            bool parsed = Int32.TryParse(id, out stepID);
+            System.Diagnostics.Debug.Assert(parsed);
+
+            Transaction tx = Transaction.GetRecord(m_TxID);
+            if (tx != null)
+            {
+                TransactionStep step = TransactionStep.GetRecordForTx(m_TxID, stepID);
+                if (step != null)
+                {
+                    step.done = cb.Checked ? 1 : 0;
+                    step.ModifyRecord();
+                    ShowDates();
+                }
+            }
         }
 
         protected void Button_ResetDate_Click(object sender, EventArgs e)

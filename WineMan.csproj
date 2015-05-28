@@ -325,6 +325,7 @@
     <Content Include="Transactions\RendezVous_Print.aspx" />
     <Content Include="Transactions\TransactionPrint.aspx" />
     <Content Include="Transactions\Transactions.aspx" />
+    <Content Include="Transactions\BottlingSchedule_Print.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -601,6 +602,13 @@
     </Compile>
     <Compile Include="Controllers\Wine_Brand.cs" />
     <Compile Include="Core\Utils.cs" />
+    <Compile Include="Transactions\BottlingSchedule_Print.aspx.cs">
+      <DependentUpon>BottlingSchedule_Print.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Transactions\BottlingSchedule_Print.aspx.designer.cs">
+      <DependentUpon>BottlingSchedule_Print.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\RendezVousGrid.cs" />
     <Compile Include="Work\DoBackup.aspx.cs">
       <DependentUpon>DoBackup.aspx</DependentUpon>
@@ -671,6 +679,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\Report_Transaction.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Report_BottlingSchedule.rdlc">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\Report_WorkToComplete.rdlc">

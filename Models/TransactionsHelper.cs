@@ -235,6 +235,8 @@ namespace WineMan
                 else 
                 {
                     TransactionStep txStep = TransactionStep.GetRecordForTx(tx.id, category.step);
+                    if (txStep.done > 0)
+                        continue;
 
                     DateTime newCurrentDate = date;
 
@@ -462,7 +464,7 @@ namespace WineMan
             if (txNotDone.Count > 0)
             {
                 // Cannot show page 
-                //Utils.MessageBox(HttpContext.Current.Handler as System.Web.UI.Page, "** Error **\\nCannot complete these transactions because they still have steps not completed.");
+                Utils.MessageBox(null, "** Error **\\nCannot complete these transactions because they still have steps not completed.");
             }
             if (first)
                 return false; // nothing processed

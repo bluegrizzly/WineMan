@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Text;
 using System.Management;
 using MySql.Data.MySqlClient;
+using System.Text.RegularExpressions;
 
 namespace WineMan
 {
@@ -19,11 +20,27 @@ namespace WineMan
 
     public static class Utils
     {
-        public static void MessageBox(Page Page, String Message) 
+        public static string s_pendingMessage="";
+        public static void MessageBox(Page page, String message) 
         {
-            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {alert('" + Message +"');return false;}</script>", false );
+            if (page == null)
+            {
+                Utils.s_pendingMessage = message;
+                return;
+            }
+
+            ScriptManager.RegisterStartupScript(page, page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {alert('" + message +"');return false;}</script>", false );
             // see http://www.tizag.com/javascriptT/javascriptconfirm.php   for a confirm button
         }
+        public static void ProcessPendingMessages(Page page)
+        {
+            if (s_pendingMessage != "")
+            {
+                MessageBox(page, s_pendingMessage);
+                s_pendingMessage = "";
+            }
+        }
+
         public static bool MessageBoxQuestion(Page Page, String Message)
         {
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Message", "<script type='text/javascript'>window.onload = function() {var answer = confirm('" + Message + "');return answer;}</script>", false);
@@ -120,6 +137,22 @@ namespace WineMan
                 }
             }
             return printers;
+        }
+
+        public static string FormatTelephone(string phoneNum)
+        {
+            string phoneFormat = "(###) ###-####";
+            // First, remove everything except of numbers
+            Regex regexObj = new Regex(@"[^\d]");
+            phoneNum = regexObj.Replace(phoneNum, "");
+
+            // Second, format numbers to phone string 
+            if (phoneNum.Length > 0)
+            {
+                phoneNum = Convert.ToInt64(phoneNum).ToString(phoneFormat);
+            }
+
+            return phoneNum;
         }
 
         public static void InitialSetup()

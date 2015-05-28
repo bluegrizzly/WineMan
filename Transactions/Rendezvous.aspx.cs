@@ -548,7 +548,9 @@ namespace WineMan.Transactions
         protected void Button_Print_Click(object sender, EventArgs e)
         {
             string date = Calendar_RDV.SelectedDate.ToString("yyyy-MM-dd", m_Culture);
-            Response.Redirect("~/Transactions/RendezVous_Print.aspx?date=" + date);
+            //Response.Redirect("~/Transactions/RendezVous_Print.aspx?date=" + date);
+            Response.Redirect("~/Transactions/BottlingSchedule_Print.aspx?date=" + date);
+
         }
     }
 }
