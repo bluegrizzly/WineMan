@@ -58,7 +58,7 @@
                             <asp:MenuItem NavigateUrl="~/Transactions/Transactions.aspx" Text="View all" />
                          </asp:MenuItem>
                         <asp:MenuItem Text="Bottling" >
-                            <asp:MenuItem NavigateUrl="~/Transactions/RendezVous.aspx" Text="Bottling Stations" />
+                            <asp:MenuItem NavigateUrl="~/Transactions/RendezVous.aspx" Text="Bottling Appointments" />
                             <asp:MenuItem NavigateUrl="~/Work/WorkToCompleteTx.aspx?mode=close" Text="Transactions To complete" />
                          </asp:MenuItem>
                         <asp:MenuItem Text="Wine Work" >

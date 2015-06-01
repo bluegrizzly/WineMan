@@ -76,6 +76,12 @@ namespace WineMan.Work
 
             string txID = context.Request.QueryString["txid"];
             string customer = context.Request.QueryString["customer"];
+            string dateKind = context.Request.QueryString["datekind"];
+            Transaction.DateKind edateKind=Transaction.DateKind.Unknown;
+            if (dateKind == "Creation")
+                edateKind = Transaction.DateKind.Creation;
+            else if (dateKind == "Bottling")
+                edateKind = Transaction.DateKind.Bottling;
 
             // Check for specific transaction
             List<Transaction> transactions = new List<Transaction>();
@@ -92,7 +98,7 @@ namespace WineMan.Work
             }
             
             // Get all tx
-            transactions = Transaction.GetRecords(date, dateEnd, showFilter, showReadyOnly == "true", customer);
+            transactions = Transaction.GetRecords(date, dateEnd, showFilter, showReadyOnly == "true", customer, edateKind);
 
             // Get the JSON
             m_TransactionHelper.GetTransactionToCompleteJSONRecords(context, transactions);

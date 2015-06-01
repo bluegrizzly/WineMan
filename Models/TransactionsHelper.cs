@@ -330,6 +330,7 @@ namespace WineMan
                 retString += @"""" + GetTypeName(tx.wine_type_id) + @""",";
                 retString += @"""" + GetCategoryName(tx.wine_category_id) + @""",";
                 retString += @"""" + tx.date_creation.ToString() + @""",";
+                retString += @"""" + tx.date_bottling.ToString() + @""",";
                 retString += @"""" + stepsDone + @""",";
                 retString += @"""" + tx.location + @""",";
                 retString += @"""" + tx.done.ToString() + @"""";

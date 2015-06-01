@@ -34,6 +34,13 @@ namespace WineMan
             Last4Weeks
         }
 
+        public enum DateKind
+        {
+            Unknown,
+            Creation,
+            Bottling
+        }
+
         private void FillRecord(MySqlDataReader dr)
         {
             if (dr.HasRows)
@@ -280,7 +287,7 @@ namespace WineMan
         }
 
 
-        public static List<Transaction> GetRecords(DateTime dateStart, DateTime dateEnd, EShow showFilter = EShow.Show_NotDone, bool showReadyOnly=false, string customer=null)
+        public static List<Transaction> GetRecords(DateTime dateStart, DateTime dateEnd, EShow showFilter = EShow.Show_NotDone, bool showReadyOnly = false, string customer = null, Transaction.DateKind dateKind = Transaction.DateKind.Unknown)
         {
             List<Transaction> transactions = new List<Transaction>();
 
@@ -293,7 +300,12 @@ namespace WineMan
 
                     string dateStr = dateStart.Year.ToString() + "-" + dateStart.Month.ToString() + "-" + dateStart.Day.ToString() + " %";
                     string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
-                    sqlQuery += " WHERE (date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+
+                    if (dateKind == DateKind.Bottling)
+                        sqlQuery += " WHERE (date_bottling BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+                    else //if (dateKind == DateKind.Creation)
+                        sqlQuery += " WHERE (date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+
                     if (showFilter == EShow.Show_Done)
                         sqlQuery += " AND done=1";
                     else if (showFilter == EShow.Show_NotDone)

@@ -58,9 +58,12 @@ namespace WineMan
 
         public static string GetDoublonValidationSqlQuery(System.Collections.Specialized.NameValueCollection forms)
         {
-            string sqlCmd = "SELECT * FROM " + c_dbName+ " WHERE first_name='" + forms.Get("first_name").ToString() + "'" +
+            string sqlCmd = "SELECT * FROM " + c_dbName + " WHERE (first_name='" + forms.Get("first_name").ToString() + "'" +
                 " AND last_name='" + forms.Get("last_name").ToString() + "'" +
-                " AND postal_code='" + forms.Get("postal_code").ToString() + "'";
+                " AND postal_code='" + forms.Get("postal_code").ToString() + "')";
+            
+            if (forms.Get("email").ToString().Length > 0)
+                sqlCmd += " OR email='" + forms.Get("email").ToString() + "'";
             return sqlCmd;
         }
 

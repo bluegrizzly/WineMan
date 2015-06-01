@@ -14,10 +14,6 @@ namespace WineMan.Transactions
     public partial class BottlingSchedule_Print : System.Web.UI.Page
     {
         private DateTime m_DateStart = DateTime.Now;
-        private DateTime m_DateEnd = DateTime.Now;
-        private int m_txID = -1;
-        private int m_StepId = -1;
-        private string m_Customer="";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -27,17 +23,6 @@ namespace WineMan.Transactions
             {
                 m_DateStart = DateTime.MinValue;
             }
-            dateStr = Request.QueryString["dateend"];
-            if (!DateTime.TryParse(dateStr, out m_DateEnd))
-            {
-                m_DateEnd= DateTime.MaxValue;
-            }
-            if (!Int32.TryParse(Request.QueryString["txid"], out m_txID))
-                m_txID = -1;
-            if (!Int32.TryParse(Request.QueryString["step"], out m_StepId))
-                m_StepId = -1;
-            m_Customer = Request.QueryString["customer"];
-
             if (!IsPostBack)
             {
                 FillData();
@@ -66,8 +51,7 @@ namespace WineMan.Transactions
 
         protected void Button_Print_Click(object sender, EventArgs e)
         {
-            ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, false);
-            //reportPrint.PrintWithDialog();
+            ReportPrintDocument reportPrint = new ReportPrintDocument(ReportViewer1.LocalReport, true);
             if (DropDownList_Printer.Items.Count == 0)
             {
                 Utils.MessageBox(this, "** Error **\nNo Printers");
@@ -84,94 +68,57 @@ namespace WineMan.Transactions
             ReportViewer1.Reset();
 
             // Data Sources
-            ReportDataSource rptSrcStepNames = new ReportDataSource("DataSetStepNames", GetStepNamesData());
-            ReportViewer1.LocalReport.DataSources.Add(rptSrcStepNames);
-            ReportDataSource rptSrcTx = new ReportDataSource("DataSetTx", GetTransactionData());
-            ReportViewer1.LocalReport.DataSources.Add(rptSrcTx);
-            ReportDataSource rptSrcCustomer = new ReportDataSource("DataSetCustomer", GetCustomerData());
-            ReportViewer1.LocalReport.DataSources.Add(rptSrcCustomer);
-            ReportDataSource rptSrcstepA = new ReportDataSource("DataSetA", GetAggregation());
-            ReportViewer1.LocalReport.DataSources.Add(rptSrcstepA);
+            ReportDataSource rptSrcAppointments = new ReportDataSource("DataSetTx", GetAppointments(0));
+            ReportViewer1.LocalReport.DataSources.Add(rptSrcAppointments);
+            ReportDataSource rptSrcAppointments2 = new ReportDataSource("DataSetTx_2", GetAppointments(1));
+            ReportViewer1.LocalReport.DataSources.Add(rptSrcAppointments2);
+            ReportDataSource rptSrcAppointments3 = new ReportDataSource("DataSetTx_3", GetAppointments(2));
+            ReportViewer1.LocalReport.DataSources.Add(rptSrcAppointments3);
+
+            ReportDataSource rptSrcCustomers = new ReportDataSource("DataSetCustomer", GetCustomers());
+            ReportViewer1.LocalReport.DataSources.Add(rptSrcCustomers);
             
             // Report path
             ReportViewer1.LocalReport.ReportPath = "Bin/Reports/Report_BottlingSchedule.rdlc";
 
             // Parameters
-            ReportParameter param1 = new ReportParameter("ReportParameter_Date", m_DateEnd.ToString("dd MMM yyyy"));
+            ReportParameter param1 = new ReportParameter("ReportParameter_Date", m_DateStart.DayOfWeek.ToString() + " " + m_DateStart.ToString("dd MMM yyyy"));
             ReportViewer1.LocalReport.SetParameters(param1);
 
             ReportViewer1.LocalReport.Refresh();
         }
 
-        private DataTable GetAggregation()
+        private DataTable GetAppointments(int stationNo)
         {
             DataTable dt = new DataTable();
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                //DateTime oldDate = new DateTime(1, 1, 1);
-                //string dateStr = oldDate.Year.ToString() + "-" + oldDate.Month.ToString() + "-" + oldDate.Day.ToString() + " %";
-                //string dateStrEnd = m_DateStart.Year.ToString() + "-" + m_DateStart.Month.ToString() + "-" + m_DateStart.Day.ToString() + " %";
+                string sqlQuery = "SELECT * FROM transactions WHERE date_bottling LIKE '" + m_DateStart.ToString("yyyy-MM-dd") + "%'";
+                sqlQuery += " AND  bottling_station='" + stationNo.ToString() + "'";
 
-                string dateStr = m_DateStart.Year.ToString() + "-" + m_DateStart.Month.ToString() + "-" + m_DateStart.Day.ToString() + " %";
-                string dateStrEnd = m_DateEnd.Year.ToString() + "-" + m_DateEnd.Month.ToString() + "-" + m_DateEnd.Day.ToString() + " %";
 
-                string sqlQuery1 = "SELECT  transaction_step.id, transaction_step.transaction_id, transaction_step.step_id, transaction_step.`date`, transaction_step.done, transactions.id AS Expr1, " +
-                                            "transactions.wine_brand_id, wine_brands.name, customers.first_name, customers.last_name, wine_types.name AS Expr2, customers.telephone" +
-                                    " FROM transaction_step INNER JOIN" +
-                                         " transactions ON transaction_step.transaction_id = transactions.id INNER JOIN" +
-                                         " wine_brands ON transactions.wine_brand_id = wine_brands.id INNER JOIN" +
-                                         " customers ON transactions.client_id = customers.id INNER JOIN" +
-                                         " wine_types ON transactions.wine_type_id = wine_types.id" +
-                                    " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "') AND transaction_step.done=0";
+                string sqlQuery1 = "SELECT transactions.*, customers.first_name AS CUSTO_FirstName, customers.last_name AS CUSTO_LastName, customers.telephone AS CUSTO_Tel, wine_categories.symbol AS CATEGORY_Symbol FROM transactions INNER JOIN" +
+                                    " customers ON transactions.client_id = customers.id INNER JOIN" +
+                                    " wine_categories ON transactions.wine_category_id = wine_categories.id" +
+                                    " WHERE date_bottling LIKE '" + m_DateStart.ToString("yyyy-MM-dd") + "%'" +
+                                    " AND  bottling_station='" + stationNo.ToString() + "'";
 
-                if (m_txID >= 0)
-                    sqlQuery1 += " AND transaction_step.transaction_id=" + m_txID.ToString();
-                if (m_StepId >= 0)
-                    sqlQuery1 += " AND transaction_step.step_id=" + m_StepId.ToString();
-
-                if (m_Customer != null && m_Customer.Length > 0)
-                {
-                    sqlQuery1 += " AND (customers.last_name LIKE '%" + m_Customer + "%' OR customers.first_name LIKE '%" + m_Customer + "%')";
-                }
-
-                sqlQuery1 += " ORDER BY step_id";
 
                 MySqlDataAdapter adp = new MySqlDataAdapter(sqlQuery1, con);
                 adp.Fill(dt);
             }
             return dt;
+        }
 
-        }
-        private DataTable GetStepNamesData()
+        private DataTable GetCustomers()
         {
             DataTable dt = new DataTable();
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
-                MySqlDataAdapter adp = new MySqlDataAdapter("SELECT * FROM steps", con);
-                adp.Fill(dt);
-            }
-            return dt;
-        }
-        private DataTable GetTransactionData()
-        {
-            DataTable dt = new DataTable();
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-            using (MySqlConnection con = new MySqlConnection(connectionString))
-            {
-                MySqlDataAdapter adp = new MySqlDataAdapter("SELECT * FROM transactions", con);
-                adp.Fill(dt);
-            }
-            return dt;
-        }
-        private DataTable GetCustomerData()
-        {
-            DataTable dt = new DataTable();
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-            using (MySqlConnection con = new MySqlConnection(connectionString))
-            {
-                MySqlDataAdapter adp = new MySqlDataAdapter("SELECT * FROM customers", con);
+                string sqlQuery = "SELECT * FROM customers";
+                MySqlDataAdapter adp = new MySqlDataAdapter(sqlQuery, con);
                 adp.Fill(dt);
             }
             return dt;

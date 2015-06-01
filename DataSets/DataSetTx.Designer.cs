@@ -303,6 +303,14 @@ namespace WineMan.DataSets {
             
             private global::System.Data.DataColumn columnproduct_code;
             
+            private global::System.Data.DataColumn columnCUSTO_FirstName;
+            
+            private global::System.Data.DataColumn columnCUSTO_LastName;
+            
+            private global::System.Data.DataColumn columnCUSTO_Tel;
+            
+            private global::System.Data.DataColumn columnCATEGORY_Symbol;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public transactionsDataTable() {
@@ -434,6 +442,38 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CUSTO_FirstNameColumn {
+                get {
+                    return this.columnCUSTO_FirstName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CUSTO_LastNameColumn {
+                get {
+                    return this.columnCUSTO_LastName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CUSTO_TelColumn {
+                get {
+                    return this.columnCUSTO_Tel;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CATEGORY_SymbolColumn {
+                get {
+                    return this.columnCATEGORY_Symbol;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -469,7 +509,23 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public transactionsRow AddtransactionsRow(uint id, uint client_id, uint wine_brand_id, uint wine_type_id, uint wine_category_id, System.DateTime date_creation, System.DateTime date_bottling, int bottling_station, ulong done, string comments, string location, int product_code) {
+            public transactionsRow AddtransactionsRow(
+                        uint id, 
+                        uint client_id, 
+                        uint wine_brand_id, 
+                        uint wine_type_id, 
+                        uint wine_category_id, 
+                        System.DateTime date_creation, 
+                        System.DateTime date_bottling, 
+                        int bottling_station, 
+                        ulong done, 
+                        string comments, 
+                        string location, 
+                        int product_code, 
+                        string CUSTO_FirstName, 
+                        string CUSTO_LastName, 
+                        string CUSTO_Tel, 
+                        string CATEGORY_Symbol) {
                 transactionsRow rowtransactionsRow = ((transactionsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -483,7 +539,11 @@ namespace WineMan.DataSets {
                         done,
                         comments,
                         location,
-                        product_code};
+                        product_code,
+                        CUSTO_FirstName,
+                        CUSTO_LastName,
+                        CUSTO_Tel,
+                        CATEGORY_Symbol};
                 rowtransactionsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowtransactionsRow);
                 return rowtransactionsRow;
@@ -525,6 +585,10 @@ namespace WineMan.DataSets {
                 this.columncomments = base.Columns["comments"];
                 this.columnlocation = base.Columns["location"];
                 this.columnproduct_code = base.Columns["product_code"];
+                this.columnCUSTO_FirstName = base.Columns["CUSTO_FirstName"];
+                this.columnCUSTO_LastName = base.Columns["CUSTO_LastName"];
+                this.columnCUSTO_Tel = base.Columns["CUSTO_Tel"];
+                this.columnCATEGORY_Symbol = base.Columns["CATEGORY_Symbol"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -554,6 +618,14 @@ namespace WineMan.DataSets {
                 base.Columns.Add(this.columnlocation);
                 this.columnproduct_code = new global::System.Data.DataColumn("product_code", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnproduct_code);
+                this.columnCUSTO_FirstName = new global::System.Data.DataColumn("CUSTO_FirstName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCUSTO_FirstName);
+                this.columnCUSTO_LastName = new global::System.Data.DataColumn("CUSTO_LastName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCUSTO_LastName);
+                this.columnCUSTO_Tel = new global::System.Data.DataColumn("CUSTO_Tel", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCUSTO_Tel);
+                this.columnCATEGORY_Symbol = new global::System.Data.DataColumn("CATEGORY_Symbol", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCATEGORY_Symbol);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnid}, true));
                 this.columnid.AllowDBNull = false;
@@ -889,6 +961,70 @@ namespace WineMan.DataSets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CUSTO_FirstName {
+                get {
+                    try {
+                        return ((string)(this[this.tabletransactions.CUSTO_FirstNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CUSTO_FirstName\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabletransactions.CUSTO_FirstNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CUSTO_LastName {
+                get {
+                    try {
+                        return ((string)(this[this.tabletransactions.CUSTO_LastNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CUSTO_LastName\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabletransactions.CUSTO_LastNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CUSTO_Tel {
+                get {
+                    try {
+                        return ((string)(this[this.tabletransactions.CUSTO_TelColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CUSTO_Tel\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabletransactions.CUSTO_TelColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CATEGORY_Symbol {
+                get {
+                    try {
+                        return ((string)(this[this.tabletransactions.CATEGORY_SymbolColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CATEGORY_Symbol\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabletransactions.CATEGORY_SymbolColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool Isclient_idNull() {
                 return this.IsNull(this.tabletransactions.client_idColumn);
             }
@@ -1017,6 +1153,54 @@ namespace WineMan.DataSets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void Setproduct_codeNull() {
                 this[this.tabletransactions.product_codeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCUSTO_FirstNameNull() {
+                return this.IsNull(this.tabletransactions.CUSTO_FirstNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCUSTO_FirstNameNull() {
+                this[this.tabletransactions.CUSTO_FirstNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCUSTO_LastNameNull() {
+                return this.IsNull(this.tabletransactions.CUSTO_LastNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCUSTO_LastNameNull() {
+                this[this.tabletransactions.CUSTO_LastNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCUSTO_TelNull() {
+                return this.IsNull(this.tabletransactions.CUSTO_TelColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCUSTO_TelNull() {
+                this[this.tabletransactions.CUSTO_TelColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCATEGORY_SymbolNull() {
+                return this.IsNull(this.tabletransactions.CATEGORY_SymbolColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCATEGORY_SymbolNull() {
+                this[this.tabletransactions.CATEGORY_SymbolColumn] = global::System.Convert.DBNull;
             }
         }
         

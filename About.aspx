@@ -26,8 +26,13 @@ Version 1.1 ()
         - Added the Appointment hour intervale settings. This will be used by bottling stations screen and appointments
 - Transaction to Complete page:
     - Trying to complete a transaction with uncompleted steps will fail and give an error message.
+    - Added a button to select if the date we are filtering is teh creation or the bottling.
 - Transaction Steps To Complete page:
     - Added a button to edit transaction. that goes to the selection transaction steps' transaction.
+- Customers
+    - Now check email in the doublon validation before adding an entry
+- Bottling Appointments
+    - New Print page with the 3 stations on the same page in 3 columns.
 - Misc:
     - Moved transactions to complete menuitem under Bottling
     - Telephone numbers are now always formatted like: (000) 000-0000

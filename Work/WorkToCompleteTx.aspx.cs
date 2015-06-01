@@ -12,6 +12,10 @@ namespace WineMan.Work
         protected void Page_Load(object sender, EventArgs e)
         {
             Utils.ProcessPendingMessages(this);
+            if (!IsPostBack)
+            {
+                RadioButtonList_Date.SelectedIndex = 1;
+            }
         }
 
         protected void Button_ClearStart_Click(object sender, EventArgs e)

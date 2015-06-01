@@ -141,7 +141,7 @@ namespace WineMan
 
                 if (processDoublon && DBAccess.IsRecordExistWithSameName(context, dbName, forms, explicitSetID))
                 {
-                    strOut = "Error: An entry with same name exists";
+                    strOut = "Error: This entry already exists";
                     context.Response.Write(strOut);
                     return;
                 }
