@@ -15,7 +15,7 @@
             <br />
             <br />
             Versions: 1.1</strong><asp:TextBox ID="TextBox_Versions" runat="server" Font-Size="Small" ForeColor="#333333" Height="282px" ReadOnly="True" TextMode="MultiLine" Width="100%" BackColor="#F2F2F2">
-Version 1.1 ()
+Version 1.1 (June 3 2015)
 - Transaction Page:
     - Added a Duplicate Button. That start a new transaction with all the same values that are on screen. You then need to press Create button to create the new transaction.
     - New TextBox for step dates. The dates can be changed by selecting a date box. The commit is done after selecting the date.
@@ -27,6 +27,7 @@ Version 1.1 ()
 - Transaction to Complete page:
     - Trying to complete a transaction with uncompleted steps will fail and give an error message.
     - Added a button to select if the date we are filtering is teh creation or the bottling.
+    - By default the "Date End" field is set to the current date and for bottling dates. (before it was showing all in the future) 
 - Transaction Steps To Complete page:
     - Added a button to edit transaction. that goes to the selection transaction steps' transaction.
 - Customers
@@ -34,7 +35,7 @@ Version 1.1 ()
 - Bottling Appointments
     - New Print page with the 3 stations on the same page in 3 columns.
 - Misc:
-    - Moved transactions to complete menuitem under Bottling
+    - Moved "transactions to complete" menuitem under Bottling
     - Telephone numbers are now always formatted like: (000) 000-0000
 
 Version 1.04 (avril 2015)

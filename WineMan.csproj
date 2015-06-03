@@ -322,7 +322,6 @@
     <Content Include="Transactions\AddTransaction_Print.aspx" />
     <Content Include="Transactions\LeftMenu.aspx" />
     <Content Include="Transactions\Rendezvous.aspx" />
-    <Content Include="Transactions\RendezVous_Print.aspx" />
     <Content Include="Transactions\TransactionPrint.aspx" />
     <Content Include="Transactions\Transactions.aspx" />
     <Content Include="Transactions\BottlingSchedule_Print.aspx" />
@@ -575,13 +574,6 @@
     </Compile>
     <Compile Include="Transactions\Rendezvous.aspx.designer.cs">
       <DependentUpon>Rendezvous.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Transactions\RendezVous_Print.aspx.cs">
-      <DependentUpon>RendezVous_Print.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Transactions\RendezVous_Print.aspx.designer.cs">
-      <DependentUpon>RendezVous_Print.aspx</DependentUpon>
     </Compile>
     <Compile Include="Transactions\TransactionHandler.ashx.cs">
       <DependentUpon>TransactionHandler.ashx</DependentUpon>

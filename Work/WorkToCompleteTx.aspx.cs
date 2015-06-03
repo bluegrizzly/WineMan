@@ -15,6 +15,9 @@ namespace WineMan.Work
             if (!IsPostBack)
             {
                 RadioButtonList_Date.SelectedIndex = 1;
+
+                // select today for the end date
+                txtDateEnd.Text = DateTime.Now.ToString("MMM-dd-yyyy");
             }
         }
 

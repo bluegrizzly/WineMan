@@ -533,7 +533,7 @@ namespace WineMan.Transactions
             {
                 tx.date_bottling = Calendar_RDV.SelectedDate;
                 tx.date_bottling = tx.date_bottling.AddHours(DateHelper.GetRendezVousHour(Label_BottlingHour.Text));
-                tx.date_bottling = tx.date_bottling.AddHours(DateHelper.GetRendezVousMin(Label_BottlingHour.Text));
+                tx.date_bottling = tx.date_bottling.AddMinutes(DateHelper.GetRendezVousMin(Label_BottlingHour.Text));
 
                 parsed = Int32.TryParse(Label_BottlingStation.Text, out numValue);
                 System.Diagnostics.Debug.Assert(parsed);
