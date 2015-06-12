@@ -161,7 +161,9 @@ namespace WineMan.Core
                         if (colName == "active")
                             value = valueRaw;
                         else
-                            value = "'" + valueRaw + "'";
+                        {
+                            value = "'" + valueRaw.Replace("'", "\\'") + "'";
+                        }
                     }
                     catch 
                     {
@@ -175,6 +177,7 @@ namespace WineMan.Core
                     }
                     firstRow = false;
                     sqlCmd += colName;
+
                     values += value;
                 }
                 sqlCmd += ") VALUES " + values + ")";
@@ -237,10 +240,13 @@ namespace WineMan.Core
                     try
                     {
                         // COLNAME=VALUE,
+                        string valueRaw = forms.Get(colName).ToString();
+                        valueRaw = valueRaw.Replace("'", "\\'");
+                        
                         if (colName == "active")
-                            sqlCmd += colName + "=" + forms.Get(colName).ToString();
+                            sqlCmd += colName + "=" + valueRaw;
                         else
-                            sqlCmd += colName + "='" + forms.Get(colName).ToString() + "'";
+                            sqlCmd += colName + "='" + valueRaw + "'";
                     }
                     catch
                     {
