@@ -426,7 +426,18 @@ namespace WineMan
             return res;
         }
 
-        public bool SetTransactionToDone(List<string> ids, bool undo=false)
+        static public bool IsAllStepsDoneForTx(int txid)
+        {
+            Transaction tx = Transaction.GetRecord(txid);
+            if (tx == null)
+                return false;
+
+            int nbStepDone = 0;
+            int nbStepTotal = 0;
+            return tx.AreAllStepDone(out nbStepDone, out nbStepTotal);
+        }
+
+        static public bool SetTransactionToDone(List<string> ids, bool undo = false)
         {
             string sqlQuery = "UPDATE " + c_dbTransactionName + " SET done=";
             bool res = false;

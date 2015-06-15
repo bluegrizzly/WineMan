@@ -27,11 +27,37 @@ namespace WineMan.Transactions
                 if (operation == "editrow")
                 {
                     string jsonString = new StreamReader(context.Request.InputStream).ReadToEnd();
-                    string txID = JsonConvert.DeserializeObject<string>(jsonString);
-                    if (txID != null)
+                    List<string> data;
+                    if (jsonString.Contains(","))
+                        data = JsonConvert.DeserializeObject<List<string>>(jsonString);
+                    else
                     {
+                        data = new List<string>();
+                        data.Add(jsonString);
+                    }
+
+                    // first items are the selection,
+                    // separated by a * after show all items
+                    if (data.Count >= 1)
+                    {
+                        string txID = data[0];
+                        string allIds=""; 
+                        if (data.Count > 2 && data[1]=="*")
+                        {
+                            for (int i = 2; i < data.Count; i++)
+                            {
+                                allIds += data[i] ;
+                                if (i < data.Count - 1)
+                                    allIds += ",";
+                            }
+                        }
+                        
                         string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);
                         url += "?txid=" + txID.ToString();
+                        
+                        if (allIds.Length > 0)
+                            url += "&alltxids=" + allIds;
+
                         context.Response.Write(@"""" + url + @"""");
                     }
                 }

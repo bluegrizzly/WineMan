@@ -43,7 +43,7 @@ namespace WineMan.Work
                     if (tx.done)
                         undo = true;
                 }
-                m_TransactionHelper.SetTransactionToDone(data, undo);
+                TransactionsHelper.SetTransactionToDone(data, undo);
             }
             else if (operation != null && operation == "setlocation")
             {

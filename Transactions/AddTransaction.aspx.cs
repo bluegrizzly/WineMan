@@ -25,6 +25,7 @@ namespace WineMan.Transactions
         private System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
         private WineSpecs m_WineSpecs = new WineSpecs();
         private int m_TxID = -1;
+        private List<string> m_AllIds = new List<string>();
 
         public AddTransaction()
         {
@@ -41,6 +42,11 @@ namespace WineMan.Transactions
                 System.Diagnostics.Debug.Assert(parsed);
             }
 
+            if (Request.QueryString["alltxids"] != null)
+            {
+                m_AllIds = Request.QueryString["alltxids"].Split(',').ToList();
+            }
+
             if (IsPostBack)
             {
                 UpdateUI();
@@ -54,6 +60,10 @@ namespace WineMan.Transactions
                 Label_BottlingStation.Text = c_SelectString;
                 Label_FirstName.Text = c_SelectString;
                 Label_LastName.Text = c_SelectString;
+
+                Label_Iterator.Visible = false;
+                Button_Next.Visible = false;
+                Button_Previous.Visible = false;
             }
 
             Label_TransactionID.Text = "-";
@@ -90,6 +100,8 @@ namespace WineMan.Transactions
             Button_Print.Enabled = (Label_TransactionID.Text != "-");
             Button_SendEmail.Enabled = Button_Print.Enabled;
             Button_ResetDate.Visible = Button_Print.Enabled;
+            CheckBox_TxCompleted.Visible = Button_Print.Enabled;
+            UpdateTxCompletCheckbox();
 
             Button_Duplicate.Visible = Button_Print.Enabled;
         }
@@ -573,6 +585,12 @@ namespace WineMan.Transactions
         {
             ShowDates();
 
+            if (Label_TransactionID.Text != "-" && m_TxID < 0)
+            {
+                bool parsed = Int32.TryParse(Label_TransactionID.Text, out m_TxID);
+                System.Diagnostics.Debug.Assert(parsed);
+            }
+
             if (m_TxID >= 0)
             {
                 Label_TransactionID.Text = m_TxID.ToString();
@@ -580,16 +598,43 @@ namespace WineMan.Transactions
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
                 Button_ResetDate.Visible = true;
-            }
-            else if (Label_TransactionID.Text != "-")
-            {
-                bool parsed = Int32.TryParse(Label_TransactionID.Text, out m_TxID);
-                System.Diagnostics.Debug.Assert(parsed);
+                CheckBox_TxCompleted.Visible = true;
+                UpdateTxCompletCheckbox();
 
-                Button_Commit.Enabled = false;
-                Button_Print.Enabled = true;
-                Button_SendEmail.Enabled = true;
-                Button_ResetDate.Visible = true;
+                if (m_AllIds.Count > 0)
+                {
+                    Label_Iterator.Visible = true;
+                    Button_Next.Visible = true;
+                    Button_Previous.Visible = true;
+                    Button_Previous.ImageUrl = "~/images/previous.png";
+                    Button_Next.ImageUrl = "~/images/next.png";
+
+                    // Find wich element we are now.
+                    for (int i=0; i<m_AllIds.Count; i++ )
+                    {
+                        if (m_AllIds[i]== m_TxID.ToString())
+                        {
+                            Label_Iterator.Text = (i+1).ToString() + "/" + m_AllIds.Count.ToString();
+                            if (i == 0)
+                            {
+                                Button_Previous.Enabled = false;
+                                Button_Previous.ImageUrl = "~/images/previous_disabled.png";
+                            }
+                            else if (i == (m_AllIds.Count - 1))
+                            {
+                                Button_Next.Enabled = false;
+                                Button_Next.ImageUrl = "~/images/next_disabled.png";
+                            }
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    Label_Iterator.Visible = false;
+                    Button_Next.Visible = false;
+                    Button_Previous.Visible = false;
+                }
             }
             else
             {
@@ -597,6 +642,10 @@ namespace WineMan.Transactions
                 Button_Print.Enabled = false;
                 Button_SendEmail.Enabled = false;
                 Button_ResetDate.Visible = false;
+                CheckBox_TxCompleted.Visible = false;
+                Label_Iterator.Visible = false;
+                Button_Next.Visible = false;
+                Button_Previous.Visible = false;
             }
         }
 
@@ -714,7 +763,12 @@ namespace WineMan.Transactions
             SaveData();
             string arguments = Label_FirstName.Text + " " + Label_LastName.Text;
             if (m_TxID >= 0)
+            {
                 arguments += "&txid=" + m_TxID.ToString();
+                if (m_AllIds.Count>0)
+                    arguments += "&alltxids=" + string.Join(",", m_AllIds);
+            }
+            
             Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + arguments);
         }
 
@@ -769,6 +823,22 @@ namespace WineMan.Transactions
             if (Label_TransactionID.Text != "-")
             {
                 Utils.MessageBox(this, "Not yet implemented");  
+            }
+        }
+
+        protected void UpdateTxCompletCheckbox()
+        {
+            if (CheckBox_TxCompleted.Visible)
+            {
+                Transaction tx = Transaction.GetRecord(m_TxID);
+                if (tx != null)
+                {
+                    int nbStepDone = 0;
+                    int nbStepTotal = 0;
+                    CheckBox_TxCompleted.Enabled = tx.AreAllStepDone(out nbStepDone, out nbStepTotal);
+                    if (!IsPostBack)
+                        CheckBox_TxCompleted.Checked = tx.done;
+                }
             }
         }
 
@@ -971,6 +1041,61 @@ namespace WineMan.Transactions
             m_TxID = -1;
             Label_TransactionID.Text = "-";
             UpdateUI();
+        }
+
+        protected void CheckBox_TxCompleted_CheckedChanged(object sender, EventArgs e)
+        {
+            if (m_TxID < 0)
+                return;
+
+            List<string> ids = new List<string>();
+            ids.Add(m_TxID.ToString());
+            bool res = TransactionsHelper.SetTransactionToDone(ids, CheckBox_TxCompleted.Checked); 
+            if (res)
+            {
+                if (CheckBox_TxCompleted.Checked)
+                    Utils.MessageBox(this, "** Success **\\nThe transaction is now completed.");
+                else
+                    Utils.MessageBox(this, "** Success **\\nThe transaction is NOT completed anymore.");
+            }
+            else
+                Utils.MessageBox(this, "** Error **\\nFailed to create a new transaction.");
+        }
+
+        protected void Button_Next_Click(object sender, ImageClickEventArgs e)
+        {
+            for (int i = 0; i < m_AllIds.Count; i++)
+            {
+                if (m_AllIds[i] == m_TxID.ToString())
+                {
+                    System.Diagnostics.Debug.Assert(i+1 < m_AllIds.Count);                    
+                    string newtxid = m_AllIds[i + 1];
+
+                    string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);
+                    url += "?txid=" + newtxid;
+                    url += "&alltxids=" + string.Join(",", m_AllIds);
+                    Response.Redirect(url);
+                    break;
+                }
+            }
+        }
+
+        protected void Button_Previous_Click(object sender, ImageClickEventArgs e)
+        {
+            for (int i = 0; i < m_AllIds.Count; i++)
+            {
+                if (m_AllIds[i] == m_TxID.ToString())
+                {
+                    System.Diagnostics.Debug.Assert(i > 0 );
+                    string newtxid = m_AllIds[i - 1];
+
+                    string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);
+                    url += "?txid=" + newtxid;
+                    url += "&alltxids=" + string.Join(",", m_AllIds);
+                    Response.Redirect(url);
+                    break;
+                }
+            }
         }
     }
 }

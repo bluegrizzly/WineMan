@@ -458,6 +458,11 @@ namespace WineMan.Transactions
 
                 if (m_TxID >= 0 && !refUrl.Contains("txid="))
                     refUrl += "&txid=" + m_TxID.ToString();
+
+                 if (Request.QueryString["alltxids"] != null)
+                {
+                    refUrl += "&alltxids=" + Request.QueryString["alltxids"];
+                }
             }
             return refUrl;
         }

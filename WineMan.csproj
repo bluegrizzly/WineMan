@@ -166,9 +166,13 @@
     <Content Include="Content\Site.css" />
     <Content Include="Customers\Customers.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="images\next.png" />
     <Content Include="images\index_logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="images\next_disabled.png" />
+    <Content Include="images\previous.png" />
+    <Content Include="images\previous_disabled.png" />
     <Content Include="images\wineman.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
