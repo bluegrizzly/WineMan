@@ -24,7 +24,7 @@ namespace WineMan.Reports
         {
             ReportViewer1.Reset();
 
-            ReportDataSource rptSrcTx = new ReportDataSource("DataSet1", GetTransactionData());
+            ReportDataSource rptSrcTx = new ReportDataSource("DataSet2", GetTransactionData());
             ReportViewer1.LocalReport.DataSources.Add(rptSrcTx);
 
             ReportViewer1.LocalReport.ReportPath = "Bin/Reports/Report_Analysis_Tx.rdlc";
@@ -34,11 +34,22 @@ namespace WineMan.Reports
         private DataTable GetTransactionData()
         {
             DataTable dt = new DataTable();
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-            using (MySqlConnection con = new MySqlConnection(connectionString))
+            dt.Columns.Add("Week", Type.GetType("System.String"));
+            dt.Columns.Add("NbOpen", Type.GetType("System.Int32"));
+
+            string[] names = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+
+            DateTime date = new DateTime(DateTime.Now.Year-1, DateTime.Now.Month+1, 1);
+            for (int i = 0; i < 12; i++)
             {
-                MySqlDataAdapter adp = new MySqlDataAdapter("SELECT * FROM transactions " , con);
-                adp.Fill(dt);
+                List<Transaction> allTx = Transaction.GetAllRecordsCreatedInMonth(date);
+
+                DataRow row = dt.NewRow();
+                row["Week"] = names[date.Month-1];
+                row["NbOpen"] = allTx.Count;
+                dt.Rows.Add(row);
+
+                date = date.AddMonths(1);
             }
             return dt;
         }

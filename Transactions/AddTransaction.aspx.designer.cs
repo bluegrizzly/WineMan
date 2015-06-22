@@ -58,6 +58,15 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Label Label_LastName;
         
         /// <summary>
+        /// Label_Tel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_Tel;
+        
+        /// <summary>
         /// txtLastName control.
         /// </summary>
         /// <remarks>
@@ -254,6 +263,15 @@ namespace WineMan.Transactions {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label_TransactionID;
+        
+        /// <summary>
+        /// Label_CreationDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label_CreationDate;
         
         /// <summary>
         /// Button_Commit control.

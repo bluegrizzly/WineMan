@@ -163,6 +163,11 @@ namespace WineMan.Transactions
                 MySqlDataAdapter adp = new MySqlDataAdapter("SELECT * FROM transaction_step WHERE transaction_id=" + m_tx.id.ToString(), con);
                 adp.Fill(dt);
             }
+
+            // Fill with blank to 
+            for (int i = dt.Rows.Count; i < 10; i++)
+                dt.Rows.Add(dt.NewRow());
+            
             return dt;
         }
 
@@ -180,6 +185,9 @@ namespace WineMan.Transactions
 
         protected void Button_Back_Click(object sender, EventArgs e)
         {
+            if (ViewState["RefUrl"] == null)
+                return;
+
             string url = ViewState["RefUrl"].ToString();
             if (url.Contains("?"))
                 url = url.Remove(url.IndexOf("?"));

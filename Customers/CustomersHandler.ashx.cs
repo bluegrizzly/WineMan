@@ -36,6 +36,5 @@ namespace WineMan.Customers
                 return false;
             }
         }
-
     }
 }

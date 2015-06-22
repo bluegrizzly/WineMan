@@ -50,7 +50,7 @@ namespace WineMan.Core
                                 bool firstRow2 = true;
                                 for (int colomnNumber = 0; colomnNumber < reader.FieldCount; colomnNumber++)
                                 {
-                                    //string colName = reader.GetName(colomnNumber);
+                                    string colName = reader.GetName(colomnNumber);
                                     if (!firstRow2)
                                         retString += ",";
                                     firstRow2 = false;
@@ -59,7 +59,9 @@ namespace WineMan.Core
                                     {
                                         reader.GetString(colomnNumber);
                                         string valueStr = reader.GetString(colomnNumber);
-                                        valueStr = valueStr.Replace("\r", "");
+                                        if (colName == "telephone")
+                                            valueStr = Utils.FormatTelephone(valueStr);
+
                                         retString += @"""" + valueStr + @""" ";
                                     }
                                     catch
@@ -157,6 +159,8 @@ namespace WineMan.Core
                     try
                     {
                         string valueRaw = forms.Get(colName).ToString();
+                        if (colName == "telephone")
+                            valueRaw = Utils.FormatTelephone(valueRaw);
 
                         if (colName == "active")
                             value = valueRaw;
@@ -242,7 +246,9 @@ namespace WineMan.Core
                         // COLNAME=VALUE,
                         string valueRaw = forms.Get(colName).ToString();
                         valueRaw = valueRaw.Replace("'", "\\'");
-                        
+                        if (colName == "telephone")
+                            valueRaw = Utils.FormatTelephone(valueRaw);
+
                         if (colName == "active")
                             sqlCmd += colName + "=" + valueRaw;
                         else

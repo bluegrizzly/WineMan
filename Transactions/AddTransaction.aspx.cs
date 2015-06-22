@@ -60,6 +60,7 @@ namespace WineMan.Transactions
                 Label_BottlingStation.Text = c_SelectString;
                 Label_FirstName.Text = c_SelectString;
                 Label_LastName.Text = c_SelectString;
+                Label_Tel.Text = c_SelectString;
 
                 Label_Iterator.Visible = false;
                 Button_Next.Visible = false;
@@ -67,6 +68,7 @@ namespace WineMan.Transactions
             }
 
             Label_TransactionID.Text = "-";
+            Label_CreationDate.Text = "";
             FillWineBrands();
             FillProductCodes();
             UpdateComboBoxes();
@@ -138,6 +140,7 @@ namespace WineMan.Transactions
                     Label_CustomerID.Text = customer.id.ToString();
                     Label_FirstName.Text = customer.first_name;
                     Label_LastName.Text = customer.last_name;
+                    Label_Tel.Text = customer.telephone;
                 }
             }
             if (Session["wine_brand"] != null)
@@ -205,6 +208,7 @@ namespace WineMan.Transactions
                 Label_CustomerID.Text = customer.id.ToString();
                 Label_FirstName.Text = customer.first_name;
                 Label_LastName.Text = customer.last_name;
+                Label_Tel.Text = customer.telephone;
             }
             else
             {
@@ -218,6 +222,7 @@ namespace WineMan.Transactions
             Label_CustomerID.Text = "";
             Label_FirstName.Text = "";
             Label_LastName.Text = "";
+            Label_Tel.Text = "";
         }
 
         [WebMethod]
@@ -593,7 +598,9 @@ namespace WineMan.Transactions
 
             if (m_TxID >= 0)
             {
+                Transaction tx = Transaction.GetRecord(m_TxID);
                 Label_TransactionID.Text = m_TxID.ToString();
+                Label_CreationDate.Text = "Created: " + tx.date_creation.ToString("MMM-dd-yyyy", m_Culture);
                 Button_Commit.Enabled = false;
                 Button_Print.Enabled = true;
                 Button_SendEmail.Enabled = true;
@@ -620,7 +627,7 @@ namespace WineMan.Transactions
                                 Button_Previous.Enabled = false;
                                 Button_Previous.ImageUrl = "~/images/previous_disabled.png";
                             }
-                            else if (i == (m_AllIds.Count - 1))
+                            if (i == (m_AllIds.Count - 1))
                             {
                                 Button_Next.Enabled = false;
                                 Button_Next.ImageUrl = "~/images/next_disabled.png";
@@ -693,11 +700,12 @@ namespace WineMan.Transactions
                             TableCell tCell2 = new TableCell();
                             tCell2.HorizontalAlign = HorizontalAlign.Center;
 
-                                // Add a textBox
+                            // Add a textBox
                             TextBox textBoxCtrl = new TextBox();
                             tCell2.Controls.Add(textBoxCtrl);
                             textBoxCtrl.Text = step.date.ToString("MMM-dd-yyyy", m_Culture);
-                            textBoxCtrl.Width = 80;
+                            textBoxCtrl.Font.Size = 9;
+                            textBoxCtrl.Width = 70;
                             textBoxCtrl.CssClass = "TheDateTimePicker";
                             textBoxCtrl.TextChanged += new EventHandler(this.OnDateChangeByUser);
                             textBoxCtrl.ID = c_PrefixDateID + step.step_id.ToString();
@@ -707,7 +715,7 @@ namespace WineMan.Transactions
                                 textBoxCtrl.BackColor = System.Drawing.Color.Gray;
                             textBoxCtrl.ToolTip = "Date of the step. Click in it to get the calendar to select a date. The record is modified as soon as you change the date.\nBe careful, changing the yeast (only) will change dates of all steps if not completed to fit the recipes.";
 
-                                // Add a CheckBox 
+                            // Add a CheckBox 
                             CheckBox cb = new CheckBox();
                             tCell2.Controls.Add(cb);
                             cb.Checked = step.done > 0;
@@ -778,10 +786,12 @@ namespace WineMan.Transactions
             Customer custo = Customer.GetRecordByID(tx.client_id.ToString());
 
             Label_TransactionID.Text = tx.id.ToString();
+            Label_CreationDate.Text = "Created: " + tx.date_creation.ToString("MMM-dd-yyyy", m_Culture);
             Label_CustomerID.Text = tx.client_id.ToString();
 
             Label_FirstName.Text = custo.first_name;
             Label_LastName.Text = custo.last_name;
+            Label_Tel.Text = custo.telephone;
 
             DropDownList_Brand.SelectedValue = tx.wine_brand_id.ToString();
             FillWineTypes(tx.wine_brand_id);
@@ -1040,6 +1050,8 @@ namespace WineMan.Transactions
             // Create a new transaction but with the same fields.
             m_TxID = -1;
             Label_TransactionID.Text = "-";
+            Label_CreationDate.Text = "";
+
             UpdateUI();
         }
 
@@ -1068,7 +1080,10 @@ namespace WineMan.Transactions
             {
                 if (m_AllIds[i] == m_TxID.ToString())
                 {
-                    System.Diagnostics.Debug.Assert(i+1 < m_AllIds.Count);                    
+                    System.Diagnostics.Debug.Assert(i+1 < m_AllIds.Count);
+                    if (i >= m_AllIds.Count)
+                        return;
+
                     string newtxid = m_AllIds[i + 1];
 
                     string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);

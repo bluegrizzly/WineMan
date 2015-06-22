@@ -394,6 +394,20 @@ namespace WineMan
             return GetRecordsFromSqlQuery("SELECT * FROM " + c_dbName + " WHERE done = 0");
         }
 
+        public static List<Transaction> GetAllRecordsCreatedInMonth(DateTime date)
+        {
+            string sqlQuery = "SELECT * FROM " + c_dbName;
+
+            DateTime dateStart = new DateTime (date.Year, date.Month, 1);
+            string dateStrStart = dateStart.Year.ToString() + "-" + dateStart.Month.ToString() + "-" + "1" + " %";
+            DateTime dateEnd = dateStart.AddMonths(1);
+            string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + "1" + " %";
+
+            sqlQuery += " WHERE (date_creation >= '" + dateStrStart + "'" + " AND date_creation < '" + dateStrEnd + "')";
+            
+            return GetRecordsFromSqlQuery(sqlQuery);
+        }
+
         public static int GetAllRecordsForCustomer(string idToDelete, out List<Transaction> allTx)
         {
             string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE client_id ='" + idToDelete + "'";
