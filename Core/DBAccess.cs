@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using MySql.Data.MySqlClient;
+using System.Text;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace WineMan.Core
 {
@@ -32,48 +35,50 @@ namespace WineMan.Core
                         int nbRows = int.MaxValue;
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            int currentRow = 0;
+
 
                             retString += @"""total"": """ + nbRows.ToString() + @""",";
                             retString += @"""page"": ""1"",";
                             retString += @"""records"": """ + nbRows.ToString() + @""",";
-                            retString += @"""rows"" : [ ";
+                            retString += @"""rows"" : ";
 
-                            bool firstRow = true;
-                            while (reader.Read())
+                            StringBuilder sb = new StringBuilder();
+                            StringWriter sw = new StringWriter(sb);
+
+                            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
                             {
-                                if (!firstRow)
-                                    retString += ",";
-                                firstRow = false;
-                                retString += @"{""id"":" + currentRow.ToString() + @", ""cell"" :[";
+                                jsonWriter.WriteStartArray();
 
-                                bool firstRow2 = true;
-                                for (int colomnNumber = 0; colomnNumber < reader.FieldCount; colomnNumber++)
+                                int currentRow = 0;
+                                while (reader.Read())
                                 {
-                                    string colName = reader.GetName(colomnNumber);
-                                    if (!firstRow2)
-                                        retString += ",";
-                                    firstRow2 = false;
+                                    jsonWriter.WriteStartObject();
 
-                                    try
+                                    jsonWriter.WritePropertyName("id");
+                                    jsonWriter.WriteValue(currentRow.ToString());
+                                    jsonWriter.WritePropertyName("cell");
+
+                                    jsonWriter.WriteStartArray();
+
+                                    int fields = reader.FieldCount;
+
+                                    for (int i = 0; i < fields; i++)
                                     {
-                                        reader.GetString(colomnNumber);
-                                        string valueStr = reader.GetString(colomnNumber);
-                                        if (colName == "telephone")
+                                        string valueStr = reader[i].ToString();
+                                        if (reader.GetName(i) == "telephone")
                                             valueStr = Utils.FormatTelephone(valueStr);
+                                        jsonWriter.WriteValue(valueStr);
+                                    }
 
-                                        retString += @"""" + valueStr + @""" ";
-                                    }
-                                    catch
-                                    {
-                                        retString += @"""""";
-                                    }
+                                    jsonWriter.WriteEndArray();
+                                    jsonWriter.WriteEndObject();
                                 }
 
-                                retString += "]}";
-                                currentRow++;
+                                jsonWriter.WriteEndArray();
+                                retString += sb.ToString();
+                                retString += "}";
                             }
-                            retString += "]}";
+
                             reader.Close();
                         }
                     }
