@@ -72,6 +72,7 @@ namespace WineMan.Core
 
                                     jsonWriter.WriteEndArray();
                                     jsonWriter.WriteEndObject();
+                                    currentRow++;
                                 }
 
                                 jsonWriter.WriteEndArray();

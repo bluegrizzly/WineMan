@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define MICROVIN
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +9,7 @@ using System.Web.SessionState;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Optimization;
+
 
 namespace WineMan
 {
@@ -29,8 +32,11 @@ namespace WineMan
                 Roles.CreateRole("Administrator");
 
             Membership.DeleteUser("admin");
+#if (MICROVIN)
             MembershipUser adminUser = Membership.CreateUser("admin", "piepasri");
-
+#else
+            MembershipUser adminUser = Membership.CreateUser("admin", "wineman");
+#endif
             if (!Roles.IsUserInRole("admin", "Administrator"))
                 Roles.AddUserToRole("admin", "Administrator");
 

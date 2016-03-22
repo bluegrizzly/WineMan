@@ -117,25 +117,33 @@ namespace WineMan
         {
             List<string> printers = new List<string>();
 
-            System.Management.ManagementScope objMS = new System.Management.ManagementScope(ManagementPath.DefaultPath);
-            objMS.Connect();
-
-            SelectQuery objQuery = new SelectQuery("SELECT * FROM Win32_Printer");
-            ManagementObjectSearcher objMOS = new ManagementObjectSearcher(objMS, objQuery);
-            System.Management.ManagementObjectCollection objMOC = objMOS.Get();
-
-            foreach (ManagementObject Printers in objMOC)
+            try
             {
-                string serverName = @"\\" + Printers["ServerName"] + @"\";
-                if (Convert.ToBoolean(Printers["Local"]))       // LOCAL PRINTERS.
+                System.Management.ManagementScope objMS = new System.Management.ManagementScope(ManagementPath.DefaultPath);
+                objMS.Connect();
+
+                SelectQuery objQuery = new SelectQuery("SELECT * FROM Win32_Printer");
+                ManagementObjectSearcher objMOS = new ManagementObjectSearcher(objMS, objQuery);
+                System.Management.ManagementObjectCollection objMOC = objMOS.Get();
+
+                foreach (ManagementObject Printers in objMOC)
                 {
-                    printers.Add(Printers["Name"].ToString());
-                }
-                if (Convert.ToBoolean(Printers["Network"]))     // ALL NETWORK PRINTERS.
-                {
-                    printers.Add(Printers["Name"].ToString());
+                    string serverName = @"\\" + Printers["ServerName"] + @"\";
+                    if (Convert.ToBoolean(Printers["Local"]))       // LOCAL PRINTERS.
+                    {
+                        printers.Add(Printers["Name"].ToString());
+                    }
+                    if (Convert.ToBoolean(Printers["Network"]))     // ALL NETWORK PRINTERS.
+                    {
+                        printers.Add(Printers["Name"].ToString());
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+
             return printers;
         }
 
