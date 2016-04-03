@@ -315,6 +315,8 @@ namespace WineMan.DataSets {
             
             private global::System.Data.DataColumn columnWINEBRAND_Name;
             
+            private global::System.Data.DataColumn columnbar_code2;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public transactionsDataTable() {
@@ -491,6 +493,16 @@ namespace WineMan.DataSets {
                     return this.columnWINEBRAND_Name;
                 }
             }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn bar_code2Column
+            {
+                get
+                {
+                    return this.columnbar_code2;
+                }
+            }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -547,7 +559,8 @@ namespace WineMan.DataSets {
                         string CUSTO_Tel, 
                         string CATEGORY_Symbol, 
                         string WINETYPE_Name, 
-                        string WINEBRAND_Name) {
+                        string WINEBRAND_Name,
+                        System.Byte[] bar_code2) {
                 transactionsRow rowtransactionsRow = ((transactionsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -567,7 +580,8 @@ namespace WineMan.DataSets {
                         CUSTO_Tel,
                         CATEGORY_Symbol,
                         WINETYPE_Name,
-                        WINEBRAND_Name};
+                        WINEBRAND_Name,
+                        bar_code2};
                 rowtransactionsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowtransactionsRow);
                 return rowtransactionsRow;
@@ -615,6 +629,7 @@ namespace WineMan.DataSets {
                 this.columnCATEGORY_Symbol = base.Columns["CATEGORY_Symbol"];
                 this.columnWINETYPE_Name = base.Columns["WINETYPE_Name"];
                 this.columnWINEBRAND_Name = base.Columns["WINEBRAND_Name"];
+                this.columnbar_code2 = base.Columns["bar_code2"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -656,6 +671,8 @@ namespace WineMan.DataSets {
                 base.Columns.Add(this.columnWINETYPE_Name);
                 this.columnWINEBRAND_Name = new global::System.Data.DataColumn("WINEBRAND_Name", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnWINEBRAND_Name);
+                this.columnbar_code2 = new global::System.Data.DataColumn("bar_code2", typeof(System.Byte[]), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnbar_code2);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnid}, true));
                 this.columnid.AllowDBNull = false;
@@ -1084,7 +1101,28 @@ namespace WineMan.DataSets {
                     this[this.tabletransactions.WINEBRAND_NameColumn] = value;
                 }
             }
-            
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string bar_code2
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tabletransactions.bar_code2Column]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'bar_code2\' in table \'transactions\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tabletransactions.bar_code2Column] = value;
+                }
+            }
+
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool Isclient_idNull() {
@@ -1287,6 +1325,20 @@ namespace WineMan.DataSets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetWINEBRAND_NameNull() {
                 this[this.tabletransactions.WINEBRAND_NameColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool Isbar_code2Null()
+            {
+                return this.IsNull(this.tabletransactions.bar_code2Column);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void Setbar_code2Null()
+            {
+                this[this.tabletransactions.bar_code2Column] = global::System.Convert.DBNull;
             }
         }
         

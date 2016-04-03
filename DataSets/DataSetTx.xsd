@@ -120,6 +120,7 @@
               <xs:element name="CATEGORY_Symbol" msprop:Generator_ColumnVarNameInTable="columnCATEGORY_Symbol" msprop:Generator_ColumnPropNameInRow="CATEGORY_Symbol" msprop:Generator_ColumnPropNameInTable="CATEGORY_SymbolColumn" msprop:Generator_UserColumnName="CATEGORY_Symbol" type="xs:string" minOccurs="0" />
               <xs:element name="WINETYPE_Name" msprop:Generator_ColumnVarNameInTable="columnWINETYPE_Name" msprop:Generator_ColumnPropNameInRow="WINETYPE_Name" msprop:Generator_ColumnPropNameInTable="WINETYPE_NameColumn" msprop:Generator_UserColumnName="WINETYPE_Name" type="xs:string" minOccurs="0" />
               <xs:element name="WINEBRAND_Name" msprop:Generator_ColumnVarNameInTable="columnWINEBRAND_Name" msprop:Generator_ColumnPropNameInRow="WINEBRAND_Name" msprop:Generator_ColumnPropNameInTable="WINEBRAND_NameColumn" msprop:Generator_UserColumnName="WINEBRAND_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="bar_code2" msprop:Generator_ColumnVarNameInTable="columnbar_code2" msprop:Generator_ColumnPropNameInRow="bar_code2" msprop:Generator_ColumnPropNameInTable="bar_code2Column" msprop:Generator_UserColumnName="bar_code2" type="xs:base64Binary" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

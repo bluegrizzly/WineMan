@@ -15,6 +15,9 @@
             <br />
             <br />
             Versions: 1.1</strong><asp:TextBox ID="TextBox_Versions" runat="server" Font-Size="Small" ForeColor="#333333" Height="282px" ReadOnly="True" TextMode="MultiLine" Width="100%" BackColor="#F2F2F2">
+Version 1.7 (April 3 2016
+- Added bar code to transaction sheet
+
 Version 1.6 (December 5 2015)
 - Support Server side printing using Internet explorer
 
