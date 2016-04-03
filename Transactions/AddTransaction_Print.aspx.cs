@@ -144,13 +144,20 @@ namespace WineMan.Transactions
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    // Bar Code
-                    System.Drawing.Image img = GenCode128.Code128Rendering.MakeBarcodeImage("00" + m_tx.id.ToString(), int.Parse("2"), true);
+                    try
+                    {
+                        // Bar Code
+                        System.Drawing.Image img = GenCode128.Code128Rendering.MakeBarcodeImage("00" + m_tx.id.ToString(), int.Parse("2"), true);
 
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                        img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 
-                    row["bar_code2"] = ms.ToArray();
+                        row["bar_code2"] = ms.ToArray();
+                    }
+                    catch(Exception e)
+                    {
+                        System.Diagnostics.Debug.Assert(false, e.Message);
+                    }
                 }
             }
             return dt;
