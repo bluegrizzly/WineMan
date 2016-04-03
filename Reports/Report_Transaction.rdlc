@@ -1901,11 +1901,27 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Image Name="ImageBarCode">
+            <Source>Database</Source>
+            <Value>=First(Fields!bar_code2.Value, "DataSetTx")</Value>
+            <MIMEType>image/png</MIMEType>
+            <Sizing>FitProportional</Sizing>
+            <Top>0.21167cm</Top>
+            <Left>0.16325cm</Left>
+            <Height>30pt</Height>
+            <Width>3.76581cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Image>
         </ReportItems>
         <KeepTogether>true</KeepTogether>
         <Top>13.52061cm</Top>
         <Left>0.00001cm</Left>
-        <Height>1.63028cm</Height>
+        <Height>1.61067cm</Height>
         <Width>5.03634in</Width>
         <ZIndex>8</ZIndex>
         <Style>
@@ -3676,6 +3692,22 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Image Name="ImageBarCode2">
+            <Source>Database</Source>
+            <Value>=First(Fields!bar_code2.Value, "DataSetTx")</Value>
+            <MIMEType>image/png</MIMEType>
+            <Sizing>FitProportional</Sizing>
+            <Top>0.196cm</Top>
+            <Left>0.16325cm</Left>
+            <Height>30pt</Height>
+            <Width>3.76581cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Image>
         </ReportItems>
         <KeepTogether>true</KeepTogether>
         <Top>13.53628cm</Top>
@@ -3859,7 +3891,7 @@
         </Style>
       </Textbox>
     </ReportItems>
-    <Height>6.47917in</Height>
+    <Height>6.03937in</Height>
     <Style />
   </Body>
   <Width>10.48in</Width>
@@ -3974,6 +4006,34 @@
         <Field Name="product_code">
           <DataField>product_code</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CUSTO_FirstName">
+          <DataField>CUSTO_FirstName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CUSTO_LastName">
+          <DataField>CUSTO_LastName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CUSTO_Tel">
+          <DataField>CUSTO_Tel</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CATEGORY_Symbol">
+          <DataField>CATEGORY_Symbol</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="WINETYPE_Name">
+          <DataField>WINETYPE_Name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="WINEBRAND_Name">
+          <DataField>WINEBRAND_Name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="bar_code2">
+          <DataField>bar_code2</DataField>
+          <rd:TypeName>System.Byte[]</rd:TypeName>
         </Field>
       </Fields>
       <rd:DataSetInfo>
