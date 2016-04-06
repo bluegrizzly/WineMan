@@ -116,14 +116,28 @@ namespace WineMan
                 }
                 else if (dbName == Step.c_dbName)
                 {
+                    // Look in categories.
+                    List<Wine_Category> allCategories = Wine_Category.GetRecordsWithStepID(idToDelete);
+                    if (allCategories.Count > 0)
+                    {
+                        string numbers = "";
+                        foreach (Wine_Category cat in allCategories)
+                            numbers +=  "(Categories: " + cat.name + "[id:"+cat.id + "]" + ")" + ", ";
+
+                        strOut = "Error: Transaction Step is referenced in Categories: " + numbers;
+                        context.Response.Write(strOut);
+                        return;
+                    }
+
+                    // Look in transaction steps
                     List<TransactionStep> allSteps = TransactionStep.GetRecordsWithStepID(idToDelete);
                     if (allSteps.Count > 0)
                     {
                         string numbers = "";
                         foreach (TransactionStep txStep in allSteps)
-                            numbers += txStep.id.ToString() + "(tx:" + txStep.transaction_id + ")" + ",";
+                            numbers += txStep.transaction_id + " (tx step id:" + txStep.id.ToString() + ") ,";
 
-                        strOut = "Error: Wine Type is referenced in Transactions ID: " + numbers;
+                        strOut = "Error: Wine Type is referenced in Transactions IDs: " + numbers;
                         context.Response.Write(strOut);
                         return;
                     }

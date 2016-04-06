@@ -156,5 +156,33 @@ namespace WineMan
             return categories;
         }
 
+        public static List<Wine_Category> GetRecordsWithStepID(string stepId)
+        {
+            List<Wine_Category> categories = new List<Wine_Category>();
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                string sqlQuery = "SELECT * FROM wine_categories WHERE step=" + stepId;
+
+                using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                {
+                    con.Open();
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        Wine_Category category = new Wine_Category();
+                        category.FillData(dr);
+                        categories.Add(category);
+                    }
+                    dr.Close();
+                }
+                con.Close();
+            }
+
+            return categories;
+
+        }
     }
 }

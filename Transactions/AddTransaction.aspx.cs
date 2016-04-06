@@ -740,6 +740,8 @@ namespace WineMan.Transactions
                     foreach (Wine_Category wineCat in categories)
                     {
                         Step step = Step.GetRecordById(wineCat.step.ToString());
+                        if (step == null)
+                            continue;
 
                         DateTime stepDate = selDate.AddDays(wineCat.days);
                         if (step.final_step > 0 && Label_BottlingDate.Text == c_SelectString)
