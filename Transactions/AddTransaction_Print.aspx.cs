@@ -100,7 +100,7 @@ namespace WineMan.Transactions
             Wine_Brand brand = Wine_Brand.GetRecordByID(m_tx.wine_brand_id.ToString());
             Wine_Type type = Wine_Type.GetRecordByID(m_tx.wine_type_id.ToString());
 
-            if (m_tx.product_code > 0)
+            if (m_tx.product_code > 0 && m_tx.product_code != Int16.MaxValue)
             {
                 Product_Code code = Product_Code.GetRecordByID(m_tx.product_code);
                 labelColor = code.color;

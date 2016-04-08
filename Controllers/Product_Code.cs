@@ -28,6 +28,8 @@ namespace WineMan
         public static Product_Code GetRecordByID(int id)
         {
             Product_Code ret = new Product_Code();
+            if (id == Int16.MaxValue)
+                return null;
 
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
             using (MySqlConnection con = new MySqlConnection(connectionString))

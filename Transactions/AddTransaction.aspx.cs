@@ -371,7 +371,9 @@ namespace WineMan.Transactions
                 DropDownList_ProductCode.DataTextField = "name";
                 DropDownList_ProductCode.DataValueField = "id";
                 DropDownList_ProductCode.DataBind();
-                DropDownList_ProductCode.Items.Insert(0, c_SelectString);
+
+                ListItem aa = new ListItem("-None-", Int16.MaxValue.ToString());
+                DropDownList_ProductCode.Items.Insert(0, aa);
             }
         }
 

@@ -83,15 +83,43 @@ namespace WineMan
             }
         }
 
+        private static int GetNextAvailableID()
+        {
+             Settings settings = new Settings();
+            int txID= settings.transaction_starting_id;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    con.Open();
+                    while (true)
+                    { 
+                        string sqlQuery = "SELECT id FROM " + c_dbName + " WHERE id = " + txID;
+                        using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                        {
+                            if (cmd.ExecuteScalar() != null)
+                                txID++;
+                            else
+                                break;
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Assert(false, e.Message);
+            }
+            return txID;
+        }
+
         public static bool CreateRecord(Transaction tx)
         {
             try
             {
-                Settings settings = new Settings();
-                int initialID = 0;
-                Transaction initTx = GetRecord(settings.transaction_starting_id);
-                if (initTx == null)
-                    initialID = settings.transaction_starting_id;
+                // Find a next valid record that start with the id
+                int initialID = GetNextAvailableID();
 
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(connectionString))
@@ -124,7 +152,7 @@ namespace WineMan
                 System.Diagnostics.Debug.Assert(false, e.Message);
                 return false;
             }
-        }
+        } 
 
         public bool ModifyRecord()
         {
