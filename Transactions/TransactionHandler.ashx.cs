@@ -99,9 +99,19 @@ namespace WineMan.Transactions
                 }
                 else
                 {
-                    List<Transaction> allTx = Transaction.GetAllRecords(showCompleted, (Transaction.FilterTypes)filterInt, 
-                                                                        context.Request.QueryString["filtercustomer"]);
-                    m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
+                    string filtercustomers = context.Request.QueryString["filtercustomer"];
+                    if (filtercustomers.Length == 0)
+                    {
+                        List<Transaction> allTx = Transaction.GetAllRecords(showCompleted, (Transaction.FilterTypes)filterInt, filtercustomers);
+                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
+                    }
+                    else
+                    {
+                        // Looking for a customer
+                        string sqlQuery = Transaction.GetSqlQueryToResearchCustomers(filtercustomers);
+                        List<Transaction> allTx = Transaction.GetRecordsFromSqlQuery(sqlQuery);
+                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
+                    }
                 }
             }
         }

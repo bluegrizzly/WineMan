@@ -128,6 +128,23 @@ namespace WineMan
             return ret;
         }
 
+        private static int GetNbRecords(string sqlQuery)
+        {
+            int result = 0;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                {
+                    con.Open();
+                    result =  Convert.ToInt32(cmd.ExecuteScalar());
+
+                }
+                con.Close();
+            }
+            return result;
+        }
+
         public static string GetSqlQueryToResearchCustomers(string filterCustomer)
         {
             string sqlQuery = "";
@@ -146,9 +163,18 @@ namespace WineMan
                     " OR id = '" + filterCustomer + "'" +
                     " OR telephone LIKE '%" + filterCustomer + "%'" +
                     " ORDER BY last_name";
+
+                // Try Phone number formated
+                if (GetNbRecords(sqlQuery) == 0 )
+                {
+                    long dummy;
+                    if (Int64.TryParse(filterCustomer, out dummy))
+                        filterCustomer = Utils.FormatTelephone(filterCustomer);
+                    sqlQuery = "SELECT DISTINCT * FROM " + c_dbName + " WHERE telephone LIKE '%" + filterCustomer + "%'" +
+                        " ORDER BY last_name";
+                }
             }
             return sqlQuery;
         }
-
     }
 }

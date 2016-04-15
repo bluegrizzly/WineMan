@@ -160,7 +160,11 @@ namespace WineMan
                 phoneNum = Convert.ToInt64(phoneNum).ToString(phoneFormat);
             }
 
-            return phoneNum;
+            int toRemove = phoneNum.IndexOf("()");
+            if (toRemove >= 0)
+                return phoneNum.Remove(toRemove, 3);
+            else
+                return phoneNum;
         }
 
         public static void InitialSetup()

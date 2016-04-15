@@ -314,6 +314,27 @@ namespace WineMan
             return transactions;
         }
 
+        public static string GetSqlQueryToResearchCustomers(string filterCustomer)
+        {
+            string sqlQuery = "";
+
+            sqlQuery = Customer.GetSqlQueryToResearchCustomers(filterCustomer);
+            List<Customer> customers = Customer.GetRecordBySqlQuery(sqlQuery);
+
+            sqlQuery = "SELECT * FROM " + c_dbName + " WHERE";
+            bool needOr=false;
+            foreach (Customer customer in customers)
+            {
+                if (needOr)
+                {
+                    sqlQuery += " OR ";
+                    needOr =true;
+                }
+                sqlQuery += " client_id=" + customer.id.ToString();
+            }
+
+            return sqlQuery;
+        }
 
         public static List<Transaction> GetRecords(DateTime dateStart, DateTime dateEnd, EShow showFilter = EShow.Show_NotDone, bool showReadyOnly = false, string customer = null, Transaction.DateKind dateKind = Transaction.DateKind.Unknown)
         {
@@ -443,7 +464,7 @@ namespace WineMan
             return allTx.Count;
         }
 
-        protected static List<Transaction> GetRecordsFromSqlQuery(string sqlQuery)
+        public static List<Transaction> GetRecordsFromSqlQuery(string sqlQuery)
         {
             List<Transaction> transactions = new List<Transaction>();
             try
