@@ -65,7 +65,16 @@ namespace WineMan.Transactions
                 if (Session["rendezvous"] != null)
                     Calendar_RDV.SelectedDate = (DateTime)Session["rendezvous"];
                 else
-                    Calendar_RDV.SelectedDate = Calendar_RDV.TodaysDate;
+                {
+                    DateTime date;
+                    string dateStr = Request.QueryString["date"];
+                    if (DateTime.TryParse(dateStr, out date))
+                    {
+                        Calendar_RDV.SelectedDate = date;
+                    }
+                    else
+                        Calendar_RDV.SelectedDate = Calendar_RDV.TodaysDate;
+                }
 
                 // if the page is not coming from the add transaction, we need to clear the session data 
                 // this means that we are not required to pass data to the add transaction page.
@@ -196,7 +205,6 @@ namespace WineMan.Transactions
                 foreach (KeyValuePair<int, RendezVousData> rdvData in row.Value.RdvData)
                 {
                     TableCell cell = row.Value.Row.Cells[rdvData.Key * c_NbColumnPerStation];
-                    Transaction foundTx = null;
                     int hour = RendezVousTableRow.GetHourFromKey(row.Key);
                     int min = RendezVousTableRow.GetMinFromKey(row.Key);
 
@@ -204,37 +212,43 @@ namespace WineMan.Transactions
                     {
                         if (tx.date_bottling.Hour == hour && tx.bottling_station == rdvData.Key && tx.date_bottling.Minute == min)
                         {
-                            foundTx = tx;
-                            break;
+                            GetCell(CellKind.Gray, cell);
+                            rdvData.Value.RadioButton.Visible = (m_TxID == tx.id);
+                            if (!rdvData.Value.RadioButton.Visible)
+                                rdvData.Value.RadioButton.Checked = false;
+
+                            // Hour
+                            TableCell cellHour = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 1];
+                            GetCell(CellKind.Gray, cellHour);
+
+                            // tx
+                            TableCell celltx = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 2];
+                            if (celltx.Text != "")
+                                celltx.Text += "/\n";
+                            celltx.Text += "<a href=AddTransaction.aspx?txid=" + tx.id.ToString() + ">" + tx.id.ToString() + "</a>";
+                            GetCell(CellKind.Gray, celltx);
+
+                            // customer name
+                            TableCell cellName = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 3];
+                            GetCell(CellKind.Gray, cellName);
+                            Customer cus = Customer.GetRecordByID(tx.client_id.ToString());
+                            if (cus != null)
+                            {
+                                if (cellName.Text != "")
+                                    cellName.Text += "/\n";
+                                cellName.Text += cus.first_name + " " + cus.last_name;
+                            }
+
+                            // customer phone
+                            TableCell cellPhone = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 4];
+                            GetCell(CellKind.Gray, cellPhone);
+                            if (cus != null)
+                            {
+                                if (cellPhone.Text != "")
+                                    cellPhone.Text += "/\n";
+                                cellPhone.Text += cus.telephone;
+                            }
                         }
-                    }
-
-                    if (foundTx!=null)
-                    {
-                        GetCell(CellKind.Gray, cell);
-                        rdvData.Value.RadioButton.Visible = (m_TxID == foundTx.id);
-
-                        // Hour
-                        TableCell cellHour = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 1];
-                        GetCell(CellKind.Gray, cellHour);
-
-                        // tx
-                        TableCell celltx = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 2];
-                        celltx.Text = "<a href=AddTransaction.aspx?txid=" + foundTx.id.ToString() + ">" + foundTx.id.ToString() + "</a>";
-                        GetCell(CellKind.Gray, celltx);
-
-                        // customer name
-                        TableCell cellName = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 3];
-                        GetCell(CellKind.Gray,cellName);
-                        Customer cus = Customer.GetRecordByID(foundTx.client_id.ToString());
-                        if (cus != null)
-                            cellName.Text = cus.first_name + " " + cus.last_name;
-                        
-                        // customer phone
-                        TableCell cellPhone = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 4];
-                        GetCell(CellKind.Gray, cellPhone);
-                        if (cus != null)
-                            cellPhone.Text = cus.telephone;
                     }
                 }
             }
@@ -261,7 +275,7 @@ namespace WineMan.Transactions
             // Select the line
             RadioButton radioButton = sender as RadioButton;
 
-            if (radioButton.Checked)
+            if (radioButton.Checked && radioButton.Visible)
             {
                 foreach (TableRow row in Table_Stations.Rows)
                 {
@@ -289,7 +303,7 @@ namespace WineMan.Transactions
             {
                 foreach (KeyValuePair<int, RendezVousData> rdvData in row.Value.RdvData)
                 {
-                    if (rdvData.Value.RadioButton.Checked)
+                    if (rdvData.Value.RadioButton.Checked && rdvData.Value.RadioButton.Visible)
                     {
                         selectedHour = row.Key;
                         selectedStation = rdvData.Key;
@@ -555,7 +569,6 @@ namespace WineMan.Transactions
             string date = Calendar_RDV.SelectedDate.ToString("yyyy-MM-dd", m_Culture);
             //Response.Redirect("~/Transactions/RendezVous_Print.aspx?date=" + date);
             Response.Redirect("~/Transactions/BottlingSchedule_Print.aspx?date=" + date);
-
         }
     }
 }

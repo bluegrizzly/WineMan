@@ -14,6 +14,7 @@ namespace WineMan.Transactions
     public partial class BottlingSchedule_Print : System.Web.UI.Page
     {
         private DateTime m_DateStart = DateTime.Now;
+        private static System.Globalization.CultureInfo m_Culture = new System.Globalization.CultureInfo("en-us");
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -126,7 +127,8 @@ namespace WineMan.Transactions
 
         protected void Button_Back_Click(object sender, EventArgs e)
         {
-            Response.Redirect(ViewState["RefUrl"].ToString());
+            string date = m_DateStart.ToString("yyyy-MM-dd", m_Culture);
+            Response.Redirect("~/Transactions/RendezVous.aspx?date=" + date);
         }
     }
 }

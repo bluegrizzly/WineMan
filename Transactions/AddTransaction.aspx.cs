@@ -49,6 +49,10 @@ namespace WineMan.Transactions
 
             if (IsPostBack)
             {
+                // fall back if you are editing a newly created record
+                if (m_TxID < 0 && Session["tx_id"] != null)
+                    m_TxID = (int)Session["tx_id"];
+
                 UpdateUI();
                 return;
             }
@@ -109,6 +113,7 @@ namespace WineMan.Transactions
         }
         private void SaveData()
         {
+            Session["tx_id"] = m_TxID;
             Session["customer_id"] = Label_CustomerID.Text;
             Session["wine_brand"] = DropDownList_Brand.SelectedIndex;
             Session["wine_type"] = DropDownList_Type.SelectedIndex;
@@ -230,7 +235,7 @@ namespace WineMan.Transactions
         {
             AddTransaction page = HttpContext.Current.CurrentHandler as AddTransaction;
             return "";
-        }
+        } 
 
         protected void txtLastName_TextChanged(object sender, EventArgs e)
         {
@@ -406,6 +411,7 @@ namespace WineMan.Transactions
             // Update UI.
             m_TxID = tx.id;
             UpdateUI();
+            SaveData();
         }
 
         protected DateTime GetBottlingDateFromExistingTx(Transaction tx)
@@ -1053,6 +1059,7 @@ namespace WineMan.Transactions
         {
             // Create a new transaction but with the same fields.
             m_TxID = -1;
+            Session["tx_id"] = -1;
             Label_TransactionID.Text = "-";
             Label_CreationDate.Text = "";
 
