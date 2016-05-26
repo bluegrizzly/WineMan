@@ -51,8 +51,9 @@ namespace WineMan.Transactions
             {
                 // fall back if you are editing a newly created record
                 if (m_TxID < 0 && Session["tx_id"] != null)
+                {
                     m_TxID = (int)Session["tx_id"];
-
+                }
                 UpdateUI();
                 return;
             }
@@ -69,6 +70,9 @@ namespace WineMan.Transactions
                 Label_Iterator.Visible = false;
                 Button_Next.Visible = false;
                 Button_Previous.Visible = false;
+
+                if (Session["tx_id"] != null)
+                    Session["tx_id"] = -1;
             }
 
             Label_TransactionID.Text = "-";

@@ -274,14 +274,15 @@ namespace WineMan
             retString += @"""rows"" : [ ";
             foreach (TransactionStep step in steps)
             {
+                Transaction tx = Transaction.GetRecord(step.transaction_id);
+                if (tx == null)
+                    continue;
+
                 if (iterNb != 0)
                     retString += ",";
 
                 retString += @"{""id"":" + iterNb + @", ""cell"" :[";
                 iterNb++;
-                Transaction tx = Transaction.GetRecord(step.transaction_id);
-                if (tx == null)
-                    continue;
 
                 Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
 
