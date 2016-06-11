@@ -42,9 +42,11 @@ namespace WineMan.Transactions
                 System.Diagnostics.Debug.Assert(parsed);
             }
 
-            if (Request.QueryString["alltxids"] != null)
+
+            if (Session["AllTxIds"] != null)
             {
-                m_AllIds = Request.QueryString["alltxids"].Split(',').ToList();
+                string allTxIds = (string)Session["AllTxIds"];
+                m_AllIds = allTxIds.Split(',').ToList();
             }
 
             if (IsPostBack)
@@ -699,12 +701,17 @@ namespace WineMan.Transactions
                         int nameIndex = 0;
                         foreach(TransactionStep step in txSteps)
                         {
+                            Step productionStep = Step.GetRecordById(step.step_id.ToString());
+
                             //Title
                             TableCell tCell = new TableCell();
                             tCell.HorizontalAlign = HorizontalAlign.Center;
                             tCell.Text = step.GetStepName();
                             tCell.ForeColor = System.Drawing.Color.Black;
                             tCell.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
+                            if (productionStep.required_for_completion == 0)
+                                tCell.BackColor = System.Drawing.Color.LightGray;
+
                             tCell.RowSpan = 0;
                             tRowTitle.Cells.Add(tCell);
                             
@@ -738,6 +745,8 @@ namespace WineMan.Transactions
 
                             tCell2.RowSpan = 0;
                             tCell2.BackColor = step.done>0 ? System.Drawing.Color.Green : System.Drawing.Color.Orange;
+                            if (productionStep.required_for_completion == 0)
+                                tCell2.BackColor = System.Drawing.Color.LightGray;
                             tRowDates.Cells.Add(tCell2);
 
                             nameIndex++;
@@ -787,8 +796,10 @@ namespace WineMan.Transactions
             if (m_TxID >= 0)
             {
                 arguments += "&txid=" + m_TxID.ToString();
-                if (m_AllIds.Count>0)
-                    arguments += "&alltxids=" + string.Join(",", m_AllIds);
+
+                //Session["AllTxIds"] = string.Join(",", m_AllIds);
+                //if (m_AllIds.Count>0)
+                //    arguments += "&alltxids=" + string.Join(",", m_AllIds);
             }
             
             Response.Redirect("~/Transactions/Rendezvous.aspx?FromAddTx=true&customer=" + arguments);
@@ -1103,7 +1114,7 @@ namespace WineMan.Transactions
 
                     string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);
                     url += "?txid=" + newtxid;
-                    url += "&alltxids=" + string.Join(",", m_AllIds);
+                    //url += "&alltxids=" + string.Join(",", m_AllIds);
                     Response.Redirect(url);
                     break;
                 }
@@ -1121,7 +1132,7 @@ namespace WineMan.Transactions
 
                     string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);
                     url += "?txid=" + newtxid;
-                    url += "&alltxids=" + string.Join(",", m_AllIds);
+                    //url += "&alltxids=" + string.Join(",", m_AllIds);
                     Response.Redirect(url);
                     break;
                 }

@@ -184,10 +184,11 @@ namespace WineMan.Transactions
                 data.RadioButton.GroupName = "spot";
                 data.RadioButton.PreRender += new EventHandler(this.RadioButton_PreRender);
                 data.RadioButton.AutoPostBack = true;
-                if (m_Hour == RendezVousTableRow.GetRowKey(hour, min) && m_Station == station)
+                if (m_TxID >= 0 && m_Hour == RendezVousTableRow.GetRowKey(hour, min) && m_Station == station)
                 {
                     // Need to select the line that was passed from the add transaction
                     data.RadioButton.Checked = true;
+                    data.RadioButton.Visible = true;
                 }
 
                 row.RdvData.Add(station, data);
@@ -212,10 +213,10 @@ namespace WineMan.Transactions
                     {
                         if (tx.date_bottling.Hour == hour && tx.bottling_station == rdvData.Key && tx.date_bottling.Minute == min)
                         {
+                            // Check
                             GetCell(CellKind.Gray, cell);
                             rdvData.Value.RadioButton.Visible = (m_TxID == tx.id);
-                            if (!rdvData.Value.RadioButton.Visible)
-                                rdvData.Value.RadioButton.Checked = false;
+                            rdvData.Value.RadioButton.Checked = (m_TxID == tx.id);
 
                             // Hour
                             TableCell cellHour = row.Value.Row.Cells[(rdvData.Key * c_NbColumnPerStation) + 1];
@@ -298,15 +299,18 @@ namespace WineMan.Transactions
             // Set the information for communication with previous page
             int selectedHour = -1;
             int selectedStation = -1;
-
+            bool foundIt = false;
             foreach (KeyValuePair<int, RendezVousTableRow> row in m_TableRows)
             {
+                if (foundIt)
+                    break;
                 foreach (KeyValuePair<int, RendezVousData> rdvData in row.Value.RdvData)
                 {
                     if (rdvData.Value.RadioButton.Checked && rdvData.Value.RadioButton.Visible)
                     {
                         selectedHour = row.Key;
                         selectedStation = rdvData.Key;
+                        foundIt = true;
                         break;
                     }
                 }
@@ -472,11 +476,6 @@ namespace WineMan.Transactions
 
                 if (m_TxID >= 0 && !refUrl.Contains("txid="))
                     refUrl += "&txid=" + m_TxID.ToString();
-
-                 if (Request.QueryString["alltxids"] != null)
-                {
-                    refUrl += "&alltxids=" + Request.QueryString["alltxids"];
-                }
             }
             return refUrl;
         }

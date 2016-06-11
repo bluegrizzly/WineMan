@@ -72,7 +72,13 @@ namespace WineMan.Work
                     dateEnd = dateEnd.AddDays(1); // add a day so the end date is included
             }
             
-            EShow showFilter = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
+            EShow showFilter = EShow.Show_All;
+            if (context.Request.QueryString["showdone"] == "0")
+                showFilter = EShow.Show_NotDone;
+            else if (context.Request.QueryString["showdone"] == "1")
+                showFilter = EShow.Show_Done;
+            else if (context.Request.QueryString["showdone"] == "2")
+                showFilter = EShow.Show_All;
 
             string txID = context.Request.QueryString["txid"];
             string customer = context.Request.QueryString["customer"];
@@ -92,16 +98,16 @@ namespace WineMan.Work
                 if (tx != null)
                 {
                     transactions.Add(tx);
-                    m_TransactionHelper.GetTransactionToCompleteJSONRecords(context, transactions);
+                    m_TransactionHelper.GetTransactionJSONRecords(context, transactions, true);
                     return;
                 }
             }
             
             // Get all tx
-            transactions = Transaction.GetRecords(date, dateEnd, showFilter, showReadyOnly == "true", customer, edateKind);
+            transactions = Transaction.GetAllRecords(showFilter, Transaction.FilterTypes.All,customer,date, dateEnd, showReadyOnly == "true", edateKind);
 
             // Get the JSON
-            m_TransactionHelper.GetTransactionToCompleteJSONRecords(context, transactions);
+            m_TransactionHelper.GetTransactionJSONRecords(context, transactions, true);
         }
 
         private void ProcessTransactionSteps(HttpContext context, string operation)
@@ -139,11 +145,17 @@ namespace WineMan.Work
                         dateEnd = DateTime.MaxValue;
                     else
                     {
-                        if (DateTime.TryParse(dateStrEnd, out dateEnd))
-                            dateEnd = dateEnd.AddDays(1); // add a day so the end date is included
+                        DateTime.TryParse(dateStrEnd, out dateEnd);
                     }
 
-                    EShow showdone = context.Request.QueryString["showdone"] == "true" ? EShow.Show_All : EShow.Show_NotDone;
+                    EShow showdone = EShow.Show_All;
+                    if (context.Request.QueryString["showdone"] == "0")
+                        showdone = EShow.Show_NotDone;
+                    else if (context.Request.QueryString["showdone"] == "1")
+                        showdone = EShow.Show_Done;
+                    else if (context.Request.QueryString["showdone"] == "2")
+                        showdone = EShow.Show_All;
+
                     int filterStep = -1;
                     Int32.TryParse(context.Request.QueryString["filterstep"], out filterStep);
                     if (filterStep == 0)

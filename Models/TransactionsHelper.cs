@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using MySql.Data.MySqlClient;
+using System.Text;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace WineMan
 {
@@ -36,12 +39,15 @@ namespace WineMan
                     TransactionStep step = steps[i];
                     bool found = false;
                     Transaction tx = Transaction.GetRecord(step.transaction_id);
-                    foreach (Customer cus in customers)
+                    if (tx != null)
                     {
-                        if (tx.client_id == cus.id)
+                        foreach (Customer cus in customers)
                         {
-                            found = true;
-                            break;
+                            if (tx.client_id == cus.id)
+                            {
+                                found = true;
+                                break;
+                            }
                         }
                     }
 
@@ -97,40 +103,73 @@ namespace WineMan
         }
 
         // Get all transactions in JSON format for the grid
-        public void GetTransactionJSONRecords(HttpContext context, List<Transaction> allTx)
+        public void GetTransactionJSONRecords(HttpContext context, List<Transaction> allTx, bool forTxDoneScreen)
         {
-            string retString = @"{";
-
             int iterNb = 0;
             int nbRows = allTx.Count;
-            retString += @"""total"": """ + nbRows.ToString() + @""",";
-            retString += @"""page"": ""1"",";
-            retString += @"""records"": """ + nbRows.ToString() + @""",";
-            retString += @"""rows"" : [ ";
-            foreach (Transaction tx in allTx)
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
-                if (iterNb != 0)
-                    retString += ",";
+                jsonWriter.WriteStartObject();
 
-                retString += @"{""id"":" + iterNb + @", ""cell"" :[";
-                iterNb++;
-                Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
+                jsonWriter.WritePropertyName("total");
+                jsonWriter.WriteValue(nbRows);
+                jsonWriter.WritePropertyName("page");
+                jsonWriter.WriteValue(1);
+                jsonWriter.WritePropertyName("records");
+                jsonWriter.WriteValue(nbRows);
+                jsonWriter.WritePropertyName("rows");
+                jsonWriter.WriteStartArray();
 
-                retString += @"""" + tx.id.ToString() + @""", ";
-                retString += @"""" + customer.first_name + " " + customer.last_name + @""", ";
-                retString += @"""" + GetBrandName(tx.wine_brand_id) + @""", ";
-                retString += @"""" + GetTypeName(tx.wine_type_id) + @""", ";
-                retString += @"""" + GetCategoryName(tx.wine_category_id) + @""", ";
-                retString += @"""" + tx.date_creation.ToString() + @""", ";
-                retString += @"""" + tx.date_bottling.ToString() + @""", ";
-                retString += @"""" + tx.bottling_station.ToString() + @""", ";
-                retString += @"""" + tx.location.ToString() + @""", ";
-                retString += @"""" + tx.product_code.ToString() + @""", ";
-                retString += @"""" + tx.done.ToString() + @"""";
-                retString += "]}";
+                foreach (Transaction tx in allTx)
+                {
+                    if (forTxDoneScreen)
+                    {
+                        int nbStepDone = 0;
+                        int nbStepTotal = 0;
+                        tx.AreAllStepDone(out nbStepDone, out nbStepTotal);
+                        string stepsDone = nbStepDone.ToString() + "/" + nbStepTotal.ToString();
+
+                        jsonWriter.WriteStartArray();
+                        jsonWriter.WriteValue(tx.id.ToString());
+                        jsonWriter.WriteValue(tx.CustomerName);
+                        jsonWriter.WriteValue(tx.BrandName);
+                        jsonWriter.WriteValue(tx.TypeName);
+                        jsonWriter.WriteValue(tx.CategoryName);
+                        jsonWriter.WriteValue(tx.date_creation.ToString());
+                        jsonWriter.WriteValue(tx.date_bottling.ToString());
+                        jsonWriter.WriteValue(stepsDone);
+                        jsonWriter.WriteValue(tx.location.ToString());
+                        jsonWriter.WriteValue(tx.done.ToString());
+                    }
+                    else
+                    {
+                        jsonWriter.WriteStartArray();
+                        jsonWriter.WriteValue(tx.id.ToString());
+                        jsonWriter.WriteValue(tx.CustomerName);
+                        jsonWriter.WriteValue(tx.BrandName);
+                        jsonWriter.WriteValue(tx.TypeName);
+                        jsonWriter.WriteValue(tx.CategoryName);
+                        jsonWriter.WriteValue(tx.date_creation.ToString());
+                        jsonWriter.WriteValue(tx.date_bottling.ToString());
+                        jsonWriter.WriteValue(tx.bottling_station.ToString());
+                        jsonWriter.WriteValue(tx.location.ToString());
+                        jsonWriter.WriteValue(tx.product_code == Int16.MaxValue ? "" : tx.product_code.ToString());
+                        jsonWriter.WriteValue(tx.done.ToString());
+                    }
+
+                    jsonWriter.WriteEndArray();
+                    iterNb++;
+                }
+
+                jsonWriter.WriteEndArray();
+
+                jsonWriter.WriteEndObject();
+                string retString = sb.ToString();
+                context.Response.Write(retString);
             }
-            retString += "]}";
-            context.Response.Write(retString);
         }
 
 
@@ -264,81 +303,60 @@ namespace WineMan
 
         public void GetTransactionStepJSONRecords(HttpContext context, List<TransactionStep> steps)
         {
-            string retString = @"{";
-
-            int iterNb = 0;
             int nbRows = steps.Count;
-            retString += @"""total"": """ + nbRows.ToString() + @""",";
-            retString += @"""page"": ""1"",";
-            retString += @"""records"": """ + nbRows.ToString() + @""",";
-            retString += @"""rows"" : [ ";
-            foreach (TransactionStep step in steps)
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
-                Transaction tx = Transaction.GetRecord(step.transaction_id);
-                if (tx == null)
-                    continue;
+                jsonWriter.WriteStartObject();
 
-                if (iterNb != 0)
-                    retString += ",";
+                jsonWriter.WritePropertyName("total");
+                jsonWriter.WriteValue(nbRows);
+                jsonWriter.WritePropertyName("page");
+                jsonWriter.WriteValue(1);
+                jsonWriter.WritePropertyName("records");
+                jsonWriter.WriteValue(nbRows);
+                jsonWriter.WritePropertyName("rows");
+                jsonWriter.WriteStartArray();
 
-                retString += @"{""id"":" + iterNb + @", ""cell"" :[";
-                iterNb++;
+                int iterNb = 0;
+                foreach (TransactionStep step in steps)
+                {
+                    Transaction tx = Transaction.GetRecord(step.transaction_id);
+                    if (tx == null)
+                        continue;
 
-                Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
+                    Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
 
-                retString += @"""" + step.id.ToString() + @""",";
-                retString += @"""" + step.transaction_id.ToString() + @""",";
-                retString += @"""" + step.date.ToString() + @""",";
-                retString += @"""" + GetStepName(step.step_id) + @""",";
-                retString += @"""" + GetBrandName(tx.wine_brand_id) + @""",";
-                retString += @"""" + GetTypeName(tx.wine_type_id) + @""",";
-                retString += @"""" + customer.first_name + " " + customer.last_name + @""",";
-                retString += @"""" + customer.telephone + @""",";
-                retString += @"""" + step.done.ToString() + @"""";  
-                retString += "]}";
+                    jsonWriter.WriteStartObject();
+
+                    jsonWriter.WritePropertyName("id");
+                    jsonWriter.WriteValue(iterNb.ToString());
+                    jsonWriter.WritePropertyName("cell");
+                    jsonWriter.WriteStartArray();
+
+                    jsonWriter.WriteValue(step.id.ToString());
+                    jsonWriter.WriteValue(step.transaction_id.ToString());
+                    jsonWriter.WriteValue(step.date.ToString());
+                    jsonWriter.WriteValue(GetStepName(step.step_id));
+                    jsonWriter.WriteValue(GetBrandName(tx.wine_brand_id));
+                    jsonWriter.WriteValue(GetTypeName(tx.wine_type_id));
+                    jsonWriter.WriteValue(customer.first_name + " " + customer.last_name);
+                    jsonWriter.WriteValue(customer.telephone);
+                    jsonWriter.WriteValue(tx.location);
+                    jsonWriter.WriteValue(step.done);
+
+                    jsonWriter.WriteEndArray();
+                    jsonWriter.WriteEndObject();
+                    iterNb++;
+                }
+
+                jsonWriter.WriteEndArray();
+
+                jsonWriter.WriteEndObject();
+                string retString = sb.ToString();
+                context.Response.Write(retString);
             }
-            retString += "]}";
-            context.Response.Write(retString);
-        }
-
-        public void GetTransactionToCompleteJSONRecords(HttpContext context, List<Transaction> transactions)
-        {
-            string retString = @"{";
-
-            int iterNb = 0;
-            int nbRows = transactions.Count;
-            retString += @"""total"": """ + nbRows.ToString() + @""",";
-            retString += @"""page"": ""1"",";
-            retString += @"""records"": """ + nbRows.ToString() + @""",";
-            retString += @"""rows"" : [ ";
-            foreach (Transaction tx in transactions)
-            {
-                if (iterNb != 0)
-                    retString += ",";
-
-                retString += @"{""id"":" + iterNb + @", ""cell"" :[";
-                iterNb++;
-                Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
-
-                int nbStepDone = 0;
-                int nbStepTotal = 0;
-                tx.AreAllStepDone(out nbStepDone, out nbStepTotal);
-                string stepsDone = nbStepDone.ToString() + "/" + nbStepTotal.ToString();
-
-                retString += @"""" + tx.id.ToString() + @""",";
-                retString += @"""" + customer.first_name + " " + customer.last_name + @""",";
-                retString += @"""" + GetBrandName(tx.wine_brand_id) + @""",";
-                retString += @"""" + GetTypeName(tx.wine_type_id) + @""",";
-                retString += @"""" + GetCategoryName(tx.wine_category_id) + @""",";
-                retString += @"""" + tx.date_creation.ToString() + @""",";
-                retString += @"""" + tx.date_bottling.ToString() + @""",";
-                retString += @"""" + stepsDone + @""",";
-                retString += @"""" + tx.location + @""",";
-                retString += @"""" + tx.done.ToString() + @"""";
-                retString += "]}";
-            }
-            retString += "]}";
-            context.Response.Write(retString);
         }
 
         public bool SetTransactionStepToDone(List<string> ids, bool undo=false)

@@ -4,9 +4,19 @@ using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
 using System.Globalization;
+using System.Text;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace WineMan
 {
+    public class TransactionForTableView
+    {
+        public string id;
+        public string customer;
+        public string wine_brand_id;
+    }
+
     public class Transaction : BaseController
     {
         const string c_dbName = "transactions";
@@ -22,6 +32,13 @@ namespace WineMan
         public string comments;
         public string location;
         public int product_code=0;
+        // Properties got from other tables
+        public string CustomerName;
+        public string BrandName;
+        public string TypeName;
+        public string CategoryName;
+
+
 
         private static CultureInfo m_Culture = new System.Globalization.CultureInfo("en-US");
 
@@ -45,41 +62,35 @@ namespace WineMan
         {
             if (dr.HasRows)
             {
-                bool parsed = Int32.TryParse(dr["id"].ToString(), out id);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                parsed = Int32.TryParse(dr["client_id"].ToString(), out client_id);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                parsed = Int32.TryParse(dr["wine_brand_id"].ToString(), out wine_brand_id);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                parsed = Int32.TryParse(dr["wine_type_id"].ToString(), out wine_type_id);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                parsed = Int32.TryParse(dr["wine_category_id"].ToString(), out wine_category_id);
-                System.Diagnostics.Debug.Assert(parsed);
+                id = dr.GetInt32("id");
+                client_id = dr.GetInt32("client_id");
+                wine_brand_id = dr.GetInt32("wine_brand_id");
+                wine_type_id = dr.GetInt32("wine_type_id");
+                wine_category_id = dr.GetInt32("wine_category_id");
 
                 string aa = dr["date_creation"].ToString();
-                parsed = DateTime.TryParseExact(dr["date_creation"].ToString(), "G", m_Culture, DateTimeStyles.None, out date_creation);
+                bool parsed = DateTime.TryParseExact(dr["date_creation"].ToString(), "G", m_Culture, DateTimeStyles.None, out date_creation);
                 System.Diagnostics.Debug.Assert(parsed);
 
                 aa = dr["date_bottling"].ToString();
                 parsed = DateTime.TryParseExact(dr["date_bottling"].ToString(), "G", m_Culture, DateTimeStyles.None, out date_bottling);
                 System.Diagnostics.Debug.Assert(parsed);
 
-                parsed = Int32.TryParse(dr["bottling_station"].ToString(), out bottling_station);
-                System.Diagnostics.Debug.Assert(parsed);
-
-                int num;
-                parsed = Int32.TryParse(dr["done"].ToString(), out num);
-                done = num > 0 ? true : false;
-                System.Diagnostics.Debug.Assert(parsed);
+                bottling_station = dr.GetInt32("bottling_station");
+                done = dr.GetBoolean("done");
 
                 comments = dr["comments"].ToString();
                 location = dr["location"].ToString();
-                Int32.TryParse(dr["product_code"].ToString(), out product_code);
-                
+                product_code = dr.GetInt16("product_code");  // 32767 is Int16Max
+
+                try
+                {
+                    CustomerName = dr.GetString("CustomerFirstName") + " " + dr.GetString("CustomerLastName");
+                    BrandName = dr.GetString("BrandName");
+                    TypeName = dr.GetString("TypeName");
+                    CategoryName = dr.GetString("CategoryName");
+                }
+                catch (Exception) { }
             }
         }
 
@@ -228,193 +239,119 @@ namespace WineMan
             return transaction;
         }
 
-        public static List<Transaction> GetAllRecords(bool includeCompleted, FilterTypes filter, string filterCustomer)
+        public static List<Transaction> GetAllRecords(
+            EShow showFilter, 
+            FilterTypes filter, 
+            string filterCustomer, 
+            DateTime dateStart, 
+            DateTime dateEnd, 
+            bool showReadyOnly = false, 
+            Transaction.DateKind dateKind = Transaction.DateKind.Unknown)
         {
-            List<Transaction> transactions = new List<Transaction>();
-            try
+            string sqlQuery = "SELECT *, customers.last_name as CustomerLastName, " +
+                               "customers.first_name as CustomerFirstName, " +
+                               "wine_brands.name as BrandName, " +
+                               "wine_types.name as TypeName, " +
+                               "wine_categories.name as CategoryName " +
+                               "FROM transactions" ;
+            
+            // WHERE : done
+            string sqlQueryWhere = "";
+            if (showFilter == EShow.Show_NotDone)
+                sqlQueryWhere += " WHERE transactions.done=0";
+            else if (showFilter == EShow.Show_Done)
+                sqlQueryWhere += " WHERE transactions.done=1";
+
+            // WHERE : filter type
+            if (filter != FilterTypes.All)
             {
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-                using (MySqlConnection con = new MySqlConnection(connectionString))
+                if (sqlQueryWhere.Length != 0)
+                    sqlQueryWhere += " AND";
+                else
+                    sqlQueryWhere += " WHERE";
+
+                switch (filter)
                 {
-                    string sqlQuery = "SELECT * FROM " + c_dbName;
-                    string sqlQueryWhere="";
-                    if (!includeCompleted)
-                        sqlQueryWhere += " WHERE done=0";
-
-                    if (filter != FilterTypes.All)
-                    {
-                        if (sqlQueryWhere.Length != 0)
-                            sqlQueryWhere += " AND";
-                        else
-                            sqlQueryWhere += " WHERE";
-
-                        switch(filter)
-                        { 
-                            case FilterTypes.Today:
-                                sqlQueryWhere += " CAST(date_creation AS DATE) = CAST(CURDATE() AS DATE)";
-                                break;
-                            case FilterTypes.ThisWeek:
-                                sqlQueryWhere += " WEEK (date_creation) = WEEK( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
-                                break;
-                            case FilterTypes.ThisMonth:
-                                sqlQueryWhere += " MONTH (date_creation) = MONTH( CURDATE() )  AND YEAR( date_creation) = YEAR( CURDATE() )";
-                                break;
-                            case FilterTypes.Last4Weeks:
-                                sqlQueryWhere += " WHERE date_creation > DATE_ADD( now( ) , INTERVAL -1 MONTH ) ";
-                                break;
-                        }
-                    }
-
-                    if (filterCustomer != null && filterCustomer.Length > 0)
-                    {
-                        List<Customer> customers = CustomersHelper.GetSimilarCustomers(filterCustomer);
-
-                        bool firstCase = true;
-                        foreach (Customer custo in customers)
-                        {
-                            if (firstCase)
-                            {
-                                if (sqlQueryWhere.Length != 0)
-                                    sqlQueryWhere += " AND (";
-                                else
-                                    sqlQueryWhere += " WHERE (";
-                                firstCase = false;
-                            }
-                            else
-                                sqlQueryWhere += (" OR");
-
-                            sqlQueryWhere += " client_id = " + custo.id.ToString();
-                        }
-                        if (customers.Count > 0)
-                            sqlQueryWhere += ")";
-                        
-                    }
-
-                    sqlQuery += sqlQueryWhere + " ORDER BY id DESC";
-
-                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
-                    {
-                        con.Open();
-                        MySqlDataReader dr = cmd.ExecuteReader();
-
-                        while (dr.Read())
-                        {
-                            Transaction tx = new Transaction();
-                            tx.FillRecord(dr);
-                            transactions.Add(tx);
-                        }
-
-                        dr.Close();
-                    }
-                    con.Close();
+                    case FilterTypes.Today:
+                        sqlQueryWhere += " CAST(transactions.date_creation AS DATE) = CAST(CURDATE() AS DATE)";
+                        break;
+                    case FilterTypes.ThisWeek:
+                        sqlQueryWhere += " WEEK (transactions.date_creation) = WEEK( CURDATE() )  AND YEAR( transactions.date_creation) = YEAR( CURDATE() )";
+                        break;
+                    case FilterTypes.ThisMonth:
+                        sqlQueryWhere += " MONTH (transactions.date_creation) = MONTH( CURDATE() )  AND YEAR( transactions.date_creation) = YEAR( CURDATE() )";
+                        break;
+                    case FilterTypes.Last4Weeks:
+                        sqlQueryWhere += " WHERE transactions.date_creation > DATE_ADD( now( ) , INTERVAL -1 MONTH ) ";
+                        break;
                 }
             }
-            catch { }
+            else if (dateStart > DateTime.MinValue || dateEnd < DateTime.MaxValue)
+            {
+                // WHERE : dates
+                if (sqlQueryWhere.Length != 0)
+                    sqlQueryWhere += " AND";
+                else
+                    sqlQueryWhere += " WHERE";
+                string dateStr = dateStart.Year.ToString() + "-" + dateStart.Month.ToString() + "-" + dateStart.Day.ToString() + " %";
+                string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
 
-            return transactions;
+                if (dateKind == DateKind.Bottling)
+                    sqlQueryWhere += " (transactions.date_bottling BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+                else //if (dateKind == DateKind.Creation)
+                    sqlQueryWhere += " (transactions.date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+            }
+
+            // WHERE : ustomer
+            if (filterCustomer != null && filterCustomer.Length > 0)
+            {
+                if (sqlQueryWhere.Length != 0)
+                    sqlQueryWhere += " AND";
+                else
+                    sqlQueryWhere += " WHERE";
+
+                sqlQueryWhere += GetSqlQueryToResearchCustomers(filterCustomer);
+            }
+
+            string innerjoinStr = " INNER JOIN customers ON customers.id = transactions.client_id ";
+            innerjoinStr += "INNER JOIN wine_brands ON wine_brands.id = transactions.wine_brand_id ";
+            innerjoinStr += "INNER JOIN wine_types ON wine_types.id = transactions.wine_type_id ";
+            innerjoinStr += "INNER JOIN wine_categories ON wine_categories.id = transactions.wine_category_id ";
+
+            sqlQuery += innerjoinStr + sqlQueryWhere + " ORDER BY transactions.id DESC";
+
+            return GetRecordsFromSqlQuery(sqlQuery);
         }
 
-        public static string GetSqlQueryToResearchCustomers(string filterCustomer)
+        private static string GetSqlQueryToResearchCustomers(string filterCustomer)
         {
+            if (filterCustomer.Length == 0)
+                return "";
+
             string sqlQuery = "";
 
             sqlQuery = Customer.GetSqlQueryToResearchCustomers(filterCustomer);
             List<Customer> customers = Customer.GetRecordBySqlQuery(sqlQuery);
 
-            sqlQuery = "SELECT * FROM " + c_dbName + " WHERE";
+            sqlQuery = "";
             bool needOr=false;
+
+            if (customers.Count > 0)
+                sqlQuery += " (";
             foreach (Customer customer in customers)
             {
                 if (needOr)
                 {
                     sqlQuery += " OR ";
-                    needOr =true;
                 }
-                sqlQuery += " client_id=" + customer.id.ToString();
+                sqlQuery += " transactions.client_id=" + customer.id.ToString();
+                needOr = true;
             }
+            if (customers.Count > 0)
+                sqlQuery += " )";
+
 
             return sqlQuery;
-        }
-
-        public static List<Transaction> GetRecords(DateTime dateStart, DateTime dateEnd, EShow showFilter = EShow.Show_NotDone, bool showReadyOnly = false, string customer = null, Transaction.DateKind dateKind = Transaction.DateKind.Unknown)
-        {
-            List<Transaction> transactions = new List<Transaction>();
-
-            try
-            {
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
-                using (MySqlConnection con = new MySqlConnection(connectionString))
-                {
-                    string sqlQuery = "SELECT * FROM " + c_dbName;
-
-                    string dateStr = dateStart.Year.ToString() + "-" + dateStart.Month.ToString() + "-" + dateStart.Day.ToString() + " %";
-                    string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
-
-                    if (dateKind == DateKind.Bottling)
-                        sqlQuery += " WHERE (date_bottling BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
-                    else //if (dateKind == DateKind.Creation)
-                        sqlQuery += " WHERE (date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
-
-                    if (showFilter == EShow.Show_Done)
-                        sqlQuery += " AND done=1";
-                    else if (showFilter == EShow.Show_NotDone)
-                        sqlQuery += " AND done=0";
-
-                    sqlQuery += " ORDER BY id DESC";
-
-                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
-                    {
-                        con.Open();
-                        MySqlDataReader dr = cmd.ExecuteReader();
-
-                        while (dr.Read())
-                        {
-                            Transaction tx = new Transaction();
-                            tx.FillRecord(dr);
-
-                            if (showReadyOnly)
-                            {
-                                int nb,tot;
-                                if (tx.AreAllStepDone(out nb, out tot))
-                                    transactions.Add(tx);
-                            }
-                            else
-                                transactions.Add(tx);
-                        }
-
-                        dr.Close();
-                    }
-                    con.Close();
-                }
-            }
-            catch { }
-
-            // Filter the customer
-            if (customer != null && customer.Length > 0)
-            {
-                List<Customer> customers = CustomersHelper.GetSimilarCustomers(customer);
-
-                for (int i = transactions.Count - 1; i >= 0; i--)
-                {
-                    Transaction tx = transactions[i];
-                    bool found = false;
-                    foreach (Customer cus in customers)
-                    {
-                        if (tx.client_id == cus.id)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found)
-                    {
-                        transactions.RemoveAt(i);
-                    }
-                }
-            }
-
-            return transactions;
         }
 
         // get the records with bottling dates
@@ -499,9 +436,15 @@ namespace WineMan
             List<TransactionStep> steps = TransactionStep.GetRecordsForTx(id);
             nbDone = 0;
             total = steps.Count;
+
             foreach(TransactionStep step in steps)
             {
-                if (step.done > 0)
+                Step productionStep = Step.GetRecordById(step.step_id.ToString());
+
+                // If the step is not required odn't count it in the total
+                if (productionStep.required_for_completion == 0)
+                    total--;
+                else if (step.done > 0)
                     nbDone++;
             }
             if (nbDone == total)

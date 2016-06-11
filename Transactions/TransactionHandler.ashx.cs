@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace WineMan.Transactions
 {
-    public class TransactionHandler : IHttpHandler
+    public class TransactionHandler : IHttpHandler, System.Web.SessionState.IRequiresSessionState 
     {
         const string dbName = "transactions";
         HandlerHelper m_Helper = new HandlerHelper();
@@ -54,9 +54,12 @@ namespace WineMan.Transactions
                         
                         string url = Utils.ResolveServerUrl("/Transactions/AddTransaction.aspx", false);
                         url += "?txid=" + txID.ToString();
-                        
+
                         if (allIds.Length > 0)
-                            url += "&alltxids=" + allIds;
+                            //url += "&alltxids=" + allIds;
+                            context.Session["AllTxIds"] = allIds;
+                        else
+                            context.Session.Remove("AllTxIds");
 
                         context.Response.Write(@"""" + url + @"""");
                     }
@@ -81,7 +84,14 @@ namespace WineMan.Transactions
             }
             else
             {
-                bool showCompleted = context.Request.QueryString["showcompleted"] == "true";
+                EShow show = EShow.Show_All;
+                if (context.Request.QueryString["showcompleted"] == "0")
+                    show = EShow.Show_NotDone;
+                else if (context.Request.QueryString["showcompleted"] == "1")
+                    show = EShow.Show_Done;
+                else if (context.Request.QueryString["showcompleted"] == "2")
+                    show = EShow.Show_All;
+
                 string transactionIDStr = context.Request.QueryString["filtertxid"];
                 int filterInt;
                 bool parsed = Int32.TryParse(context.Request.QueryString["filterdate"], out filterInt);
@@ -94,24 +104,14 @@ namespace WineMan.Transactions
                     if (tx != null && tx.id >= 0)
                     {
                         allTx.Add(tx);
-                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
+                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx, false);
                     }
                 }
                 else
                 {
                     string filtercustomers = context.Request.QueryString["filtercustomer"];
-                    if (filtercustomers.Length == 0)
-                    {
-                        List<Transaction> allTx = Transaction.GetAllRecords(showCompleted, (Transaction.FilterTypes)filterInt, filtercustomers);
-                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
-                    }
-                    else
-                    {
-                        // Looking for a customer
-                        string sqlQuery = Transaction.GetSqlQueryToResearchCustomers(filtercustomers);
-                        List<Transaction> allTx = Transaction.GetRecordsFromSqlQuery(sqlQuery);
-                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx);
-                    }
+                    List<Transaction> allTx = Transaction.GetAllRecords(show, (Transaction.FilterTypes)filterInt, filtercustomers,DateTime.MinValue, DateTime.MaxValue);
+                    m_TransactionHelper.GetTransactionJSONRecords(context, allTx, false);
                 }
             }
         }

@@ -76,6 +76,15 @@ namespace WineMan.Work {
         protected global::System.Web.UI.WebControls.Button Button_ClearCustomer;
         
         /// <summary>
+        /// DropDownList_ShowDone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList_ShowDone;
+        
+        /// <summary>
         /// CheckBox_ShowReady control.
         /// </summary>
         /// <remarks>
@@ -83,15 +92,6 @@ namespace WineMan.Work {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox CheckBox_ShowReady;
-        
-        /// <summary>
-        /// CheckBox_ShowDone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox CheckBox_ShowDone;
         
         /// <summary>
         /// txtDateStart control.

@@ -13,9 +13,9 @@ namespace WineMan
 {
     public enum EShow
     {
-        Show_All,
+        Show_NotDone,
         Show_Done,
-        Show_NotDone
+        Show_All
     };
 
     public static class Utils
@@ -169,13 +169,15 @@ namespace WineMan
 
         public static void InitialSetup()
         {
-            try
-            {
-                // 1. TABLE openhours 
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["winemanConnectionString"].ConnectionString;
 
-                using (MySqlConnection con = new MySqlConnection(connectionString))
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                con.Open();
+
+                try
                 {
+                    // 1. TABLE openhours 
                     string sqlQuery = @"CREATE TABLE IF NOT EXISTS `openhours` (
                                         `id` INT NOT NULL AUTO_INCREMENT,
                                         `day` VARCHAR(45) NULL,
@@ -184,7 +186,6 @@ namespace WineMan
                                         PRIMARY KEY (`id`),
                                         UNIQUE INDEX `id_UNIQUE` (`id` ASC))";
 
-                    con.Open();
                     int result = -1;
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
@@ -194,7 +195,7 @@ namespace WineMan
                     sqlQuery = @"SELECT COUNT(*) FROM openhours";
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
                     {
-                        result =  Convert.ToInt32(cmd.ExecuteScalar());
+                        result = Convert.ToInt32(cmd.ExecuteScalar());
                     }
 
                     if (result <= 0)
@@ -210,12 +211,24 @@ namespace WineMan
                             }
                         }
                     }
-                    con.Close();
                 }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.Assert(false, e.Message);
+                catch (Exception ) { }
+
+                // 2. 
+                try
+                {
+                    string sqlQuery = @"ALTER TABLE `wineman`.`steps` 
+                                        ADD COLUMN `required_for_completion` BIT(1) NULL DEFAULT b'1' AFTER `active`";
+
+                    int result = -1;
+                    using (MySqlCommand cmd = new MySqlCommand(sqlQuery, con))
+                    {
+                        result = cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ) { }
+
+                con.Close();
             }
         }
     }

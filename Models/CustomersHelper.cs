@@ -22,33 +22,8 @@ namespace WineMan
         public static List<Customer> GetSimilarCustomers(string inputName)
         {
             List<Customer> result = new List<Customer>();
-
-            if (inputName == " ")
-            {
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers ORDER BY last_name");
-                return result;
-            }
-
-            // check first if we have a full name
-            string[] arrayString = inputName.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (arrayString.Count() == 2)
-            {
-                string sqlQuery = "SELECT DISTINCT * FROM customers WHERE first_name LIKE '%" + arrayString[0] + "%'" +
-                    " AND last_name LIKE '%" + arrayString[1] + "%' ORDER BY last_name";
-                result = Customer.GetRecordBySqlQuery(sqlQuery);
-            }
-
-            if (result.Count == 0)
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE first_name LIKE '%" + inputName + "%'" + " ORDER BY last_name");
-
-            if (result.Count == 0)
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE last_name LIKE '%" + inputName + "%'" + " ORDER BY last_name");
-
-            if (result.Count == 0)
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE id = '" + inputName + "'" + " ORDER BY last_name");
-
-            if (result.Count == 0)
-                result = Customer.GetRecordBySqlQuery("SELECT DISTINCT * FROM customers WHERE telephone LIKE '%" + inputName + "%'" + " ORDER BY last_name");
+            string sqlQuery = Customer.GetSqlQueryToResearchCustomers(inputName);
+            result = Customer.GetRecordBySqlQuery(sqlQuery);
 
             return result;
         }

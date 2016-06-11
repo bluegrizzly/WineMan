@@ -255,7 +255,7 @@ namespace WineMan.Core
                         if (colName == "telephone")
                             valueRaw = Utils.FormatTelephone(valueRaw);
 
-                        if (colName == "active")
+                        if (colName == "active" || colName == "required_for_completion")
                             sqlCmd += colName + "=" + valueRaw;
                         else
                             sqlCmd += colName + "='" + valueRaw + "'";

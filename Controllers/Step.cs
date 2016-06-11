@@ -13,6 +13,7 @@ namespace WineMan
         public string name;
         public string name_french;
         public int final_step;
+        public int required_for_completion;
         public const int c_YeastID = 1;
 
         public void FillData(MySqlDataReader dr)
@@ -26,6 +27,9 @@ namespace WineMan
                 name_french = dr["name_french"].ToString();
 
                 parsed = Int32.TryParse(dr["final_step"].ToString(), out final_step);
+                System.Diagnostics.Debug.Assert(parsed);
+
+                parsed = Int32.TryParse(dr["required_for_completion"].ToString(), out required_for_completion);
                 System.Diagnostics.Debug.Assert(parsed);
             }
         }
