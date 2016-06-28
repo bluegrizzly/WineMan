@@ -244,9 +244,10 @@ namespace WineMan
             FilterTypes filter, 
             string filterCustomer, 
             DateTime dateStart, 
-            DateTime dateEnd, 
-            bool showReadyOnly = false, 
-            Transaction.DateKind dateKind = Transaction.DateKind.Unknown)
+            DateTime dateEnd,
+            bool showReadyOnly = false,
+            Transaction.DateKind dateKind = Transaction.DateKind.Unknown,
+            int txID = -1)
         {
             string sqlQuery = "SELECT *, customers.last_name as CustomerLastName, " +
                                "customers.first_name as CustomerFirstName, " +
@@ -302,7 +303,7 @@ namespace WineMan
                     sqlQueryWhere += " (transactions.date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
             }
 
-            // WHERE : ustomer
+            // WHERE : customer
             if (filterCustomer != null && filterCustomer.Length > 0)
             {
                 if (sqlQueryWhere.Length != 0)
@@ -313,6 +314,17 @@ namespace WineMan
                 sqlQueryWhere += GetSqlQueryToResearchCustomers(filterCustomer);
             }
 
+            // WHERE : transaction ID
+            if (txID > 0)
+            {
+                if (sqlQueryWhere.Length != 0)
+                    sqlQueryWhere += " AND";
+                else
+                    sqlQueryWhere += " WHERE";
+
+                sqlQueryWhere += " transactions.id='" + txID.ToString() + "'";
+            }
+
             string innerjoinStr = " INNER JOIN customers ON customers.id = transactions.client_id ";
             innerjoinStr += "INNER JOIN wine_brands ON wine_brands.id = transactions.wine_brand_id ";
             innerjoinStr += "INNER JOIN wine_types ON wine_types.id = transactions.wine_type_id ";
@@ -320,7 +332,23 @@ namespace WineMan
 
             sqlQuery += innerjoinStr + sqlQueryWhere + " ORDER BY transactions.id DESC";
 
-            return GetRecordsFromSqlQuery(sqlQuery);
+            if (showReadyOnly)
+            {
+                List<Transaction> alltx = GetRecordsFromSqlQuery(sqlQuery);
+                List<Transaction> alltxRet = new List<Transaction>();
+                foreach (Transaction tx in alltx)
+                {
+                    int nbStepDone = 0;
+                    int nbStepTotal = 0;
+                    tx.AreAllStepDone(out nbStepDone, out nbStepTotal);
+                    if (nbStepTotal == nbStepDone)
+                        alltxRet.Add(tx);
+                }
+                return alltxRet;
+            }
+            else
+                return GetRecordsFromSqlQuery(sqlQuery);
+
         }
 
         private static string GetSqlQueryToResearchCustomers(string filterCustomer)

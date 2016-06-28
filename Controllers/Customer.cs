@@ -162,6 +162,7 @@ namespace WineMan
                     " OR last_name LIKE '%" + filterCustomer + "%'" +
                     " OR id = '" + filterCustomer + "'" +
                     " OR telephone LIKE '%" + filterCustomer + "%'" +
+                    " OR telephone_bur LIKE '%" + filterCustomer + "%'" +
                     " ORDER BY last_name";
 
                 // Try Phone number formated
@@ -170,7 +171,9 @@ namespace WineMan
                     long dummy;
                     if (Int64.TryParse(filterCustomer, out dummy))
                         filterCustomer = Utils.FormatTelephone(filterCustomer);
-                    sqlQuery = "SELECT DISTINCT * FROM " + c_dbName + " WHERE telephone LIKE '%" + filterCustomer + "%'" +
+                    sqlQuery = "SELECT DISTINCT * FROM " + c_dbName + 
+                        " WHERE telephone LIKE '%" + filterCustomer + "%'" +
+                        " OR telephone_bur LIKE '%" + filterCustomer + "%'" +
                         " ORDER BY last_name";
                 }
             }

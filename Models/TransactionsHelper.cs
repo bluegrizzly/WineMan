@@ -301,7 +301,7 @@ namespace WineMan
             return true;
         }
 
-        public void GetTransactionStepJSONRecords(HttpContext context, List<TransactionStep> steps)
+        public void GetTransactionStepJSONRecords(HttpContext context, List<TransactionStep> steps, List<Transaction> allTx)
         {
             int nbRows = steps.Count;
             StringBuilder sb = new StringBuilder();
@@ -322,7 +322,17 @@ namespace WineMan
                 int iterNb = 0;
                 foreach (TransactionStep step in steps)
                 {
-                    Transaction tx = Transaction.GetRecord(step.transaction_id);
+                    Transaction tx = null;
+                    foreach(Transaction tx2 in allTx)
+                    {
+                        if (tx2.id == step.transaction_id)
+                        {
+                            tx = tx2;
+                            break;
+                        }
+                    }
+
+                    //Transaction tx = Transaction.GetRecord(step.transaction_id);
                     if (tx == null)
                         continue;
 
@@ -510,8 +520,7 @@ namespace WineMan
                 {
                     try
                     {
-                        int result = command.ExecuteNonQuery();
-                        res = true;
+                        res = command.ExecuteNonQuery() == 1;
                     }
                     catch (Exception e)
                     {

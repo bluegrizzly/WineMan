@@ -1088,7 +1088,7 @@ namespace WineMan.Transactions
 
             List<string> ids = new List<string>();
             ids.Add(m_TxID.ToString());
-            bool res = TransactionsHelper.SetTransactionToDone(ids, CheckBox_TxCompleted.Checked); 
+            bool res = TransactionsHelper.SetTransactionToDone(ids, !CheckBox_TxCompleted.Checked); 
             if (res)
             {
                 if (CheckBox_TxCompleted.Checked)

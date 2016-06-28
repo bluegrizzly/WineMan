@@ -97,22 +97,11 @@ namespace WineMan.Transactions
                 bool parsed = Int32.TryParse(context.Request.QueryString["filterdate"], out filterInt);
 
                 int txID=-1;
-                if (Int32.TryParse(transactionIDStr, out txID))
-                {
-                    List<Transaction> allTx = new List<Transaction>();
-                    Transaction tx = Transaction.GetRecord(txID);
-                    if (tx != null && tx.id >= 0)
-                    {
-                        allTx.Add(tx);
-                        m_TransactionHelper.GetTransactionJSONRecords(context, allTx, false);
-                    }
-                }
-                else
-                {
-                    string filtercustomers = context.Request.QueryString["filtercustomer"];
-                    List<Transaction> allTx = Transaction.GetAllRecords(show, (Transaction.FilterTypes)filterInt, filtercustomers,DateTime.MinValue, DateTime.MaxValue);
-                    m_TransactionHelper.GetTransactionJSONRecords(context, allTx, false);
-                }
+                Int32.TryParse(transactionIDStr, out txID);
+
+                string filtercustomers = context.Request.QueryString["filtercustomer"];
+                List<Transaction> allTx = Transaction.GetAllRecords(show, (Transaction.FilterTypes)filterInt, filtercustomers, DateTime.MinValue, DateTime.MaxValue, false, Transaction.DateKind.Unknown, txID);
+                m_TransactionHelper.GetTransactionJSONRecords(context, allTx, false);
             }
         }
 

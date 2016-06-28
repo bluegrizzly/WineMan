@@ -170,7 +170,8 @@ namespace WineMan.Work
                     steps.Sort((x, y) => x.date.CompareTo(y.date));
                     steps.Sort((x, y) => x.step_id.CompareTo(y.step_id));
 
-                    m_TransactionHelper.GetTransactionStepJSONRecords(context, steps );
+                    List<Transaction> allTx = Transaction.GetAllRecords(EShow.Show_NotDone, Transaction.FilterTypes.All, customer, date, dateEnd);
+                    m_TransactionHelper.GetTransactionStepJSONRecords(context, steps, allTx );
                 }
             }
         }
