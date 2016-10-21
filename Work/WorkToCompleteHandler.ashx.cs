@@ -146,6 +146,7 @@ namespace WineMan.Work
                     else
                     {
                         DateTime.TryParse(dateStrEnd, out dateEnd);
+                        dateEnd = dateEnd.AddDays(1); //include this day!
                     }
 
                     EShow showdone = EShow.Show_All;
