@@ -34,10 +34,11 @@ namespace WineMan
         public int product_code=0;
         // Properties got from other tables
         public string CustomerName;
+        public string CustomerTelephone;
         public string BrandName;
         public string TypeName;
         public string CategoryName;
-
+        public string Symbol;
 
 
         private static CultureInfo m_Culture = new System.Globalization.CultureInfo("en-US");
@@ -86,9 +87,11 @@ namespace WineMan
                 try
                 {
                     CustomerName = dr.GetString("CustomerFirstName") + " " + dr.GetString("CustomerLastName");
+                    CustomerTelephone = dr.GetString("CustomerTel");
                     BrandName = dr.GetString("BrandName");
                     TypeName = dr.GetString("TypeName");
                     CategoryName = dr.GetString("CategoryName");
+                    Symbol = dr.GetString("Symbol");
                 }
                 catch (Exception) { }
             }
@@ -251,78 +254,77 @@ namespace WineMan
         {
             string sqlQuery = "SELECT *, customers.last_name as CustomerLastName, " +
                                "customers.first_name as CustomerFirstName, " +
+                               "wine_categories.symbol as symbol, " +
                                "wine_brands.name as BrandName, " +
                                "wine_types.name as TypeName, " +
-                               "wine_categories.name as CategoryName " +
-                               "FROM transactions" ;
-            
-            // WHERE : done
+                               "wine_categories.name as CategoryName, " +
+                               "customers.telephone as CustomerTel " +
+                               "FROM " + c_dbName;
+
             string sqlQueryWhere = "";
-            if (showFilter == EShow.Show_NotDone)
-                sqlQueryWhere += " WHERE transactions.done=0";
-            else if (showFilter == EShow.Show_Done)
-                sqlQueryWhere += " WHERE transactions.done=1";
-
-            // WHERE : filter type
-            if (filter != FilterTypes.All)
-            {
-                if (sqlQueryWhere.Length != 0)
-                    sqlQueryWhere += " AND";
-                else
-                    sqlQueryWhere += " WHERE";
-
-                switch (filter)
-                {
-                    case FilterTypes.Today:
-                        sqlQueryWhere += " CAST(transactions.date_creation AS DATE) = CAST(CURDATE() AS DATE)";
-                        break;
-                    case FilterTypes.ThisWeek:
-                        sqlQueryWhere += " WEEK (transactions.date_creation) = WEEK( CURDATE() )  AND YEAR( transactions.date_creation) = YEAR( CURDATE() )";
-                        break;
-                    case FilterTypes.ThisMonth:
-                        sqlQueryWhere += " MONTH (transactions.date_creation) = MONTH( CURDATE() )  AND YEAR( transactions.date_creation) = YEAR( CURDATE() )";
-                        break;
-                    case FilterTypes.Last4Weeks:
-                        sqlQueryWhere += " WHERE transactions.date_creation > DATE_ADD( now( ) , INTERVAL -1 MONTH ) ";
-                        break;
-                }
-            }
-            else if (dateStart > DateTime.MinValue || dateEnd < DateTime.MaxValue)
-            {
-                // WHERE : dates
-                if (sqlQueryWhere.Length != 0)
-                    sqlQueryWhere += " AND";
-                else
-                    sqlQueryWhere += " WHERE";
-                string dateStr = dateStart.Year.ToString() + "-" + dateStart.Month.ToString() + "-" + dateStart.Day.ToString() + " %";
-                string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
-
-                if (dateKind == DateKind.Bottling)
-                    sqlQueryWhere += " (transactions.date_bottling BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
-                else //if (dateKind == DateKind.Creation)
-                    sqlQueryWhere += " (transactions.date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
-            }
-
-            // WHERE : customer
-            if (filterCustomer != null && filterCustomer.Length > 0)
-            {
-                if (sqlQueryWhere.Length != 0)
-                    sqlQueryWhere += " AND";
-                else
-                    sqlQueryWhere += " WHERE";
-
-                sqlQueryWhere += GetSqlQueryToResearchCustomers(filterCustomer);
-            }
-
-            // WHERE : transaction ID
+            // if there is a tx id , we want only this one.
             if (txID > 0)
             {
-                if (sqlQueryWhere.Length != 0)
-                    sqlQueryWhere += " AND";
-                else
-                    sqlQueryWhere += " WHERE";
+                sqlQueryWhere = " WHERE transactions.id='" + txID.ToString() + "'";
+            }
+            else
+            {
+                // WHERE : done
+                if (showFilter == EShow.Show_NotDone)
+                    sqlQueryWhere += " WHERE transactions.done=0";
+                else if (showFilter == EShow.Show_Done)
+                    sqlQueryWhere += " WHERE transactions.done=1";
 
-                sqlQueryWhere += " transactions.id='" + txID.ToString() + "'";
+                // WHERE : filter type
+                if (filter != FilterTypes.All)
+                {
+                    if (sqlQueryWhere.Length != 0)
+                        sqlQueryWhere += " AND";
+                    else
+                        sqlQueryWhere += " WHERE";
+
+                    switch (filter)
+                    {
+                        case FilterTypes.Today:
+                            sqlQueryWhere += " CAST(transactions.date_creation AS DATE) = CAST(CURDATE() AS DATE)";
+                            break;
+                        case FilterTypes.ThisWeek:
+                            sqlQueryWhere += " WEEK (transactions.date_creation) = WEEK( CURDATE() )  AND YEAR( transactions.date_creation) = YEAR( CURDATE() )";
+                            break;
+                        case FilterTypes.ThisMonth:
+                            sqlQueryWhere += " MONTH (transactions.date_creation) = MONTH( CURDATE() )  AND YEAR( transactions.date_creation) = YEAR( CURDATE() )";
+                            break;
+                        case FilterTypes.Last4Weeks:
+                            sqlQueryWhere += " WHERE transactions.date_creation > DATE_ADD( now( ) , INTERVAL -1 MONTH ) ";
+                            break;
+                    }
+                }
+                else if (dateStart > DateTime.MinValue || dateEnd < DateTime.MaxValue)
+                {
+                    // WHERE : dates
+                    if (sqlQueryWhere.Length != 0)
+                        sqlQueryWhere += " AND";
+                    else
+                        sqlQueryWhere += " WHERE";
+                    string dateStr = dateStart.Year.ToString() + "-" + dateStart.Month.ToString() + "-" + dateStart.Day.ToString() + " %";
+                    string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
+
+                    if (dateKind == DateKind.Bottling)
+                        sqlQueryWhere += " (transactions.date_bottling BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+                    else //if (dateKind == DateKind.Creation)
+                        sqlQueryWhere += " (transactions.date_creation BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+                }
+
+                // WHERE : customer
+                if (filterCustomer != null && filterCustomer.Length > 0)
+                {
+                    if (sqlQueryWhere.Length != 0)
+                        sqlQueryWhere += " AND";
+                    else
+                        sqlQueryWhere += " WHERE";
+
+                    sqlQueryWhere += GetSqlQueryToResearchCustomers(filterCustomer);
+                }
             }
 
             string innerjoinStr = " INNER JOIN customers ON customers.id = transactions.client_id ";
@@ -330,9 +332,9 @@ namespace WineMan
             innerjoinStr += "INNER JOIN wine_types ON wine_types.id = transactions.wine_type_id ";
             innerjoinStr += "INNER JOIN wine_categories ON wine_categories.id = transactions.wine_category_id ";
 
-            sqlQuery += innerjoinStr + sqlQueryWhere + " ORDER BY transactions.id DESC";
+            sqlQuery += innerjoinStr + sqlQueryWhere + " ORDER BY transactions.id ASC";
 
-            if (showReadyOnly)
+            if (showReadyOnly && txID <= 0)
             {
                 List<Transaction> alltx = GetRecordsFromSqlQuery(sqlQuery);
                 List<Transaction> alltxRet = new List<Transaction>();

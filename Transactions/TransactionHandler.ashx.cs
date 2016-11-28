@@ -56,7 +56,6 @@ namespace WineMan.Transactions
                         url += "?txid=" + txID.ToString();
 
                         if (allIds.Length > 0)
-                            //url += "&alltxids=" + allIds;
                             context.Session["AllTxIds"] = allIds;
                         else
                             context.Session.Remove("AllTxIds");

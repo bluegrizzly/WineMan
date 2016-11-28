@@ -49,6 +49,15 @@ namespace WineMan.Transactions {
         protected global::System.Web.UI.WebControls.Table Table_Stations;
         
         /// <summary>
+        /// Calendar_RDV control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Calendar Calendar_RDV;
+        
+        /// <summary>
         /// DropDownList_ManualHour control.
         /// </summary>
         /// <remarks>
@@ -74,15 +83,6 @@ namespace WineMan.Transactions {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button_AddHour_S1;
-        
-        /// <summary>
-        /// Calendar_RDV control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Calendar Calendar_RDV;
         
         /// <summary>
         /// Button_Select control.

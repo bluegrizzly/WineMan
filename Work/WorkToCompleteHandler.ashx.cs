@@ -92,19 +92,10 @@ namespace WineMan.Work
             // Check for specific transaction
             List<Transaction> transactions = new List<Transaction>();
             int txIDnb=-1;
-            if (txID != null && txID.Length > 0 && Int32.TryParse(txID, out txIDnb))
-            {
-                Transaction tx = Transaction.GetRecord(txIDnb);
-                if (tx != null)
-                {
-                    transactions.Add(tx);
-                    m_TransactionHelper.GetTransactionJSONRecords(context, transactions, true);
-                    return;
-                }
-            }
+            Int32.TryParse(txID, out txIDnb);
             
             // Get all tx
-            transactions = Transaction.GetAllRecords(showFilter, Transaction.FilterTypes.All,customer,date, dateEnd, showReadyOnly == "true", edateKind);
+            transactions = Transaction.GetAllRecords(showFilter, Transaction.FilterTypes.All,customer,date, dateEnd, showReadyOnly == "true", edateKind, txIDnb);
 
             // Get the JSON
             m_TransactionHelper.GetTransactionJSONRecords(context, transactions, true);
@@ -161,17 +152,27 @@ namespace WineMan.Work
                     Int32.TryParse(context.Request.QueryString["filterstep"], out filterStep);
                     if (filterStep == 0)
                         filterStep = - 1;
-                    string txID = context.Request.QueryString["txid"];
+                    int txID = 0;
+                    string txIDStr = context.Request.QueryString["txid"];
+                    Int32.TryParse(txIDStr, out txID);
+
                     string customer = context.Request.QueryString["customer"];
 
                     // Get all transaction not completed.
-                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, false, showdone, filterStep, txID, customer);
+                    List<TransactionStep> steps = m_TransactionHelper.GetAllStepsOfThisDay(date, dateEnd, false, showdone, filterStep, txIDStr, customer);
 
-                    // Sort by steps
-                    steps.Sort((x, y) => x.date.CompareTo(y.date));
-                    steps.Sort((x, y) => x.step_id.CompareTo(y.step_id));
+                    if (filterStep >= 0)
+                    {
+                        steps.Sort((x, y) => x.transaction_id.CompareTo(y.transaction_id));
+                    }
+                    else
+                    {
+                        // Sort by steps
+                        //steps.Sort((x, y) => x.date.CompareTo(y.date));
+                        steps.Sort((x, y) => x.step_id.CompareTo(y.step_id));
+                    }
 
-                    List<Transaction> allTx = Transaction.GetAllRecords(EShow.Show_NotDone, Transaction.FilterTypes.All, customer, date, dateEnd);
+                    List<Transaction> allTx = Transaction.GetAllRecords(EShow.Show_NotDone, Transaction.FilterTypes.All, customer, date, dateEnd,false,Transaction.DateKind.Unknown, txID);
                     m_TransactionHelper.GetTransactionStepJSONRecords(context, steps, allTx );
                 }
             }

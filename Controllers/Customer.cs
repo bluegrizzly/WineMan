@@ -153,8 +153,9 @@ namespace WineMan
             string[] arrayString = filterCustomer.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             if (arrayString.Count() == 2)
             {
-                sqlQuery = "SELECT DISTINCT * FROM " + c_dbName + " WHERE first_name LIKE '%" + arrayString[0] + "%'" +
-                    " AND last_name LIKE '%" + arrayString[1] + "%'";
+                sqlQuery = "SELECT DISTINCT * FROM " + c_dbName + " WHERE (first_name LIKE '%" + arrayString[0] + "%'" +
+                    " AND last_name LIKE '%" + arrayString[1] + "%') " +
+                    " OR first_name LIKE '%" + filterCustomer + "%' OR last_name LIKE '%" + filterCustomer + "%'";
             }
             else
             {

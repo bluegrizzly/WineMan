@@ -1089,14 +1089,7 @@ namespace WineMan.Transactions
             List<string> ids = new List<string>();
             ids.Add(m_TxID.ToString());
             bool res = TransactionsHelper.SetTransactionToDone(ids, !CheckBox_TxCompleted.Checked); 
-            if (res)
-            {
-                if (CheckBox_TxCompleted.Checked)
-                    Utils.MessageBox(this, "** Success **\\nThe transaction is now completed.");
-                else
-                    Utils.MessageBox(this, "** Success **\\nThe transaction is NOT completed anymore.");
-            }
-            else
+            if (!res)
                 Utils.MessageBox(this, "** Error **\\nFailed to create a new transaction.");
         }
 

@@ -14,6 +14,8 @@ namespace WineMan
         public int step_id;
         public DateTime date;
         public int done;
+        // Calclulated field
+        public string StepName;
 
         private void FillRecord(MySqlDataReader dr)
         {
@@ -32,6 +34,12 @@ namespace WineMan
 
                 parsed = Int32.TryParse(dr["done"].ToString(), out done);
                 System.Diagnostics.Debug.Assert(parsed);
+
+                try
+                {
+                    StepName = dr.GetString("StepName");
+                }
+                catch (Exception) { }
             }
         }
 
@@ -68,7 +76,8 @@ namespace WineMan
         {
             string dateStr = date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + " %";
             string dateStrEnd = dateEnd.Year.ToString() + "-" + dateEnd.Month.ToString() + "-" + dateEnd.Day.ToString() + " %";
-            string sqlQuery = "SELECT * FROM " + c_dbName + " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
+            string sqlQuery = "SELECT *, steps.name as StepName FROM " + c_dbName + " INNER JOIN steps ON steps.id = transaction_step.step_id " +
+                " WHERE (date BETWEEN '" + dateStr + "'" + " AND '" + dateStrEnd + "')";
             if (showdone == EShow.Show_Done)
                 sqlQuery += " AND done=1";
             else if (showdone == EShow.Show_NotDone)

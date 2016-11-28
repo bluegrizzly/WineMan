@@ -135,6 +135,7 @@ namespace WineMan
                         jsonWriter.WriteStartArray();
                         jsonWriter.WriteValue(tx.id.ToString());
                         jsonWriter.WriteValue(tx.CustomerName);
+                        jsonWriter.WriteValue(tx.Symbol);
                         jsonWriter.WriteValue(tx.BrandName);
                         jsonWriter.WriteValue(tx.TypeName);
                         jsonWriter.WriteValue(tx.CategoryName);
@@ -149,6 +150,7 @@ namespace WineMan
                         jsonWriter.WriteStartArray();
                         jsonWriter.WriteValue(tx.id.ToString());
                         jsonWriter.WriteValue(tx.CustomerName);
+                        jsonWriter.WriteValue(tx.Symbol);
                         jsonWriter.WriteValue(tx.BrandName);
                         jsonWriter.WriteValue(tx.TypeName);
                         jsonWriter.WriteValue(tx.CategoryName);
@@ -332,11 +334,10 @@ namespace WineMan
                         }
                     }
 
-                    //Transaction tx = Transaction.GetRecord(step.transaction_id);
                     if (tx == null)
                         continue;
 
-                    Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
+                    //Customer customer = Customer.GetRecordByID(tx.client_id.ToString());
 
                     jsonWriter.WriteStartObject();
 
@@ -348,11 +349,12 @@ namespace WineMan
                     jsonWriter.WriteValue(step.id.ToString());
                     jsonWriter.WriteValue(step.transaction_id.ToString());
                     jsonWriter.WriteValue(step.date.ToString());
-                    jsonWriter.WriteValue(GetStepName(step.step_id));
-                    jsonWriter.WriteValue(GetBrandName(tx.wine_brand_id));
-                    jsonWriter.WriteValue(GetTypeName(tx.wine_type_id));
-                    jsonWriter.WriteValue(customer.first_name + " " + customer.last_name);
-                    jsonWriter.WriteValue(customer.telephone);
+                    jsonWriter.WriteValue(step.StepName);
+                    jsonWriter.WriteValue(tx.Symbol);
+                    jsonWriter.WriteValue(tx.BrandName);
+                    jsonWriter.WriteValue(tx.TypeName);
+                    jsonWriter.WriteValue(tx.CustomerName);
+                    jsonWriter.WriteValue(tx.CustomerTelephone);
                     jsonWriter.WriteValue(tx.location);
                     jsonWriter.WriteValue(step.done);
 
