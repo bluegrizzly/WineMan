@@ -1933,7 +1933,7 @@
       </Rectangle>
       <Image Name="Image2">
         <Source>Embedded</Source>
-        <Value>index_logo1</Value>
+        <Value>index_logo</Value>
         <Sizing>FitProportional</Sizing>
         <Left>0.05293cm</Left>
         <Height>1.61078cm</Height>
@@ -3791,7 +3791,7 @@
       </Textbox>
       <Image Name="Image3">
         <Source>Embedded</Source>
-        <Value>index_logo2</Value>
+        <Value>index_logo</Value>
         <Sizing>FitProportional</Sizing>
         <Top>0.01567cm</Top>
         <Left>13.70648cm</Left>
