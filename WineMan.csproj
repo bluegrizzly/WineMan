@@ -172,6 +172,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="images\next.png" />
     <Content Include="images\index_logo.png">
+	<Content Include="images\LOGOLION.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="images\next_disabled.png" />
